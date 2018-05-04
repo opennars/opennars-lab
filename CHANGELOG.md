@@ -4,3 +4,4 @@
 
 * Mavenized project
 * Pulled this project out into its own seperately versioned repository.
+* Removed jbox2d and related functionality.
