@@ -30,7 +30,7 @@ public class ConcatVisionChannel extends SensoryChannel {
     
     Task[][] inputs;
     public ConcatVisionChannel(NAR nar, SensoryChannel reportResultsTo, int width, int height) {
-        super(nar,reportResultsTo);
+        super(nar,reportResultsTo, width, height, -1);
         inputs = new Task[height][width];
     }
     
