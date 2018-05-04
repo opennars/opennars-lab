@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.opennars</groupId>
-    <artifactId>opennars-labs</artifactId>
+    <artifactId>opennars-lab</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
