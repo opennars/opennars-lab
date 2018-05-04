@@ -1,5 +1,5 @@
 ![OpenNARS Logo](https://github.com/opennars/opennars/blob/bf53ceef9f2399de70dc63e5507e42d639144c96/doc/opennars_logo2.png)
-**Open-NARS** is the open-source version of [NARS](https://sites.google.com/site/narswang/home), a general-purpose AI system, designed in the framework of a reasoning system.  This project is an evolution of the [v1.5 system](http://code.google.com/p/open-nars/).  The [mailing list](https://groups.google.com/forum/?fromgroups#!forum/open-nars) discusses both its theory and implementation.
+**Open-NARS** is the open-source version of [NARS](https://sites.google.com/site/narswang/home), a general-purpose AI system, designed in the framework of a reasoning system.  This project is an evolution of the [v1.5 system](http://code.google.com/p/open-org.nars/).  The [mailing list](https://groups.google.com/forum/?fromgroups#!forum/open-org.nars) discusses both its theory and implementation.
 
 [![Build Status](https://travis-ci.org/opennars/opennars-gui.svg?branch=master)](https://travis-ci.org/opennars/opennars-gui)
 [![codecov](https://codecov.io/gh/opennars/opennars-gui/branch/master/graph/badge.svg)](https://codecov.io/gh/opennars/opennars-gui)
@@ -68,13 +68,13 @@ You can launch NARS in several ways from command window (shell):
 
 ```
 - empty reasoner (reads from stdin and writes to stdout):
-    ./nars.sh
+    ./org.opennars.sh
 
 - gui (Swing)
     ./gui.sh [.nal input file]
     
 - reasoner loaded from an experience file:
-    ./nars.sh Examples/Example-NAL1-edited.txt --silence 90
+    ./org.opennars.sh Examples/Example-NAL1-edited.txt --silence 90
 
 - web server start for HTML GUI usage:
     ./web.sh 9999 localhost 9100 1000
@@ -87,7 +87,7 @@ Example Files
 
 Example experience files are in directory nal/Examples
  * "Example-NALn-*.txt" contains single step examples for most of the inference rules defined in NAL level n. The "edited" version contains English translations, and with the unrelated information removed; the "unedited" version contains the actual input/output data recorded by the "Save Experience" function of the GUI. The files can be loaded using the "Load Experience" function of the GUI. 
- * "Example-MultiStep-edited" contains multi-step inference examples described in http://code.google.com/p/open-nars/wiki/MultiStepExamples
+ * "Example-MultiStep-edited" contains multi-step inference examples described in http://code.google.com/p/open-org.opennars/wiki/MultiStepExamples
  * "Example-NLP-edited" contains an example of natural language processing described in the AGI-13 paper "Natural Language Processing by Reasoning and Learning".
 
 Unit tests are in nal/test.
@@ -111,7 +111,7 @@ Jean-Marc Vanel continued work on this roadmap, mainly in GUI and software engin
 
 Source Code status
 ------------------
-See also http://code.google.com/p/open-nars/wiki/ProjectStatus
+See also http://code.google.com/p/open-org.opennars/wiki/ProjectStatus
 
 Current version has been fully tested for single capability at a time; there may still be bugs when combining capabilities.
 
@@ -129,16 +129,16 @@ An (outdated) HTML user manual:
  * http://www.cis.temple.edu/~pwang/Implementation/NARS/NARS-GUI-Guide.html
 
 The project home page:
- * https://code.google.com/p/open-nars/
+ * https://code.google.com/p/open-org.opennars/
 
 This version was however developed on Github:
  * https://github.com/opennars/opennars
 
 Discussion Group:
- * https://groups.google.com/forum/?fromgroups#!forum/open-nars
+ * https://groups.google.com/forum/?fromgroups#!forum/open-org.opennars
  
  IRC:
- * http://webchat.freenode.net?channels=nars
+ * http://webchat.freenode.net?channels=org.opennars
  
  Try online:
  * http://91.203.212.130/NARS
