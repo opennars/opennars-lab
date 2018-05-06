@@ -87,20 +87,20 @@ public class NALNetwork
             List<Term> components = new LinkedList<Term>();
             
             HashSet<Long> evidence_bases = new HashSet<Long>();
-            for(int i=0;i<neighbours.length;i++) {
-                if(neighbours[i].calculate() == null) {
+            for (NALNode neighbour : neighbours) {
+                if (neighbour.calculate() == null) {
                     continue;
                 }
-                TruthValue t = neighbours[i].truth;
-                Term component = neighbours[i].term;
-                if(truth == null) {
+                TruthValue t = neighbour.truth;
+                Term component = neighbour.term;
+                if (truth == null) {
                     truth = t;
-                    evidence_bases.addAll(Longs.asList(neighbours[i].evidentalBase));
+                    evidence_bases.addAll(Longs.asList(neighbour.evidentalBase));
                     components.add(component);
                 } else {
-                    if(!Stamp.baseOverlap(Longs.toArray(evidence_bases), neighbours[i].evidentalBase)) {
+                    if (!Stamp.baseOverlap(Longs.toArray(evidence_bases), neighbour.evidentalBase)) {
                         truth = TruthFunctions.intersection(truth, t);
-                        evidence_bases.addAll(Longs.asList(neighbours[i].evidentalBase));
+                        evidence_bases.addAll(Longs.asList(neighbour.evidentalBase));
                         components.add(component);
                     }
                 }

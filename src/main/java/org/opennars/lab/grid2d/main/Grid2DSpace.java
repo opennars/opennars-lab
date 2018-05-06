@@ -195,10 +195,10 @@ public class Grid2DSpace extends PApplet {
     public void update(TestChamber s) {
         realtime = System.nanoTime() / 1.0e9;
         
-        if (time % automataPeriod == 0 || s.executed) {
+        if (time % automataPeriod == 0 || TestChamber.executed) {
             updateAutomata();
         }
-        if (time % agentPeriod == 0 || s.executed) {
+        if (time % agentPeriod == 0 || TestChamber.executed) {
             try
             {
                 for (GridObject g : objects) {
@@ -220,7 +220,7 @@ public class Grid2DSpace extends PApplet {
             catch(Exception ex)
             {}
         } 
-        s.executed=false;
+        TestChamber.executed =false;
     }
     
     @Override
@@ -342,9 +342,8 @@ public class Grid2DSpace extends PApplet {
         
         //shift half a cell down and right so that when an object draws, it's centerd in the middle of a cell.
         translate(rendersize/4f, rendersize/4f);
-                
-        for (int i = 0; i < objects.size(); i++)
-            objects.get(i).draw();
+
+        for (GridObject object : objects) object.draw();
         popMatrix();
     }
     

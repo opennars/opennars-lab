@@ -45,7 +45,7 @@ public class Activate extends Operator {
             if(t.equals(Term.SELF))
                 continue;
             System.out.println(" --- " + t);
-            chamb.operateObj(t.toString(),"activate");
+            TestChamber.operateObj(t.toString(),"activate");
             break;
         }
         

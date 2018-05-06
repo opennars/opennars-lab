@@ -75,8 +75,8 @@ public class GlobalAnticipation implements Plugin, EventEmitter.EventObserver {
         if (event == Events.TaskDerive.class) {
             Task derivedTask=(Task) args[0];
             if(derivedTask.sentence.term instanceof Implication &&
-               (((Implication) derivedTask.sentence.term).getTemporalOrder()==TemporalRules.ORDER_FORWARD ||
-                    ((Implication) derivedTask.sentence.term).getTemporalOrder()==TemporalRules.ORDER_CONCURRENT)) {
+               (derivedTask.sentence.term.getTemporalOrder()==TemporalRules.ORDER_FORWARD ||
+                    derivedTask.sentence.term.getTemporalOrder()==TemporalRules.ORDER_CONCURRENT)) {
 
                 if(!current_tasks.contains(derivedTask)) {
                     current_tasks.add(derivedTask);
@@ -85,9 +85,7 @@ public class GlobalAnticipation implements Plugin, EventEmitter.EventObserver {
         }
         else if (event == Events.ConceptBeliefRemove.class) {
             Task removedTask=(Task) args[2]; //task is 3nd
-            if(current_tasks.contains(removedTask)) {
-                current_tasks.remove(removedTask);
-            }            
+            current_tasks.remove(removedTask);
         }
         else if (event == Events.InduceSucceedingEvent.class) {            
             Task newEvent = (Task)args[0];

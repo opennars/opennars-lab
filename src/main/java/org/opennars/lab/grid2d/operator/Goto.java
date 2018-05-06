@@ -46,7 +46,7 @@ public class Goto extends Operator {
             if(t.equals(Term.SELF))
                 continue;
             System.out.println(" --- " + t);
-            chamb.operateObj(t.toString(),"go-to");
+            TestChamber.operateObj(t.toString(),"go-to");
             break;
         }
         

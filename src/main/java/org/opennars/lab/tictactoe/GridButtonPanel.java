@@ -124,9 +124,8 @@ abstract public class GridButtonPanel extends NPanel implements EventObserver {
 
     @Override public void paint(Graphics g) {
         super.paint(g);
-        for (int i = 0; i < b.length; i++) 
-            for (int j = 0; j < b[i].length; j++)
-                repaintButton(b[i][j]);
+        for (ConceptButton[] aB : b)
+            for (ConceptButton anAB : aB) repaintButton(anAB);
         
         repaintOverlay(g);
     }

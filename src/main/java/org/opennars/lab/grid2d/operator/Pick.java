@@ -45,7 +45,7 @@ public class Pick extends Operator {
             if(t.equals(Term.SELF))
                 continue;
             System.out.print(" --- " + t);
-            chamb.operateObj(t.toString(),"pick");
+            TestChamber.operateObj(t.toString(),"pick");
             break;
         }
         

@@ -33,6 +33,7 @@ import org.opennars.main.NAR;
 import org.opennars.entity.Sentence;
 import org.opennars.gui.NARSwing;
 import org.opennars.io.events.AnswerHandler;
+import org.opennars.storage.Memory;
 
 /**
  *
@@ -248,7 +249,7 @@ public class LanguageGUI extends javax.swing.JFrame {
             ans.off();
         }
         languageNAR.reset();
-        languageNAR.memory.randomNumber.setSeed(seed);
+        Memory.randomNumber.setSeed(seed);
         seed++;
         
         try {
