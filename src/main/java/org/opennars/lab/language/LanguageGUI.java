@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.opennars.main.NAR;
+import org.opennars.main.Nar;
 import org.opennars.entity.Sentence;
 import org.opennars.gui.NARSwing;
 import org.opennars.io.events.AnswerHandler;
@@ -63,12 +63,12 @@ public class LanguageGUI extends javax.swing.JFrame {
         }
     });
             
-        languageNAR = new NAR();
-        reasonerNAR = new NAR();
+        languageNAR = new Nar();
+        reasonerNAR = new Nar();
         NARSwing lang = new NARSwing(languageNAR);
-        lang.mainWindow.setTitle("Language NAR (OpenNARS v1.6.5)");
+        lang.mainWindow.setTitle("Language Nar (OpenNARS v1.6.5)");
         NARSwing reas = new NARSwing(reasonerNAR);  
-        reas.mainWindow.setTitle("Reasoner NAR (OpenNARS v1.6.5)");
+        reas.mainWindow.setTitle("Reasoner Nar (OpenNARS v1.6.5)");
         languageNAR.param.noiseLevel.set(0);
         reasonerNAR.param.noiseLevel.set(0);
         reasonerNAR.start(0);
@@ -206,9 +206,9 @@ public class LanguageGUI extends javax.swing.JFrame {
         return s;
     }
     
-    //NAR learnerNAR = new NAR(); //for learning language structure
-    static NAR languageNAR;
-    static NAR reasonerNAR;
+    //Nar learnerNAR = new Nar(); //for learning language structure
+    static Nar languageNAR;
+    static Nar reasonerNAR;
     ArrayList<AnswerHandler> q = new ArrayList<AnswerHandler>();
     int seed = 1;
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed

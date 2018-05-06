@@ -29,7 +29,7 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.*;
-import org.opennars.main.NAR;
+import org.opennars.main.Nar;
 import org.opennars.main.Parameters;
 import org.opennars.entity.Sentence;
 import org.opennars.io.events.AnswerHandler;
@@ -308,7 +308,7 @@ public class SymRecognizerWithVisionChannel extends javax.swing.JFrame {
         //Parameters.SEQUENCE_BAG_SIZE=10000;
     }
     
-    NAR nar = null;
+    Nar nar = null;
     NARSwing gui = null;
     ArrayList<AnswerHandler> q = new ArrayList<AnswerHandler>();
     int scale_palette=2;
@@ -350,7 +350,7 @@ public class SymRecognizerWithVisionChannel extends javax.swing.JFrame {
         }
         else {
             
-            nar = new NAR(); //add vision channel for [on] property
+            nar = new Nar(); //add vision channel for [on] property
             //to the nar instance, and nar is also the "next higher" sensory channel
             //to report the results to
             nar.addSensoryChannel("[on]", new SpatialSamplingVisionChannel(nar, nar, SZ, SZ));

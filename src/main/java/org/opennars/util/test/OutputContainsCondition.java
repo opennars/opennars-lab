@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.TreeSet;
-import org.opennars.main.NAR;
+import org.opennars.main.Nar;
 import org.opennars.entity.Sentence;
 import org.opennars.entity.Task;
 import org.opennars.io.events.TextOutputHandler;
@@ -78,7 +78,7 @@ public class OutputContainsCondition extends OutputCondition<Task> {
      * @param containing
      * @param maxSimilars # of similar results to collect, -1 to disable
      */
-    public OutputContainsCondition(NAR nar, String containing, int maxSimilars) {
+    public OutputContainsCondition(Nar nar, String containing, int maxSimilars) {
         super(nar);
         this.containing = containing;
         this.maxSimilars = maxSimilars;

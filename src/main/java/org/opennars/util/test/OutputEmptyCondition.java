@@ -20,7 +20,7 @@ package org.opennars.util.test;
 
 import java.util.LinkedList;
 import java.util.List;
-import org.opennars.main.NAR;
+import org.opennars.main.Nar;
 
 /**
  *
@@ -29,7 +29,7 @@ import org.opennars.main.NAR;
 public class OutputEmptyCondition extends OutputCondition {
     List<String> output = new LinkedList();
 
-    public OutputEmptyCondition(NAR nar) {
+    public OutputEmptyCondition(Nar nar) {
         super(nar);
         succeeded = true;
     }

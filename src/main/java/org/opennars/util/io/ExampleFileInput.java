@@ -20,13 +20,12 @@ package org.opennars.util.io;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-import org.opennars.main.NAR;
+import org.opennars.main.Nar;
 import org.opennars.util.test.OutputCondition;
 
 /**
@@ -56,7 +55,7 @@ public class ExampleFileInput {
         return new ExampleFileInput(load("./nal/" + id +".nal"));
     }
     
-    public List<OutputCondition> enableConditions(NAR n, int similarResultsToSave) {
+    public List<OutputCondition> enableConditions(Nar n, int similarResultsToSave) {
         return OutputCondition.getConditions(n, source, similarResultsToSave);
     }
     

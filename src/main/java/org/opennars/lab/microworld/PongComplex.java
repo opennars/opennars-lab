@@ -14,8 +14,8 @@
  */
 package org.opennars.lab.microworld;
 
+import org.opennars.main.Nar;
 import org.opennars.storage.Memory;
-import org.opennars.main.NAR;
 //import org.opennars.nal.nal8.Operation;
 //import org.opennars.nal.nal8.operator.SyncOperator;
 //import org.opennars.nar.Default;
@@ -61,14 +61,14 @@ public class PongComplex extends Frame {
         {
             Hai(){}
             public Obj obj;
-            NAR nar;
+            Nar nar;
             String LastInput ="";
             int nActions = 3;
             int direction = 0;
             Hai(int nactions,int nstates)
             {
                 this.nActions = nactions; //for actions since we allow the same randomization phase as in QL
-                nar = new NAR();
+                nar = new Nar();
                 nar.memory.addOperator(new Right("^Right"));
                 nar.memory.addOperator(new Left("^Left"));
                 (nar.param).noiseLevel.set(0);
@@ -92,7 +92,7 @@ public class PongComplex extends Frame {
                 public List<Task> execute(Operation operation, Term[] args, Memory memory) {
                     lastAction = 1;
                     memory.allowExecution = false;
-                    //System.out.println("NAR decide left");
+                    //System.out.println("Nar decide left");
                     return null;
                 }
             }
@@ -105,7 +105,7 @@ public class PongComplex extends Frame {
                 public List<Task> execute(Operation operation, Term[] args, Memory memory) {
                     lastAction = 2;
                     memory.allowExecution = false;
-                    //System.out.println("NAR decide right");
+                    //System.out.println("Nar decide right");
                     return null;
                 }
             }
@@ -235,7 +235,7 @@ public class PongComplex extends Frame {
                 
                 nar.cycles(500);
 
-                if(lastAction==0 && random(1.0f) < Alpha) { //if NAR hasn't decided chose a executable random action
+                if(lastAction==0 && random(1.0f) < Alpha) { //if Nar hasn't decided chose a executable random action
                     lastAction = (int) random((float) nActions);
                     if(obj.x == 0) {
                         lastAction = 1;

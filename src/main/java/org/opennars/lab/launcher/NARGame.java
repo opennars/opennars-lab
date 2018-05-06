@@ -16,21 +16,21 @@ package org.opennars.lab.launcher;
 
 import org.opennars.io.events.EventEmitter.EventObserver;
 import org.opennars.io.events.Events;
-import org.opennars.main.NAR;
+import org.opennars.main.Nar;
 import org.opennars.gui.NARSwing;
 
 /**
  * Game event-loop interface for NARS sensory and motor interaction
  */
 abstract public class NARGame implements EventObserver {
-    public final NAR nar;
+    public final Nar nar;
     private int cyclesPerFrame;
     public NARSwing sw;
 
-    public NARGame(NAR nar) {        
+    public NARGame(Nar nar) {
         this.nar = nar;        
         //if (nar.memory.param.getTiming()!=Memory.Timing.Simulation)
-        //    throw new RuntimeException(this + " requires NAR use Simulation timing");
+        //    throw new RuntimeException(this + " requires Nar use Simulation timing");
         
         nar.memory.event.on(Events.CyclesEnd.class, this);
         sw=new NARSwing(nar);

@@ -52,8 +52,8 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import org.opennars.io.events.EventEmitter.EventObserver;
+import org.opennars.main.Nar;
 import org.opennars.storage.Memory;
-import org.opennars.main.NAR;
 import org.opennars.entity.BudgetValue;
 import org.opennars.entity.Concept;
 import org.opennars.entity.Task;
@@ -80,7 +80,7 @@ public class TicTacToe extends JPanel {
     /**
      * Creates new form play
      */
-    public final NAR nar;
+    public final Nar nar;
 
     int[] field = new int[] {
         0, 0, 0,
@@ -97,7 +97,7 @@ public class TicTacToe extends JPanel {
     public TicTacToe() {
         super(new BorderLayout());
         Parameters.DURATION = 1000;
-        nar = new NAR();
+        nar = new Nar();
         
         nar.memory.addOperator(new AddO("^addO"));        
         (nar.param).noiseLevel.set(0);

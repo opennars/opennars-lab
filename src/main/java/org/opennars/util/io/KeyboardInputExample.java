@@ -19,7 +19,7 @@
 package org.opennars.util.io;
 
 import automenta.vivisect.swing.NWindow;
-import org.opennars.main.NAR;
+import org.opennars.main.Nar;
 import org.opennars.gui.NARSwing;
 import org.opennars.gui.input.KeyboardInputPanel;
 
@@ -30,13 +30,13 @@ import org.opennars.gui.input.KeyboardInputPanel;
 public class KeyboardInputExample {
     
     public static void main(String[] args) {
-        //NAR n = NAR.build(new Neuromorphic().realTime());
-        //NAR n = NAR.build(new Default().realTime());
+        //Nar n = Nar.build(new Neuromorphic().realTime());
+        //Nar n = Nar.build(new Default().realTime());
         //n.param.duration.set(100);
         
         NARSwing.themeInvert();
         
-        NAR n = new NAR();
+        Nar n = new Nar();
         
         
                 

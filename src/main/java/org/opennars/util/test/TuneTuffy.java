@@ -18,9 +18,8 @@
  */
 package org.opennars.util.test;
 
-import java.io.FileNotFoundException;
 import org.opennars.io.events.Events.Answer;
-import org.opennars.main.NAR;
+import org.opennars.main.Nar;
 import org.opennars.entity.Sentence;
 import org.opennars.entity.Task;
 import org.opennars.io.events.EventHandler;
@@ -38,7 +37,7 @@ public class TuneTuffy {
         private final Term term;
         Sentence mostConfident = null;
         
-        public SolutionMonitor(NAR n, String term) throws Narsese.InvalidInputException {
+        public SolutionMonitor(Nar n, String term) throws Narsese.InvalidInputException {
             super(n, true, OUT.class, Answer.class);
             
             Term t = new Narsese(n).parseTerm(term);
@@ -80,7 +79,7 @@ public class TuneTuffy {
     public static void main(String[] args) throws Narsese.InvalidInputException {
 
         
-        NAR n = new NAR();
+        Nar n = new Nar();
         n.addInputFile("nal/use_cases/tuffy.smokes.nal");
         
         //new TextOutput(n, System.out, 0.95f);                
