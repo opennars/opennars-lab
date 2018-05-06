@@ -209,15 +209,13 @@ public class NALNetEditor extends Frame {
             {
                 if(selected==null)
                 {
-                    for(int i=0;i<obj.size();i++)
-                    {
-                        Obj oi=(Obj)obj.get(i);
-                        float dx=oi.x-hnav.MouseToWorldCoordX(mouseX);
-                        float dy=oi.y-hnav.MouseToWorldCoordY(mouseY);
-                        float distance=sqrt(dx*dx+dy*dy);
-                        if(distance<oi.s)
-                        {
-                            selected=oi;
+                    for (Object anObj : obj) {
+                        Obj oi = (Obj) anObj;
+                        float dx = oi.x - hnav.MouseToWorldCoordX(mouseX);
+                        float dy = oi.y - hnav.MouseToWorldCoordY(mouseY);
+                        float distance = sqrt(dx * dx + dy * dy);
+                        if (distance < oi.s) {
+                            selected = oi;
                             hsim_ElemClicked(oi);
                             return true;
                         }
@@ -375,9 +373,8 @@ public class NALNetEditor extends Frame {
             float Integrate(float[] arr)
             {
                 float ret=0;
-                for(int i=0;i<arr.length;i++)
-                {
-                    ret+=arr[i];
+                for (float anArr : arr) {
+                    ret += anArr;
                 }
                 return ret;
             }
@@ -501,29 +498,25 @@ public class NALNetEditor extends Frame {
             }
             void mousePressed()
             {
-                
-                for(int i=0;i<gui.size();i++)
-                {
-                    Gui g=((Gui)gui.get(i));
-                    if(mouseX>g.px && mouseX<g.px+g.sx && mouseY>g.py && mouseY<g.py+g.sy)
-                    {
-                        if(!g.bTextBox)
-                        {
+
+                for (Object aGui : gui) {
+                    Gui g = ((Gui) aGui);
+                    if (mouseX > g.px && mouseX < g.px + g.sx && mouseY > g.py && mouseY < g.py + g.sy) {
+                        if (!g.bTextBox) {
                             hgui_ElemEvent(g);
                         }
-                        selected=g;
+                        selected = g;
                     }
                 }
             }
             void Draw()
             {
-                for(int i=0;i<gui.size();i++)
-                {
-                    Gui g=((Gui)gui.get(i));
-                    fill(0,0,0);
-                    rect(g.px,g.py,g.sx,g.sy);
-                    fill(255,255,255);
-                    text(g.text,g.px+g.sx/2,g.py+g.sy/2);
+                for (Object aGui : gui) {
+                    Gui g = ((Gui) aGui);
+                    fill(0, 0, 0);
+                    rect(g.px, g.py, g.sx, g.sy);
+                    fill(255, 255, 255);
+                    text(g.text, g.px + g.sx / 2, g.py + g.sy / 2);
                 }
             }
         }

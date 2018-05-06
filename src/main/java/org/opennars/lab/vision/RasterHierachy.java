@@ -338,7 +338,7 @@ public class RasterHierachy extends JPanel {
         if( workImage != null ) {
             // draw the work image and be careful to make sure it isn't being manipulated at the same time
             synchronized (workImage) {
-                ((Graphics2D) g).drawImage(workImage, 0, 0, null);
+                g.drawImage(workImage, 0, 0, null);
             }
         }
     }

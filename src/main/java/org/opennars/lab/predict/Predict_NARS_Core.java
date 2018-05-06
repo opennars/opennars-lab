@@ -123,7 +123,7 @@ public class Predict_NARS_Core {
             }
         }
     
-    public static void main(String[] args) throws Narsese.InvalidInputException, InterruptedException {
+    public static void main(String[] args) throws InterruptedException {
 
         Parameters.DEBUG = false;
         int duration = 4;
@@ -233,7 +233,7 @@ public class Predict_NARS_Core {
                     saved = "";
                 }
                 
-                observed.add((int) time, val/10.0);
+                observed.add(time, val/10.0);
                 
                 int curval = val;
                 if(QUAnswers.containsKey(val)) {
@@ -248,7 +248,7 @@ public class Predict_NARS_Core {
                 while(QUAnswers.containsKey(curval)) {
                     int shift = QUShift.get(curval) / thinkInterval;
                     for(int i=0;i<shift;i++) {
-                        predicted.add((int) curtime+i, (curval)/10.0); 
+                        predicted.add(curtime +i, (curval)/10.0);
                         pred.customColor.put(curtime+i, Color.RED.getRGB());
                         pred.customColor.put(curtime+i+1, Color.RED.getRGB());
                     }
@@ -266,7 +266,7 @@ public class Predict_NARS_Core {
                 
                 //if(!positionTruthExp.containsKey(time)) { //keep pred line up to date
                     //but don't overwrite predictions
-                     predicted.add((int) time, val/10.0); 
+                     predicted.add(time, val/10.0);
                 //}
 
                 if(true) {

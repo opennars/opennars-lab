@@ -111,9 +111,9 @@ public class PerceptionAccel implements Plugin, EventEmitter.EventObserver {
             st.evidentialBase=evB;
             
             boolean eventBufferDidNotHaveSoMuchEvents=false;
-            for(int i=0;i<relterms.length;i++) {
-                if(relterms[i]==null) {
-                    eventBufferDidNotHaveSoMuchEvents=true;
+            for (Term relterm : relterms) {
+                if (relterm == null) {
+                    eventBufferDidNotHaveSoMuchEvents = true;
                 }
             }
             if(eventBufferDidNotHaveSoMuchEvents) {
