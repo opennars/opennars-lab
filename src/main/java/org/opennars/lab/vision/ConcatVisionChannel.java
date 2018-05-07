@@ -63,7 +63,7 @@ public class ConcatVisionChannel extends SensoryChannel {
             Position samplePos2 = sampling.get(i);
             Task prem2 = inputs[samplePos2.Y][samplePos2.X];
             List<Task> seq = proceedWithTemporalInduction(current.sentence, prem2.sentence, prem2, 
-                                                              new DerivationContext(nar.memory), true, false, true);
+                                                              new DerivationContext(nar.memory, nar.narParameters), true, false, true);
             if(seq != null) {
                 for(Task t : seq) {
                     if(!t.sentence.isEternal()) { //TODO improve API, this check should not be necessary

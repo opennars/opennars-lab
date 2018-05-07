@@ -80,7 +80,7 @@ public class SpatialSamplingVisionChannel extends SensoryChannel {
             if(sampled2 != null) {
                 //improve API, carrying out temporal inference should be easier..
                 List<Task> seq = proceedWithTemporalInduction(sampled.sentence, sampled2.sentence, sampled2, 
-                                                              new DerivationContext(nar.memory), true, false, true);
+                                                              new DerivationContext(nar.memory, nar.narParameters), true, false, true);
                 if(seq != null) {
                     for(Task t : seq) {
                         if(!t.sentence.isEternal()) { //TODO improve API, this check should not be necessary
