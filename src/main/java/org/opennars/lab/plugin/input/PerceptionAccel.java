@@ -21,7 +21,7 @@ package org.opennars.lab.plugin.input;
 import java.util.ArrayList;
 import org.opennars.io.events.EventEmitter;
 import org.opennars.io.events.Events;
-import org.opennars.main.NAR;
+import org.opennars.main.Nar;
 import org.opennars.main.Parameters;
 import org.opennars.plugin.Plugin;
 import org.opennars.control.DerivationContext;
@@ -47,7 +47,7 @@ import org.opennars.language.Term;
 public class PerceptionAccel implements Plugin, EventEmitter.EventObserver {
 
     @Override
-    public boolean setEnabled(NAR n, boolean enabled) {
+    public boolean setEnabled(Nar n, boolean enabled) {
         //register listening to new events:
         n.memory.event.set(this, enabled, Events.InduceSucceedingEvent.class, Events.ConceptNew.class, Events.ConceptForget.class);
         return true;

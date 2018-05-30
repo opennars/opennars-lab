@@ -17,7 +17,7 @@ package org.opennars.lab.grid2d.main;
 import java.util.List;
 import org.opennars.io.events.EventEmitter.EventObserver;
 import org.opennars.io.events.Events;
-import org.opennars.main.NAR;
+import org.opennars.main.Nar;
 import org.opennars.main.Parameters;
 import org.opennars.lab.grid2d.main.Cell.Logic;
 import org.opennars.lab.grid2d.main.Cell.Material;
@@ -51,15 +51,15 @@ public class TestChamber {
     
     public static void main(String[] args) {
 
-        //set NAR architecture parameters:
+        //set Nar architecture parameters:
         //builder...
         Parameters.CONSIDER_NEW_OPERATION_BIAS = 1.0f; //not that much events in testchamber anyway
         Parameters.SEQUENCE_BAG_SIZE = 100; //but many possible different ways to achieve certain things
-        NAR nar = new NAR();
-        nar.param.decisionThreshold.set(0.51);
-        //set NAR runtime parmeters:  
+        Nar nar = new Nar();
+        nar.narParameters.DECISION_THRESHOLD = 0.51f;
+        //set Nar runtime parmeters:
 
-        /*for(NAR.PluginState pluginstate : nar.getPlugins()) {
+        /*for(Nar.PluginState pluginstate : nar.getPlugins()) {
             if(pluginstate.plugin instanceof InternalExperience || pluginstate.plugin instanceof FullInternalExperience) {
                 nar.removePlugin(pluginstate);
             }
@@ -135,11 +135,11 @@ public class TestChamber {
         super();        
     }
     
-    public TestChamber(NAR nar) {
+    public TestChamber(Nar nar) {
         this(nar, true);
     }
     
-    public TestChamber(NAR nar, boolean showWindow) {
+    public TestChamber(Nar nar, boolean showWindow) {
         super();
 
         int w = 50;

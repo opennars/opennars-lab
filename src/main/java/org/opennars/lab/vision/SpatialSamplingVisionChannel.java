@@ -16,7 +16,7 @@ package org.opennars.lab.vision;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.opennars.main.NAR;
+import org.opennars.main.Nar;
 import org.opennars.control.DerivationContext;
 import static org.opennars.control.TemporalInferenceControl.proceedWithTemporalInduction;
 import org.opennars.entity.Sentence;
@@ -33,7 +33,7 @@ public class SpatialSamplingVisionChannel extends SensoryChannel {
     }
     
     LevelBag<Task<Term>,Sentence<Term>>[][] spatialbag;
-    public SpatialSamplingVisionChannel(NAR nar, SensoryChannel reportResultsTo, int width, int height) {
+    public SpatialSamplingVisionChannel(Nar nar, SensoryChannel reportResultsTo, int width, int height) {
         super(nar,reportResultsTo, width, height, -1);
         spatialbag = new LevelBag[height][width];
     }
@@ -54,7 +54,7 @@ public class SpatialSamplingVisionChannel extends SensoryChannel {
     
     List<Position> sampling = new ArrayList<>(); //TODO replace duplicates by using counter
     @Override
-    public NAR addInput(Task t) {
+    public Nar addInput(Task t) {
         int[] test = t.getTerm().term_indices;
         AddToSpatialBag(t);
         for(int i=0;i<100000;i++) {
@@ -80,7 +80,7 @@ public class SpatialSamplingVisionChannel extends SensoryChannel {
             if(sampled2 != null) {
                 //improve API, carrying out temporal inference should be easier..
                 List<Task> seq = proceedWithTemporalInduction(sampled.sentence, sampled2.sentence, sampled2, 
-                                                              new DerivationContext(nar.memory), true, false, true);
+                                                              new DerivationContext(nar.memory, nar.narParameters), true, false, true);
                 if(seq != null) {
                     for(Task t : seq) {
                         if(!t.sentence.isEternal()) { //TODO improve API, this check should not be necessary

@@ -31,7 +31,7 @@ import javax.swing.JButton;
 import javax.swing.SwingUtilities;
 import org.opennars.io.events.EventEmitter.EventObserver;
 import org.opennars.io.events.Events.CyclesEnd;
-import org.opennars.main.NAR;
+import org.opennars.main.Nar;
 import org.opennars.entity.Concept;
 
 /**
@@ -42,7 +42,7 @@ import org.opennars.entity.Concept;
  */
 abstract public class GridButtonPanel extends NPanel implements EventObserver {
     
-    public final NAR nar;
+    public final Nar nar;
 
     public final ConceptButton[][] b;
 
@@ -108,7 +108,7 @@ abstract public class GridButtonPanel extends NPanel implements EventObserver {
         
     }
     
-    public GridButtonPanel(NAR n, int w, int h) {
+    public GridButtonPanel(Nar n, int w, int h) {
         super(new GridLayout(w, h));
     
         this.nar = n;

@@ -13,7 +13,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.opennars.lab.grid2d.main;
-
+ 
 import automenta.vivisect.swing.NWindow;
 import java.awt.BorderLayout;
 import java.awt.Button;
@@ -30,7 +30,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javax.swing.JPanel;
-import org.opennars.main.NAR;
+import org.opennars.main.Nar;
 import org.opennars.lab.grid2d.main.Cell.Logic;
 import org.opennars.lab.grid2d.main.Cell.Material;
 import org.opennars.lab.grid2d.gui.EditorPanel;
@@ -75,9 +75,9 @@ public class Grid2DSpace extends PApplet {
     long lasttime = -1;
     double realtime;
     //public ParticleSystem particles;
-    public NAR nar;
+    public Nar nar;
     
-    public Grid2DSpace(Hauto cells, NAR nar) {
+    public Grid2DSpace(Hauto cells, Nar nar) {
         super();
         this.cells = cells;
         world_used=true;

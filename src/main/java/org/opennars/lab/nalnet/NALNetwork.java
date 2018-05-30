@@ -23,7 +23,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
-import org.opennars.main.NAR;
+import org.opennars.main.Nar;
 import org.opennars.main.Parameters;
 import org.opennars.entity.BudgetValue;
 import org.opennars.entity.Sentence;
@@ -137,7 +137,7 @@ public class NALNetwork
             return this.term.toString() + ". :|: " + this.truth.toString() + " {" + evidences + "}";
         }
         
-        public void inputInto(NAR nar) {
+        public void inputInto(Nar nar) {
             calculate();
             Stamp stamp = new Stamp(nar.memory);
             stamp.setOccurrenceTime(nar.memory.time());

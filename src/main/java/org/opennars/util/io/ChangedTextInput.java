@@ -14,17 +14,17 @@
  */
 package org.opennars.util.io;
 
-import org.opennars.main.NAR;
+import org.opennars.main.Nar;
 
 
 /** TextInput subclass that only inputs when the next input value changes from previous */
 public class ChangedTextInput  {
 
-    private final NAR nar;
+    private final Nar nar;
     private String last = null;
     private boolean allowRepeats = false;
 
-    public ChangedTextInput(NAR n) {
+    public ChangedTextInput(Nar n) {
         this.nar = n;
     }
 

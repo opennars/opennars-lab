@@ -18,7 +18,7 @@ import java.awt.Color;
 import java.util.ArrayDeque;
 import java.util.HashSet;
 import java.util.Set;
-import org.opennars.main.NAR;
+import org.opennars.main.Nar;
 import org.opennars.lab.grid2d.main.Action.Forward;
 import org.opennars.lab.grid2d.main.Action.Turn;
 
@@ -29,9 +29,9 @@ abstract public class GridAgent extends LocalGridObject {
     public final ArrayDeque<Action> actions = new ArrayDeque(); //pending
     public final ArrayDeque<Effect> effects = new ArrayDeque(); //results
     public final Set<Object> inventory = new HashSet();
-    public NAR nar;
+    public Nar nar;
     
-    public GridAgent(int x, int y, NAR nar) {
+    public GridAgent(int x, int y, Nar nar) {
         super(x, y);
         this.nar=nar;
     }

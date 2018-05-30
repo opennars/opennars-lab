@@ -16,7 +16,7 @@ package org.opennars.lab.vision;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.opennars.main.NAR;
+import org.opennars.main.Nar;
 import org.opennars.control.DerivationContext;
 import static org.opennars.control.TemporalInferenceControl.proceedWithTemporalInduction;
 import org.opennars.entity.Task;
@@ -29,7 +29,7 @@ public class ConcatVisionChannel extends SensoryChannel {
     }
     
     Task[][] inputs;
-    public ConcatVisionChannel(NAR nar, SensoryChannel reportResultsTo, int width, int height) {
+    public ConcatVisionChannel(Nar nar, SensoryChannel reportResultsTo, int width, int height) {
         super(nar,reportResultsTo, width, height, -1);
         inputs = new Task[height][width];
     }
@@ -47,7 +47,7 @@ public class ConcatVisionChannel extends SensoryChannel {
     
     List<Position> sampling = new ArrayList<>(); //TODO replace duplicates by using counter
     @Override
-    public NAR addInput(Task t) {
+    public Nar addInput(Task t) {
         AddToSpatialBag(t);
         step_start(); //just input driven for now   
         return nar; //but could as well listen to nar cycle end or even spawn own thread instead
@@ -63,7 +63,7 @@ public class ConcatVisionChannel extends SensoryChannel {
             Position samplePos2 = sampling.get(i);
             Task prem2 = inputs[samplePos2.Y][samplePos2.X];
             List<Task> seq = proceedWithTemporalInduction(current.sentence, prem2.sentence, prem2, 
-                                                              new DerivationContext(nar.memory), true, false, true);
+                                                              new DerivationContext(nar.memory, nar.narParameters), true, false, true);
             if(seq != null) {
                 for(Task t : seq) {
                     if(!t.sentence.isEternal()) { //TODO improve API, this check should not be necessary

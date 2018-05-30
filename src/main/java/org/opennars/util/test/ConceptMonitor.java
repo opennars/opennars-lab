@@ -18,7 +18,7 @@
  */
 package org.opennars.util.test;
 
-import org.opennars.main.NAR;
+import org.opennars.main.Nar;
 import org.opennars.entity.Concept;
 import org.opennars.entity.Sentence;
 import org.opennars.entity.Task;
@@ -33,7 +33,7 @@ import org.opennars.language.Term;
  */
 public class ConceptMonitor {
     
-    public static Term stringToTerm(NAR nar, String s) {
+    public static Term stringToTerm(Nar nar, String s) {
         Narsese narsese = new Narsese(nar.memory);
         Task ret;
         try {
@@ -47,7 +47,7 @@ public class ConceptMonitor {
         return ret.getTerm();
     }
     
-    public static Concept concept(NAR nar, String s) {
+    public static Concept concept(Nar nar, String s) {
         Term ts = stringToTerm(nar, s);
         if(ts == null) {
             return null;
@@ -55,7 +55,7 @@ public class ConceptMonitor {
         return nar.memory.concept(ts);
     }
     
-    public static Sentence strongestProjectedInputEventBelief(NAR nar, String st) {
+    public static Sentence strongestProjectedInputEventBelief(Nar nar, String st) {
         Concept c = ConceptMonitor.concept(nar, st);
         if(c != null) {
             for(Task t : c.beliefs) {
@@ -71,7 +71,7 @@ public class ConceptMonitor {
         return null;
     }
     
-    public static Sentence strongestProjectedEternalizedBelief(NAR nar, String st) {
+    public static Sentence strongestProjectedEternalizedBelief(Nar nar, String st) {
         Concept c = ConceptMonitor.concept(nar, st);
         if(c != null) {
             for(Task t : c.beliefs) {
@@ -83,7 +83,7 @@ public class ConceptMonitor {
         return null;
     }
     
-    public static Sentence strongestPrecondition(NAR nar, String conc, String statement) {
+    public static Sentence strongestPrecondition(Nar nar, String conc, String statement) {
         Concept c = ConceptMonitor.concept(nar, conc);
         Term st = stringToTerm(nar, statement);
         if(c != null && st != null) {
@@ -97,7 +97,7 @@ public class ConceptMonitor {
         return null;
     }
     
-    public static Sentence strongestPrecondition2(NAR nar, String conc, String statement) { //test to compare with previous
+    public static Sentence strongestPrecondition2(Nar nar, String conc, String statement) { //test to compare with previous
         return strongestProjectedEternalizedBelief(nar, statement);
     }
 }

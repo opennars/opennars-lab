@@ -19,10 +19,10 @@
 //import javax.script.ScriptEngine;
 //import javax.script.ScriptEngineManager;
 //import javax.script.ScriptException;
-//import org.opennars.NAR;
+//import org.opennars.Nar;
 //
 ///**
-// * Javascript NAR Runner
+// * Javascript Nar Runner
 // * @author me
 // */
 //public class NARjs {
@@ -43,7 +43,7 @@
 //        js.eval("importPackage('org.opennars.io')");
 //        js.eval("importPackage('org.opennars.gui')");
 //        
-//        js.eval("function newDefaultNAR() { var x = new NAR(new Default()); new TextOutput(x, System.out); return x; }");
+//        js.eval("function newDefaultNAR() { var x = new Nar(new Default()); new TextOutput(x, System.out); return x; }");
 //    }
 //
 //    public Object eval(String s) throws ScriptException {
@@ -57,7 +57,7 @@
 //    public static void main(String[] args) throws Exception {
 //        NARjs j = new NARjs();
 //        
-//        System.out.println(NAR.VERSION +  " Javascript Console - :h for help, :q to exit");
+//        System.out.println(Nar.VERSION +  " Javascript Console - :h for help, :q to exit");
 //        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 //        System.out.print("> ");
 //

@@ -19,7 +19,7 @@
 package org.opennars.lab.microworld;
 
 import java.util.HashMap;
-import org.opennars.main.NAR;
+import org.opennars.main.Nar;
 import org.opennars.entity.Sentence;
 import org.opennars.gui.NARSwing;
 import org.opennars.io.events.AnswerHandler;
@@ -104,7 +104,7 @@ public class SupervisedRecognition {
         
         //training phase:
         
-        NAR nar = new NAR();
+        Nar nar = new Nar();
         NARSwing.themeInvert();
         new NARSwing(nar);
         nar.param.noiseLevel.set(0);
@@ -138,7 +138,7 @@ public class SupervisedRecognition {
     }
 
     //Inputs an example image
-    private static void inputExample(NAR nar, String example, int solution) {
+    private static void inputExample(Nar nar, String example, int solution) {
         String[] lines = example.split("\n");
         for(int i=0;i<lines.length;i++) {
             for(int j=0;j<lines[i].length();j++) {

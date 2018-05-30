@@ -23,7 +23,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
-import org.opennars.main.NAR;
+import org.opennars.main.Nar;
 import org.opennars.gui.NARSwing;
 import org.opennars.web.NARServer;
 
@@ -202,7 +202,7 @@ public class Launcher extends javax.swing.JFrame {
 
         jLabel9.setBackground(new java.awt.Color(255, 255, 255));
         jLabel9.setForeground(new java.awt.Color(254, 255, 255));
-        jLabel9.setText("NAR Pong");
+        jLabel9.setText("Nar Pong");
         jLabel9.setToolTipText("");
         jLabel9.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -323,7 +323,7 @@ public class Launcher extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        NARSwing sw=new NARSwing(new NAR());
+        NARSwing sw=new NARSwing(new Nar());
         this.dispose();
 
     }//GEN-LAST:event_jButton1ActionPerformed

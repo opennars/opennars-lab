@@ -14,8 +14,8 @@
  */
 package org.opennars.lab.grid2d.main;
 
+import org.opennars.main.Nar;
 import org.opennars.storage.Memory;
-import org.opennars.main.NAR;
 import org.opennars.lab.grid2d.main.Cell.Logic;
 import static org.opennars.lab.grid2d.main.Cell.Logic.AND;
 import static org.opennars.lab.grid2d.main.Cell.Logic.BRIDGE;
@@ -32,7 +32,7 @@ import org.opennars.lab.grid2d.object.Key;
 import org.opennars.lab.grid2d.object.Pizza;
 
 public class Hauto {
-    private final NAR nar;
+    private final Nar nar;
 
     
     
@@ -522,7 +522,7 @@ public class Hauto {
     }
     
     
-    public Hauto(int w, int h, NAR nar) {
+    public Hauto(int w, int h, Nar nar) {
         this.nar=nar;
         this.w = w;
         this.h = h;

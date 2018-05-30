@@ -19,7 +19,7 @@
 
 package org.opennars.lab.plugin.app.farg;
 
-import org.opennars.main.NAR;
+import org.opennars.main.Nar;
 import org.opennars.plugin.Plugin;
 import org.opennars.language.Term;
 import org.opennars.storage.LevelBag;
@@ -35,7 +35,7 @@ public class FluidAnalogiesAgents implements Plugin {
     LevelBag<Codelet,Term> coderack;
     
     @Override
-    public boolean setEnabled(NAR n, boolean enabled) {
+    public boolean setEnabled(Nar n, boolean enabled) {
         if(enabled==true) {
             ws=new Workspace(this,n);
         }

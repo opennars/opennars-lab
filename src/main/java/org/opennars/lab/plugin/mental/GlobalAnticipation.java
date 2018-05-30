@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.opennars.io.events.EventEmitter;
 import org.opennars.io.events.Events;
-import org.opennars.main.NAR;
+import org.opennars.main.Nar;
 import org.opennars.main.Parameters;
 import org.opennars.plugin.Plugin;
 import org.opennars.control.DerivationContext;
@@ -235,7 +235,7 @@ public class GlobalAnticipation implements Plugin, EventEmitter.EventObserver {
     }
     
     @Override
-    public boolean setEnabled(NAR n, boolean enabled) {
+    public boolean setEnabled(Nar n, boolean enabled) {
         //Events.TaskDerive.class Events.ConceptBeliefRemove.class
         n.memory.event.set(this, enabled, Events.InduceSucceedingEvent.class, Events.TaskDerive.class, Events.ConceptBeliefRemove.class);
         return true;

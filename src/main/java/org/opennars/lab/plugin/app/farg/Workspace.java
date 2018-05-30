@@ -21,7 +21,7 @@ package org.opennars.lab.plugin.app.farg;
 
 import org.opennars.io.events.EventEmitter.EventObserver;
 import org.opennars.io.events.Events.CycleEnd;
-import org.opennars.main.NAR;
+import org.opennars.main.Nar;
 import org.opennars.entity.Concept;
 import org.opennars.storage.LevelBag;
 
@@ -32,10 +32,10 @@ import org.opennars.storage.LevelBag;
 public class Workspace {
 
     public double temperature=0.0;
-    public NAR nar;
+    public Nar nar;
     public int n_concepts=0;
     
-    public Workspace(FluidAnalogiesAgents farg, NAR nar) {
+    public Workspace(FluidAnalogiesAgents farg, Nar nar) {
         this.nar=nar;
         Workspace ws=this;
         farg.coderack=new LevelBag(farg.codelet_level,farg.max_codelets);

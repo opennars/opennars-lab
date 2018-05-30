@@ -23,7 +23,7 @@ import boofcv.struct.image.Planar;
 import com.github.sarxos.webcam.Webcam;
 //import georegression.struct.point.Point2D_I32;
 import org.opennars.gui.NARSwing;
-import org.opennars.main.NAR;
+import org.opennars.main.Nar;
 //import org.infinispan.commons.hash.Hash;
 
 import javax.swing.*;
@@ -343,12 +343,12 @@ public class RasterHierachy extends JPanel {
         }
     }
 
-    static NAR nar;
+    static Nar nar;
     public static void main(String[] args) {
 
         //RasterHierarchy rh = new RasterHierarchy(8, 640, 480, 12, 2);
         // RasterHierarchy rh = new RasterHierarchy(3, 640, 480, 5, 2);
-        nar = new NAR();
+        nar = new Nar();
         nar.param.noiseLevel.set(0);
         NARSwing.themeInvert();
         NARSwing swing = new NARSwing(nar);

@@ -31,7 +31,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.opennars.io.events.Events.TaskImmediateProcess;
-import org.opennars.main.NAR;
+import org.opennars.main.Nar;
 import org.opennars.main.Parameters;
 import org.opennars.control.DerivationContext;
 import org.opennars.entity.Sentence;
@@ -60,7 +60,7 @@ public class Predict_NARS_Core {
     static LineChart pred = null;
     static int curmax=0;
     static HashMap<Integer,Float> positionTruthExp = new HashMap<Integer,Float>();
-    static NAR n = null;
+    static Nar n = null;
     static int thinkInterval = 10;
     static HashMap<Integer,Integer> QUAnswers = new HashMap<Integer,Integer>();
     static HashMap<Integer,Integer> QUShift = new HashMap<Integer,Integer>();
@@ -131,7 +131,7 @@ public class Predict_NARS_Core {
         
         double discretization = 10;
 
-        n = new NAR();
+        n = new Nar();
         n.param.noiseLevel.set(0);
         Random rnd = new Random();
         
