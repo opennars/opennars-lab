@@ -13,7 +13,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.opennars.lab.grid2d.main;
-
+ 
 import automenta.vivisect.swing.NWindow;
 import java.awt.BorderLayout;
 import java.awt.Button;
