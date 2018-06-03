@@ -381,7 +381,7 @@ public class Launcher extends javax.swing.JFrame {
     }//GEN-LAST:event_jLabel11MouseEntered
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        org.opennars.lab.vision.SymRecognizer.main(null);
+        org.opennars.lab.vision.SymRecognizerWithVisionChannel.main(null);
         this.dispose();
     }//GEN-LAST:event_jButton4ActionPerformed
 

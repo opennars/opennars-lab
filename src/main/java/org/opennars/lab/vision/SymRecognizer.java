@@ -69,7 +69,7 @@ public class SymRecognizer extends javax.swing.JFrame {
                 //maxDistance*=maxDistance;
                 float R = 255.0f;// - 255.0f*(distance / maxDistance);
                 Color col1 = new Color(canvasIMG.getRGB(x, y));
-                R*=0.2;
+                R*=0.4;
                 R+=col1.getRed();
                 if(R > 255) {
                     R = 255;
