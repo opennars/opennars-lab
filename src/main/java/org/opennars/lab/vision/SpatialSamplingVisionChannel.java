@@ -34,7 +34,7 @@ public class SpatialSamplingVisionChannel extends SensoryChannel {
     
     LevelBag<Task<Term>,Sentence<Term>>[][] spatialbag;
     public SpatialSamplingVisionChannel(Nar nar, SensoryChannel reportResultsTo, int width, int height) {
-        super(nar,reportResultsTo, width, height, -1);
+        super(nar,reportResultsTo, width, height, -1, new Term("BRIGHT"));
         spatialbag = new LevelBag[height][width];
     }
     

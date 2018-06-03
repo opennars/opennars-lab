@@ -357,7 +357,7 @@ public class SymRecognizerWithVisionChannel extends javax.swing.JFrame {
             //to the nar instance, and nar is also the "next higher" sensory channel
             //to report the results to
             Term label = SetInt.make(new Term(LABEL));
-            nar.addSensoryChannel(label.toString(), new VisionChannel(label, nar, nar, sensor_H, sensor_W, sensor_W*sensor_H));
+            nar.addPlugin(new VisionChannel(label, nar, nar, sensor_H, sensor_W, sensor_W*sensor_H));
             
             if(invar1.isSelected()) {
                 gui = new NARSwing(nar);
