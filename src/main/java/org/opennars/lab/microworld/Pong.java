@@ -163,25 +163,25 @@ public class Pong extends Frame {
                 Sentence hypo_left = ConceptMonitor.strongestPrecondition(nar, "<{SELF} --> [good]>",
                         "<(&/,<{left} --> [on]>,+1,(^Right,{SELF}),+1) =/> <{SELF} --> [good]>>");
                 if(hypo_left != null) {
-                    System.out.println("HypLeftWrong: " + hypo_left.truth);
+                    System.out.println("HypLeftWrong: " + hypo_left.truth + " " + hypo_left.getTerm());
                 }
                 
                 Sentence hypo_right = ConceptMonitor.strongestPrecondition(nar, "<{SELF} --> [good]>",
                         "<(&/,<{right} --> [on]>,+12,(^Left,{SELF}),+13) =/> <{SELF} --> [good]>>");
                 if(hypo_right != null) {
-                    System.out.println("HypRightWrong: " + hypo_right.truth);
+                    System.out.println("HypRightWrong: " + hypo_right.truth + " " + hypo_right.getTerm());
                 }
                 
                 Sentence hypo_left_false = ConceptMonitor.strongestPrecondition(nar, "<{SELF} --> [good]>",
                         "<(&/,<{left} --> [on]>,+1,(^Left,{SELF}),+1) =/> <{SELF} --> [good]>>");
                 if(hypo_left_false != null) {
-                    System.out.println("HypLeft: " + hypo_left_false.truth);
+                    System.out.println("HypLeft: " + hypo_left_false.truth + " " + hypo_left_false.getTerm());
                 }
                 
                 Sentence hypo_right_false = ConceptMonitor.strongestPrecondition(nar,  "<{SELF} --> [good]>",
                         "<(&/,<{right} --> [on]>,+12,(^Right,{SELF}),+13) =/> <{SELF} --> [good]>>");
                 if(hypo_right_false != null) {
-                    System.out.println("HypRight: " + hypo_right_false.truth);
+                    System.out.println("HypRight: " + hypo_right_false.truth + " " + hypo_right_false.getTerm());
                 }
                 }
                 
@@ -294,7 +294,8 @@ public class Pong extends Frame {
         }
         void hsim_Draw(Obj o)
         {
-            image(im[o.type],-o.s/2,-o.s/2,o.s,o.s);
+            //image(im[o.type],-o.s/2,-o.s/2,o.s,o.s);
+            ellipse(-o.s/2,-o.s/2,o.s,o.s);
         }
         int goods=1,bads=1;
         void hsim_Interact(Obj i,Obj j)
