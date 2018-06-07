@@ -20,6 +20,7 @@ import org.opennars.main.Nar;
 import org.opennars.control.DerivationContext;
 import static org.opennars.control.TemporalInferenceControl.proceedWithTemporalInduction;
 import org.opennars.entity.Task;
+import org.opennars.language.Term;
 import org.opennars.plugin.perception.SensoryChannel;
 
 public class ConcatVisionChannel extends SensoryChannel {
@@ -30,7 +31,7 @@ public class ConcatVisionChannel extends SensoryChannel {
     
     Task[][] inputs;
     public ConcatVisionChannel(Nar nar, SensoryChannel reportResultsTo, int width, int height) {
-        super(nar,reportResultsTo, width, height, -1);
+        super(nar,reportResultsTo, width, height, width*height, new Term("BRIGHT"));
         inputs = new Task[height][width];
     }
     
