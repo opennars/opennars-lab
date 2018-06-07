@@ -149,7 +149,7 @@ public class NALNetwork
                                  new BudgetValue(Parameters.DEFAULT_JUDGMENT_PRIORITY,
                                                  Parameters.DEFAULT_JUDGMENT_DURABILITY,
                                                  BudgetFunctions.truthToQuality(this.truth)),
-                                 true);
+                                 Task.EnumType.INPUT);
             nar.addInput(task);
         }
     }

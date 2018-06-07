@@ -174,7 +174,7 @@ public class PerceptionAccel implements Plugin, EventEmitter.EventObserver {
             Conjunction C=(Conjunction) Conjunction.make(relterms, after ? ORDER_FORWARD : ORDER_CONCURRENT);
             
             Sentence S=new Sentence(C,Symbols.JUDGMENT_MARK,truth,st); //importance "summation"
-            Task T=new Task(S,new BudgetValue(BudgetFunctions.or(C1.getPriority(), C2.getPriority()),Parameters.DEFAULT_JUDGMENT_DURABILITY,truth), true);
+            Task T=new Task(S,new BudgetValue(BudgetFunctions.or(C1.getPriority(), C2.getPriority()),Parameters.DEFAULT_JUDGMENT_DURABILITY,truth), Task.EnumType.INPUT);
             
             if(debugMechanism) {
                 System.out.println("success: "+T.toString());
