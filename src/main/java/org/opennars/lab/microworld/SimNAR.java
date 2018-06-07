@@ -256,9 +256,8 @@ public class SimNAR extends Frame {
             {
                 this.nActions = nactions; //for actions since we allow the same randomization phase as in QL
                 nar = new Nar();
-                nar.addPlugin(new Right("^Right"));
-                nar.addPlugin(new Left("^Left"));
-                nar.addPlugin(new Forward("^Forward"));
+                nar.memory.addOperator(new Right("^Right"));
+                nar.memory.addOperator(new Left("^Left"));
                 (nar.param).noiseLevel.set(0);
                 new NARSwing(nar); 
                 //nar.start(0);
@@ -297,19 +296,6 @@ public class SimNAR extends Frame {
                     return null;
                 }
             }
-            public class Forward extends Operator {
-                public Forward(String name) {
-                    super(name);
-                }
-
-                @Override
-                public List<Task> execute(Operation operation, Term[] args, Memory memory) {
-                    lastAction = 3;
-                    memory.allowExecution = false;
-                    System.out.println("Nar decide forward");
-                    return null;
-                }
-            }
 
             int k=0;
             float Alpha=0.1f;
@@ -327,7 +313,6 @@ public class SimNAR extends Frame {
                         //System.out.println("perceive "+s);
                     }
                 }
-              
                 lastAction = 0;
                 k++;
                if(k%2==0) {
@@ -365,9 +350,6 @@ public class SimNAR extends Frame {
                         //System.out.println("random right");
                         nar.addInput("Left({SELF}). :|:");
                        /// nar.addInput("Right({SELF}). :|:");
-                    }
-                    if(lastAction == 3) {
-                        nar.addInput("Forward({SELF}). :|:");
                     }
                 }
 
@@ -413,17 +395,7 @@ public class SimNAR extends Frame {
         }
         void hsim_Draw(Obj o)
         {
-            //image(im[o.type],-o.s/2,-o.s/2,o.s,o.s);
-            if(o.type == 2) {
-                fill(255,0,0);
-                rect(-o.s/2,-o.s/2,o.s,o.s);
-            } else if (o.type == 1) {
-                fill(0,255,0);
-                ellipse(-o.s/2,-o.s/2,o.s,o.s);
-            } else {
-                fill(0,0,255);
-                rect(-o.s/2,-o.s/2,o.s,o.s);
-            }
+            image(im[o.type],-o.s/2,-o.s/2,o.s,o.s);
         }
         int goods=1,bads=1;
         void hsim_Interact(Obj i,Obj j)
@@ -489,21 +461,21 @@ public class SimNAR extends Frame {
                 }*/
                 if(action==2)
                 {
-                    oi.a+=0.25f;
+                    oi.a+=0.5f;
                     //oi.v=5.0f;
                     //mem.ProcessingInteract(oi.x,oi.y,1.0,10.0);
                 }
                 else
                 if(action==1)
                 {
-                    oi.a-=0.25f;
+                    oi.a-=0.5f;
                     //oi.v=5.0f;
                     // mem.ProcessingInteract(oi.x,oi.y,1.0,10.0);
                 }
                 else
-                if(action==0) //3
+                if(action==0)
                 {
-                    oi.v=30.0f;
+                    oi.v=10.0f;
                     // mem.ProcessingInteract(oi.x,oi.y,1.0,10.0);
                 }
                 if(oi.x>width)
@@ -757,7 +729,7 @@ public class SimNAR extends Frame {
             Hsim_Custom(){}
         }
 
-        int nactions=4;
+        int nactions=3;
         int worldSize=800;
         PImage[] im=new PImage[10];
         Gui label1;
@@ -1386,11 +1358,11 @@ public class SimNAR extends Frame {
                 hsim.obj.add(test);
             }
             lastclicked=((Obj)hsim.obj.get(0));
-            for(int i=0;i<10;i++)
+            for(int i=0;i<5;i++)
             {
                 hsim.obj.add(new Obj(null,null,(int)(padding+random(1)*(width-padding)),(int)(padding+random(1)*(height-padding)),random(1)*2*PI,0,0,0,random(1)*5+20,1,10));
             }
-            for(int i=0;i<10;i++)
+            for(int i=0;i<5;i++)
             {
                 hsim.obj.add(new Obj(null,null,(int)(padding+random(1)*(width-padding)),(int)(padding+random(1)*(height-padding)),random(1)*2*PI,0,0,0,random(1)*5+20,2,10));
             }
