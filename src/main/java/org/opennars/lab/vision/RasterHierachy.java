@@ -344,7 +344,7 @@ public class RasterHierachy extends JPanel {
     }
 
     static Nar nar;
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
 
         //RasterHierarchy rh = new RasterHierarchy(8, 640, 480, 12, 2);
         // RasterHierarchy rh = new RasterHierarchy(3, 640, 480, 5, 2);

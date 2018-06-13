@@ -28,6 +28,7 @@ import org.opennars.main.Parameters;
 import org.opennars.entity.BudgetValue;
 import org.opennars.entity.Sentence;
 import org.opennars.entity.Stamp;
+import org.opennars.entity.Stamp.BaseEntry;
 import org.opennars.entity.Task;
 import org.opennars.entity.TruthValue;
 import org.opennars.inference.BudgetFunctions;
@@ -50,7 +51,7 @@ public class NALNetwork
     {
         public Term term;
         public TruthValue truth;
-        public long[] evidentalBase;
+        public BaseEntry[] evidentalBase;
         public NALNode[] neighbours; //the "neighbours" the truth calculation is based on
         public boolean negated;
         
@@ -67,7 +68,7 @@ public class NALNetwork
                 this.term = term;
                 this.truth = truth;
             }
-            this.evidentalBase = new long[] { base };
+            this.evidentalBase = new BaseEntry[] { new BaseEntry(0, base) };
         }
         //or is a composition of neighbours
         public NALNode(NALNode[] neighbours) {
@@ -86,7 +87,7 @@ public class NALNetwork
             }
             List<Term> components = new LinkedList<Term>();
             
-            HashSet<Long> evidence_bases = new HashSet<Long>();
+            HashSet<BaseEntry> evidence_bases = new HashSet<>();
             for (NALNode neighbour : neighbours) {
                 if (neighbour.calculate() == null) {
                     continue;
@@ -95,17 +96,31 @@ public class NALNetwork
                 Term component = neighbour.term;
                 if (truth == null) {
                     truth = t;
-                    evidence_bases.addAll(Longs.asList(neighbour.evidentalBase));
+                    for(BaseEntry ent : neighbour.evidentalBase) {
+                        evidence_bases.add(ent);
+                    }
                     components.add(component);
                 } else {
-                    if (!Stamp.baseOverlap(Longs.toArray(evidence_bases), neighbour.evidentalBase)) {
+                    BaseEntry[] arr = new BaseEntry[evidence_bases.size()];
+                    int k=0;
+                    for(BaseEntry ent : evidence_bases) {
+                        arr[k++] = ent;
+                    }
+                    if (!Stamp.baseOverlap(arr, neighbour.evidentalBase)) {
                         truth = TruthFunctions.intersection(truth, t);
-                        evidence_bases.addAll(Longs.asList(neighbour.evidentalBase));
+                        for(BaseEntry ent : neighbour.evidentalBase) {
+                            evidence_bases.add(ent);
+                        }
                         components.add(component);
                     }
                 }
             }
-            this.evidentalBase = Longs.toArray(evidence_bases);
+            
+            this.evidentalBase = new BaseEntry[evidence_bases.size()];
+            int k = 0;
+            for(BaseEntry ent : evidence_bases) {
+                this.evidentalBase[k++] = ent;
+            }
             if(this.neighbours.length > 0) {
                 try {
                     this.term = Conjunction.make(components.toArray(new Term[0]), TemporalRules.ORDER_CONCURRENT);
@@ -128,7 +143,7 @@ public class NALNetwork
                 }
             }
             String evidences = "";
-            for(long s : this.evidentalBase) {
+            for(BaseEntry s : this.evidentalBase) {
                 evidences += s + ",";
             }
             if(!evidences.isEmpty()) {

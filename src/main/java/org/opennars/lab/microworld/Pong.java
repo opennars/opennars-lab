@@ -28,6 +28,8 @@ import java.awt.*;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.opennars.entity.Sentence;
 import org.opennars.entity.Task;
@@ -65,7 +67,7 @@ public class Pong extends Frame {
             String LastInput ="";
             int nActions = 3;
             int direction = 0;
-            Hai(int nactions,int nstates)
+            Hai(int nactions,int nstates) throws Exception
             {
                 this.nActions = nactions; //for actions since we allow the same randomization phase as in QL
                 nar = new Nar();
@@ -1286,18 +1288,22 @@ public class Pong extends Frame {
             //mem.simulate_damping=0.90;
             //size(worldSize-200,worldSize-200);
             hamlib.Init(false);
-            im[0]=loadImage("."+File.separator+"nars_lab"+File.separator+"opennars"+File.separator+"lab"+File.separator+"microworld"+File.separator+"bar.png");
-            im[1]=loadImage("."+File.separator+"nars_lab"+File.separator+"opennars"+File.separator+"lab"+File.separator+"microworld"+File.separator+"ball.png");
-            im[2]=loadImage("."+File.separator+"nars_lab"+File.separator+"opennars"+File.separator+"lab"+File.separator+"microworld"+File.separator+"fire.png");
+            im[0]=loadImage("./src/main/java/org/opennars/lab/microworld/bar.png");
+            im[1]=loadImage("./src/main/java/org/opennars/lab/microworld/ball.png");
+            im[2]=loadImage("./src/main/java/org/opennars/lab/microworld/fire.png");
             for(int i=0;i<1;i++)
             {
-                int SomSize=10;
-                Hai h=new Hai(nactions,SomSize);
-                //h.som=new Hsom(SomSize,Hsim_eyesize*2);
-                //h.som.Leaky=false;
-                agent=new Obj(new Hsim_Custom(),h,(int)(random(1)*(double)width),(int)(random(1)*(double)height),random(1)*2*PI-PI,random(1),0,0,random(1)*5+20,0,Hsim_eyesize);
-                h.obj = agent;
-                hsim.obj.add(agent);
+                try {
+                    int SomSize=10;
+                    Hai h=new Hai(nactions,SomSize);
+                    //h.som=new Hsom(SomSize,Hsim_eyesize*2);
+                    //h.som.Leaky=false;
+                    agent=new Obj(new Hsim_Custom(),h,(int)(random(1)*(double)width),(int)(random(1)*(double)height),random(1)*2*PI-PI,random(1),0,0,random(1)*5+20,0,Hsim_eyesize);
+                    h.obj = agent;
+                    hsim.obj.add(agent);
+                } catch (Exception ex) {
+                    Logger.getLogger(Pong.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
             lastclicked=((Obj)hsim.obj.get(0));
             for(int i=0;i<1;i++)

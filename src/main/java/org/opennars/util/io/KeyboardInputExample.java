@@ -19,9 +19,16 @@
 package org.opennars.util.io;
 
 import automenta.vivisect.swing.NWindow;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.text.ParseException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.xml.parsers.ParserConfigurationException;
 import org.opennars.main.Nar;
 import org.opennars.gui.NARSwing;
 import org.opennars.gui.input.KeyboardInputPanel;
+import org.xml.sax.SAXException;
 
 /**
  *
@@ -36,7 +43,28 @@ public class KeyboardInputExample {
         
         NARSwing.themeInvert();
         
-        Nar n = new Nar();
+        Nar n = null;
+        try {
+            n = new Nar();
+        } catch (IOException ex) {
+            Logger.getLogger(KeyboardInputExample.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            Logger.getLogger(KeyboardInputExample.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InvocationTargetException ex) {
+            Logger.getLogger(KeyboardInputExample.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (NoSuchMethodException ex) {
+            Logger.getLogger(KeyboardInputExample.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ParserConfigurationException ex) {
+            Logger.getLogger(KeyboardInputExample.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            Logger.getLogger(KeyboardInputExample.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SAXException ex) {
+            Logger.getLogger(KeyboardInputExample.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(KeyboardInputExample.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ParseException ex) {
+            Logger.getLogger(KeyboardInputExample.class.getName()).log(Level.SEVERE, null, ex);
+        }
         
         
                 

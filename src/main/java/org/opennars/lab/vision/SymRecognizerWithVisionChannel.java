@@ -25,10 +25,14 @@ import org.opennars.gui.NARSwing;
 import java.awt.*;
 import java.awt.image.*;
 import java.awt.event.*;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.*;
+import javax.xml.parsers.ParserConfigurationException;
 import org.opennars.main.Nar;
 import org.opennars.main.Parameters;
 import org.opennars.entity.Sentence;
@@ -37,6 +41,7 @@ import org.opennars.io.Narsese;
 import org.opennars.language.SetInt;
 import org.opennars.language.Term;
 import org.opennars.plugin.perception.VisionChannel;
+import org.xml.sax.SAXException;
 
 
 public class SymRecognizerWithVisionChannel extends javax.swing.JFrame {
@@ -353,11 +358,30 @@ public class SymRecognizerWithVisionChannel extends javax.swing.JFrame {
         }
         else {
             
-            nar = new Nar(); //add vision channel for [on] property
+            try {
+                nar = new Nar(); //add vision channel for [on] property
+            } catch (IOException ex) {
+                Logger.getLogger(SymRecognizerWithVisionChannel.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (InstantiationException ex) {
+                Logger.getLogger(SymRecognizerWithVisionChannel.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (InvocationTargetException ex) {
+                Logger.getLogger(SymRecognizerWithVisionChannel.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (NoSuchMethodException ex) {
+                Logger.getLogger(SymRecognizerWithVisionChannel.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (ParserConfigurationException ex) {
+                Logger.getLogger(SymRecognizerWithVisionChannel.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IllegalAccessException ex) {
+                Logger.getLogger(SymRecognizerWithVisionChannel.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (SAXException ex) {
+                Logger.getLogger(SymRecognizerWithVisionChannel.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (ClassNotFoundException ex) {
+                Logger.getLogger(SymRecognizerWithVisionChannel.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (ParseException ex) {
+                Logger.getLogger(SymRecognizerWithVisionChannel.class.getName()).log(Level.SEVERE, null, ex);
+            }
             //to the nar instance, and nar is also the "next higher" sensory channel
             //to report the results to
-            Term label = SetInt.make(new Term(LABEL));
-            nar.addPlugin(new VisionChannel(label, nar, nar, sensor_H, sensor_W, sensor_W*sensor_H));
+            nar.addPlugin(new VisionChannel(LABEL, nar, nar, sensor_H, sensor_W, sensor_W*sensor_H));
             
             if(invar1.isSelected()) {
                 gui = new NARSwing(nar);

@@ -44,12 +44,12 @@ public class LanguageGUI extends javax.swing.JFrame {
     /**
      * Creates new form LanguageGUI
      */
-    public LanguageGUI() {
+    public LanguageGUI() throws Exception {
         initComponents();
         
         String everything;
         try {
-            everything = new Scanner(new File(".\\nars_lab\\org.opennars\\lab\\language\\language_knowledge.nal")).useDelimiter("\\Z").next();
+            everything = new Scanner(new File("./src/main/java/org/opennars/lab/language/language_knowledge.nal")).useDelimiter("\\Z").next();
             jTextPane1.setText(everything);
         } catch (FileNotFoundException ex) {
             Logger.getLogger(LanguageGUI.class.getName()).log(Level.SEVERE, null, ex);
@@ -346,7 +346,11 @@ public class LanguageGUI extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new LanguageGUI().setVisible(true);
+                try {
+                    new LanguageGUI().setVisible(true);
+                } catch (Exception ex) {
+                    Logger.getLogger(LanguageGUI.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         });
     }

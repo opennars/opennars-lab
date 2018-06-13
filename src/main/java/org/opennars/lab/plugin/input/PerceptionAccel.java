@@ -29,6 +29,7 @@ import org.opennars.entity.BudgetValue;
 import org.opennars.entity.Concept;
 import org.opennars.entity.Sentence;
 import org.opennars.entity.Stamp;
+import org.opennars.entity.Stamp.BaseEntry;
 import org.opennars.entity.Task;
 import org.opennars.entity.TruthValue;
 import org.opennars.inference.BudgetFunctions;
@@ -78,7 +79,7 @@ public class PerceptionAccel implements Plugin, EventEmitter.EventObserver {
             Task newEvent=eventbuffer.get(eventbuffer.size()-1);
             TruthValue truth=newEvent.sentence.truth;
             Stamp st=new Stamp(nal.memory);
-            ArrayList<Long> evBase=new ArrayList<Long>();
+            ArrayList<BaseEntry> evBase=new ArrayList<>();
             
             int k=0;
             for(int i=0;i<Len;i++) {
@@ -88,7 +89,7 @@ public class PerceptionAccel implements Plugin, EventEmitter.EventObserver {
                     break;
                 }
                 Task current=eventbuffer.get(j);
-                for(long l : current.sentence.stamp.evidentialBase) {
+                for(BaseEntry l : current.sentence.stamp.evidentialBase) {
                     evBase.add(l);
                 }
                 
@@ -101,9 +102,9 @@ public class PerceptionAccel implements Plugin, EventEmitter.EventObserver {
                 k+=2;
             }
 
-            long[] evB=new long[evBase.size()];
+            BaseEntry[] evB=new BaseEntry[evBase.size()];
             int u=0;
-            for(long l : evBase) {
+            for(BaseEntry l : evBase) {
                 evB[u]=l;
                 u++;
             }

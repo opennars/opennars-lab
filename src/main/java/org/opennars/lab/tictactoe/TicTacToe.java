@@ -48,6 +48,8 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -94,7 +96,7 @@ public class TicTacToe extends JPanel {
     
     
     
-    public TicTacToe() {
+    public TicTacToe() throws Exception {
         super(new BorderLayout());
         Parameters.DURATION = 1000;
         nar = new Nar();
@@ -429,7 +431,11 @@ public class TicTacToe extends JPanel {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new NWindow("NARTacToe", new TicTacToe()).show(400,400,true);
+                try {
+                    new NWindow("NARTacToe", new TicTacToe()).show(400,400,true);
+                } catch (Exception ex) {
+                    Logger.getLogger(TicTacToe.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         });
 

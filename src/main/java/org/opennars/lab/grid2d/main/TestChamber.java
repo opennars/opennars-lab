@@ -49,7 +49,7 @@ public class TestChamber {
     public static boolean curiousity=false;
 
     
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
 
         //set Nar architecture parameters:
         //builder...

@@ -25,15 +25,20 @@ import org.opennars.gui.NARSwing;
 import java.awt.*;
 import java.awt.image.*;
 import java.awt.event.*;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.*;
+import javax.xml.parsers.ParserConfigurationException;
 import org.opennars.main.Nar;
 import org.opennars.main.Parameters;
 import org.opennars.entity.Sentence;
 import org.opennars.io.events.AnswerHandler;
 import org.opennars.io.Narsese;
+import org.xml.sax.SAXException;
 
 
 
@@ -350,7 +355,27 @@ public class SymRecognizer extends javax.swing.JFrame {
         }
         else {
             
-            nar = new Nar();
+            try {
+                nar = new Nar();
+            } catch (IOException ex) {
+                Logger.getLogger(SymRecognizer.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (InstantiationException ex) {
+                Logger.getLogger(SymRecognizer.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (InvocationTargetException ex) {
+                Logger.getLogger(SymRecognizer.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (NoSuchMethodException ex) {
+                Logger.getLogger(SymRecognizer.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (ParserConfigurationException ex) {
+                Logger.getLogger(SymRecognizer.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IllegalAccessException ex) {
+                Logger.getLogger(SymRecognizer.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (SAXException ex) {
+                Logger.getLogger(SymRecognizer.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (ClassNotFoundException ex) {
+                Logger.getLogger(SymRecognizer.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (ParseException ex) {
+                Logger.getLogger(SymRecognizer.class.getName()).log(Level.SEVERE, null, ex);
+            }
             if(invar1.isSelected()) {
                 gui = new NARSwing(nar);
             }
