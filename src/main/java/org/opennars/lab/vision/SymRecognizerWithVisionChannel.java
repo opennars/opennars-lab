@@ -34,7 +34,7 @@ import java.util.logging.Logger;
 import javax.swing.*;
 import javax.xml.parsers.ParserConfigurationException;
 import org.opennars.main.Nar;
-import org.opennars.main.Parameters;
+import org.opennars.main.MiscFlags;
 import org.opennars.entity.Sentence;
 import org.opennars.io.events.AnswerHandler;
 import org.opennars.io.Narsese;
@@ -475,7 +475,6 @@ public class SymRecognizerWithVisionChannel extends javax.swing.JFrame {
 
     public static void main(String args[]) {
         NARSwing.themeInvert();
-        Parameters.DURATION = 1000;
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new SymRecognizerWithVisionChannel().setVisible(true);

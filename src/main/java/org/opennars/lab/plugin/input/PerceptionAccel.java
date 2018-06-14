@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import org.opennars.io.events.EventEmitter;
 import org.opennars.io.events.Events;
 import org.opennars.main.Nar;
-import org.opennars.main.Parameters;
+import org.opennars.main.MiscFlags;
 import org.opennars.plugin.Plugin;
 import org.opennars.control.DerivationContext;
 import org.opennars.entity.BudgetValue;
@@ -47,9 +47,11 @@ import org.opennars.language.Term;
  */
 public class PerceptionAccel implements Plugin, EventEmitter.EventObserver {
 
+    private Nar n;
     @Override
     public boolean setEnabled(Nar n, boolean enabled) {
         //register listening to new events:
+        this.n = n;
         n.memory.event.set(this, enabled, Events.InduceSucceedingEvent.class, Events.ConceptNew.class, Events.ConceptForget.class);
         return true;
     }
@@ -95,7 +97,7 @@ public class PerceptionAccel implements Plugin, EventEmitter.EventObserver {
                 
                 relterms[k]=current.sentence.term;
                 if(i!=Len-1) { //if its not the last one, then there is a next one for which we have to put an interval
-                    truth=TruthFunctions.deduction(truth, current.sentence.truth);
+                    truth=TruthFunctions.deduction(truth, current.sentence.truth, n.narParameters);
                     Task next=eventbuffer.get(j+1);
                     relterms[k+1]=new Interval(next.sentence.getOccurenceTime()-current.sentence.getOccurenceTime());
                 }
@@ -122,7 +124,7 @@ public class PerceptionAccel implements Plugin, EventEmitter.EventObserver {
             }
             //decide on the tense of &/ by looking if the first event happens parallel with the last one
             //Todo refine in 1.6.3 if we want to allow input of difference occurence time
-            boolean after=newEvent.sentence.stamp.after(eventbuffer.get(eventbuffer.size()-1-(Len-1)).sentence.stamp, Parameters.DURATION);
+            boolean after=newEvent.sentence.stamp.after(eventbuffer.get(eventbuffer.size()-1-(Len-1)).sentence.stamp, n.narParameters.DURATION);
             
             //critical part: (not checked for correctness yet):
             //we now have to look at if the first half + the second half already exists as concept, before we add it
@@ -175,7 +177,7 @@ public class PerceptionAccel implements Plugin, EventEmitter.EventObserver {
             Conjunction C=(Conjunction) Conjunction.make(relterms, after ? ORDER_FORWARD : ORDER_CONCURRENT);
             
             Sentence S=new Sentence(C,Symbols.JUDGMENT_MARK,truth,st); //importance "summation"
-            Task T=new Task(S,new BudgetValue(BudgetFunctions.or(C1.getPriority(), C2.getPriority()),Parameters.DEFAULT_JUDGMENT_DURABILITY,truth), Task.EnumType.INPUT);
+            Task T=new Task(S,new BudgetValue(BudgetFunctions.or(C1.getPriority(), C2.getPriority()),n.narParameters.DEFAULT_JUDGMENT_DURABILITY,truth,n.narParameters), Task.EnumType.INPUT);
             
             if(debugMechanism) {
                 System.out.println("success: "+T.toString());

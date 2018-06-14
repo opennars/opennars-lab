@@ -65,7 +65,7 @@ import org.opennars.language.Term;
 import org.opennars.operator.Operation;
 import org.opennars.operator.Operator;
 import org.opennars.io.events.Events.CyclesEnd;
-import org.opennars.main.Parameters;
+import org.opennars.main.MiscFlags;
 
 /**
  *
@@ -98,8 +98,9 @@ public class TicTacToe extends JPanel {
     
     public TicTacToe() throws Exception {
         super(new BorderLayout());
-        Parameters.DURATION = 1000;
+        
         nar = new Nar();
+        nar.narParameters.DURATION = 1000;
         
         nar.memory.addOperator(new AddO("^addO"));        
         (nar.param).noiseLevel.set(0);
@@ -147,7 +148,7 @@ public class TicTacToe extends JPanel {
             public Concept initTerm(int x, int y) {
                 Term t = new Term( Integer.toString(y * 3 + x) );
                 fieldTerms.add(t);
-                return nar.memory.conceptualize(new BudgetValue(0.5f, 0.5f, 0.5f), t);
+                return nar.memory.conceptualize(new BudgetValue(0.5f, 0.5f, 0.5f, nar.narParameters), t);
             }
 
             @Override

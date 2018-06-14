@@ -42,7 +42,7 @@ public class SpatialSamplingVisionChannel extends SensoryChannel {
         int x = t.getTerm().term_indices[2];
         int y = t.getTerm().term_indices[3];
         if(spatialbag[y][x] == null) {
-            spatialbag[y][x] = new LevelBag(100, 100);
+            spatialbag[y][x] = new LevelBag(100, 100, this.nar.narParameters);
         }
         t.incPriority((float) this.topDownPriority(t.getTerm()));
         spatialbag[y][x].putIn(t);

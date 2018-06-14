@@ -18,7 +18,7 @@ import java.util.List;
 import org.opennars.io.events.EventEmitter.EventObserver;
 import org.opennars.io.events.Events;
 import org.opennars.main.Nar;
-import org.opennars.main.Parameters;
+import org.opennars.main.MiscFlags;
 import org.opennars.lab.grid2d.main.Cell.Logic;
 import org.opennars.lab.grid2d.main.Cell.Material;
 import static org.opennars.lab.grid2d.main.Hauto.DOWN;
@@ -51,11 +51,9 @@ public class TestChamber {
     
     public static void main(String[] args) throws Exception {
 
-        //set Nar architecture parameters:
-        //builder...
-        Parameters.CONSIDER_NEW_OPERATION_BIAS = 1.0f; //not that much events in testchamber anyway
-        Parameters.SEQUENCE_BAG_SIZE = 100; //but many possible different ways to achieve certain things
+        //set Nar parameters:
         Nar nar = new Nar();
+        nar.narParameters.CONSIDER_NEW_OPERATION_BIAS = 1.0f;
         nar.narParameters.DECISION_THRESHOLD = 0.51f;
         //set Nar runtime parmeters:
 

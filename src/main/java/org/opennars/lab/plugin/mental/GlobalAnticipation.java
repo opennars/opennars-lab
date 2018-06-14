@@ -25,7 +25,6 @@ import java.util.List;
 import org.opennars.io.events.EventEmitter;
 import org.opennars.io.events.Events;
 import org.opennars.main.Nar;
-import org.opennars.main.Parameters;
 import org.opennars.plugin.Plugin;
 import org.opennars.control.DerivationContext;
 import org.opennars.entity.BudgetValue;
@@ -117,7 +116,7 @@ public class GlobalAnticipation implements Plugin, EventEmitter.EventObserver {
             return;
         }
         
-        final long duration = Parameters.DURATION;
+        final long duration = nal.narParameters.DURATION;
         ArrayList<Task> derivetasks=new ArrayList<Task>();
         
         for(final Task c : current_tasks) { //a =/> b or (&/ a1...an) =/> b
@@ -199,20 +198,20 @@ public class GlobalAnticipation implements Plugin, EventEmitter.EventObserver {
                     Sentence s2=new Sentence(
                         c.sentence.term.clone(),
                         Symbols.JUDGMENT_MARK,
-                        new TruthValue(1.0f,Parameters.DEFAULT_JUDGMENT_CONFIDENCE),
+                        new TruthValue(1.0f,nal.narParameters.DEFAULT_JUDGMENT_CONFIDENCE, nal.narParameters),
                         new Stamp(nal.memory));
 
-                    Task t=new Task(s2,new BudgetValue(Parameters.DEFAULT_JUDGMENT_PRIORITY,Parameters.DEFAULT_JUDGMENT_DURABILITY,s2.truth), Task.EnumType.INPUT);
+                    Task t=new Task(s2,new BudgetValue(nal.narParameters.DEFAULT_JUDGMENT_PRIORITY,nal.narParameters.DEFAULT_JUDGMENT_DURABILITY,s2.truth, nal.narParameters), Task.EnumType.INPUT);
                     derivetasks.add(t);
                 } else { //it matched and other consequence, so negative evidence
                    // c.sentence.truth=TruthFunctions.revision(c.sentence.truth, new TruthValue(0.0f,Parameters.DEFAULT_JUDGMENT_CONFIDENCE));
                     Sentence s2=new Sentence(
                         c.sentence.term.clone(),
                         Symbols.JUDGMENT_MARK,
-                        new TruthValue(0.0f,Parameters.DEFAULT_JUDGMENT_CONFIDENCE),
+                        new TruthValue(0.0f,nal.narParameters.DEFAULT_JUDGMENT_CONFIDENCE, nal.narParameters),
                         new Stamp(nal.memory));
 
-                    Task t=new Task(s2,new BudgetValue(Parameters.DEFAULT_JUDGMENT_PRIORITY,Parameters.DEFAULT_JUDGMENT_DURABILITY,s2.truth), Task.EnumType.INPUT);
+                    Task t=new Task(s2,new BudgetValue(nal.narParameters.DEFAULT_JUDGMENT_PRIORITY,nal.narParameters.DEFAULT_JUDGMENT_DURABILITY,s2.truth, nal.narParameters), Task.EnumType.INPUT);
                     derivetasks.add(t);
                 } //todo use derived task with revision instead
             }

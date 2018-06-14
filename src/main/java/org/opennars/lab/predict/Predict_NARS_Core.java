@@ -36,7 +36,7 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.opennars.io.events.Events.TaskImmediateProcess;
 import org.opennars.main.Nar;
-import org.opennars.main.Parameters;
+import org.opennars.main.MiscFlags;
 import org.opennars.control.DerivationContext;
 import org.opennars.entity.Sentence;
 import org.opennars.entity.Task;
@@ -109,9 +109,9 @@ public class Predict_NARS_Core {
                     float conf = t.truth.getConfidence();
                     float freq = t.truth.getFrequency();
                     aa = 0.25f + conf * 0.75f;
-                    float evidence = TruthFunctions.c2w(conf);
-                    float positive_evidence_in_0_1 = TruthFunctions.w2c(evidence*freq);
-                    float negative_evidence_in_0_1 = TruthFunctions.w2c(evidence*(1.0f-freq));
+                    float evidence = TruthFunctions.c2w(conf, n.narParameters);
+                    float positive_evidence_in_0_1 = TruthFunctions.w2c(evidence*freq, n.narParameters);
+                    float negative_evidence_in_0_1 = TruthFunctions.w2c(evidence*(1.0f-freq), n.narParameters);
                     rr = positive_evidence_in_0_1;
                     bb = negative_evidence_in_0_1;
                     gg = 0.0f;
@@ -130,7 +130,7 @@ public class Predict_NARS_Core {
     
     public static void main(String[] args) throws InterruptedException {
 
-        Parameters.DEBUG = false;
+        MiscFlags.DEBUG = false;
         int duration = 4;
         float freq = 1.0f / duration * 0.03f;        
         

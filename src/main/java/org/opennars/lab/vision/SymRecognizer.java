@@ -34,7 +34,7 @@ import java.util.logging.Logger;
 import javax.swing.*;
 import javax.xml.parsers.ParserConfigurationException;
 import org.opennars.main.Nar;
-import org.opennars.main.Parameters;
+import org.opennars.main.MiscFlags;
 import org.opennars.entity.Sentence;
 import org.opennars.io.events.AnswerHandler;
 import org.opennars.io.Narsese;
@@ -307,12 +307,6 @@ public class SymRecognizer extends javax.swing.JFrame {
         
     }
     
-    static {
-        Parameters.SEQUENCE_BAG_ATTEMPTS = 10000;
-        Parameters.SEQUENCE_BAG_LEVELS = 1000;
-        Parameters.SEQUENCE_BAG_SIZE=10000;
-    }
-    
     Nar nar = null;
     NARSwing gui = null;
     ArrayList<AnswerHandler> q = new ArrayList<AnswerHandler>();
@@ -357,6 +351,8 @@ public class SymRecognizer extends javax.swing.JFrame {
             
             try {
                 nar = new Nar();
+                nar.narParameters.SEQUENCE_BAG_ATTEMPTS = 10000;
+                nar.narParameters.DURATION = 1000;
             } catch (IOException ex) {
                 Logger.getLogger(SymRecognizer.class.getName()).log(Level.SEVERE, null, ex);
             } catch (InstantiationException ex) {
@@ -467,7 +463,6 @@ public class SymRecognizer extends javax.swing.JFrame {
 
     public static void main(String args[]) {
         NARSwing.themeInvert();
-        Parameters.DURATION = 1000;
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new SymRecognizer().setVisible(true);
