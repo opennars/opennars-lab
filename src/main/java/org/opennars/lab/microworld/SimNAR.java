@@ -32,6 +32,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.opennars.entity.Task;
 import org.opennars.gui.NARSwing;
+import org.opennars.interfaces.Timable;
 import org.opennars.language.Term;
 import org.opennars.operator.Operation;
 import org.opennars.operator.Operator;
@@ -278,7 +279,7 @@ public class SimNAR extends Frame {
                 }
 
                 @Override
-                public List<Task> execute(Operation operation, Term[] args, Memory memory) {
+                public List<Task> execute(Operation operation, Term[] args, Memory memory, Timable time) {
                     lastAction = 1;
                     memory.allowExecution = false;
                     System.out.println("Nar decide left");
@@ -291,7 +292,7 @@ public class SimNAR extends Frame {
                 }
 
                 @Override
-                public List<Task> execute(Operation operation, Term[] args, Memory memory) {
+                public List<Task> execute(Operation operation, Term[] args, Memory memory, Timable time) {
                     lastAction = 2;
                     memory.allowExecution = false;
                     System.out.println("Nar decide right");

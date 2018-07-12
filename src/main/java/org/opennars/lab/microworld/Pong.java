@@ -34,6 +34,7 @@ import java.util.logging.Logger;
 import org.opennars.entity.Sentence;
 import org.opennars.entity.Task;
 import org.opennars.gui.NARSwing;
+import org.opennars.interfaces.Timable;
 import org.opennars.util.test.ConceptMonitor;
 import org.opennars.language.Term;
 import org.opennars.operator.Operation;
@@ -91,7 +92,7 @@ public class Pong extends Frame {
                 }
 
                 @Override
-                public List<Task> execute(Operation operation, Term[] args, Memory memory) {
+                public List<Task> execute(Operation operation, Term[] args, Memory memory, Timable time) {
                     lastAction = 1;
                     memory.allowExecution = false;
                     //System.out.println("Nar decide left");
@@ -104,7 +105,7 @@ public class Pong extends Frame {
                 }
 
                 @Override
-                public List<Task> execute(Operation operation, Term[] args, Memory memory) {
+                public List<Task> execute(Operation operation, Term[] args, Memory memory, Timable time) {
                     lastAction = 2;
                     memory.allowExecution = false;
                     //System.out.println("Nar decide right");

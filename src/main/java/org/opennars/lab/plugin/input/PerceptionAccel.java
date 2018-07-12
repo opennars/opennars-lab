@@ -80,7 +80,7 @@ public class PerceptionAccel implements Plugin, EventEmitter.EventObserver {
 
             Task newEvent=eventbuffer.get(eventbuffer.size()-1);
             TruthValue truth=newEvent.sentence.truth;
-            Stamp st=new Stamp(nal.memory);
+            Stamp st=new Stamp(this.n, nal.memory);
             ArrayList<BaseEntry> evBase=new ArrayList<>();
             
             int k=0;

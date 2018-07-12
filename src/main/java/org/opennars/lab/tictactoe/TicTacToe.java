@@ -60,6 +60,7 @@ import org.opennars.entity.BudgetValue;
 import org.opennars.entity.Concept;
 import org.opennars.entity.Task;
 import org.opennars.gui.NARSwing;
+import org.opennars.interfaces.Timable;
 import org.opennars.io.events.OutputHandler.OUT;
 import org.opennars.language.Term;
 import org.opennars.operator.Operation;
@@ -238,7 +239,7 @@ public class TicTacToe extends JPanel {
         }
 
         @Override
-        protected List<Task> execute(Operation operation, Term[] args, Memory memory) {
+        protected List<Task> execute(Operation operation, Term[] args, Memory memory, final Timable time) {
 
             int i = -1;
             try {

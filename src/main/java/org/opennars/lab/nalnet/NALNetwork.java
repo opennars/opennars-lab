@@ -160,8 +160,8 @@ public class NALNetwork
         
         public void inputInto(Nar nar) {
             calculate();
-            Stamp stamp = new Stamp(nar.memory);
-            stamp.setOccurrenceTime(nar.memory.time());
+            Stamp stamp = new Stamp(nar,nar.memory);
+            stamp.setOccurrenceTime(nar.time());
             Sentence sentence = new Sentence(this.term, 
                                              Symbols.JUDGMENT_MARK, 
                                              this.truth, 
@@ -171,7 +171,7 @@ public class NALNetwork
                                                  narParameters.DEFAULT_JUDGMENT_DURABILITY,
                                                  BudgetFunctions.truthToQuality(this.truth), narParameters),
                                  Task.EnumType.INPUT);
-            nar.addInput(task);
+            nar.addInput(task, nar);
         }
     }
     

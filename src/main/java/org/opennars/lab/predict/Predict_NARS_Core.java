@@ -164,10 +164,10 @@ public class Predict_NARS_Core {
             
             
             @Override
-            public void onProcessed(Task t, DerivationContext n) {
+            public void onProcessed(Task t, DerivationContext cont) {
                // if(true)
                //     return;
-                if (t.sentence.getOccurenceTime() >= n.memory.time() && t.sentence.truth.getExpectation()>0.5) {
+                if (t.sentence.getOccurenceTime() >= n.time() && t.sentence.truth.getExpectation()>0.5) {
                                         Term term = t.getTerm();
                     int time = (int) t.sentence.getOccurenceTime() / thinkInterval;
                     /*if(positionTruthExp.containsKey(time)) {

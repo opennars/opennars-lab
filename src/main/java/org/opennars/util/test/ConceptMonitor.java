@@ -61,7 +61,7 @@ public class ConceptMonitor {
             for(Task t : c.beliefs) {
                 if(t.isInput() && !t.sentence.isEternal()) {
                     Sentence s = t.sentence;
-                    Sentence projected = s.projection(nar.memory.time(), nar.memory.time(), nar.memory);
+                    Sentence projected = s.projection(nar.time(), nar.time(), nar.memory);
                     if(!projected.isEternal()) {
                         return projected;
                     }
@@ -76,7 +76,7 @@ public class ConceptMonitor {
         if(c != null) {
             for(Task t : c.beliefs) {
                 Sentence s = t.sentence;
-                Sentence projected = s.projection(nar.memory.time(), nar.memory.time(), nar.memory);
+                Sentence projected = s.projection(nar.time(), nar.time(), nar.memory);
                 return projected;
             }
         }

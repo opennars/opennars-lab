@@ -20,6 +20,7 @@ import org.opennars.main.Nar;
 import org.opennars.control.DerivationContext;
 import static org.opennars.control.TemporalInferenceControl.proceedWithTemporalInduction;
 import org.opennars.entity.Task;
+import org.opennars.interfaces.Timable;
 import org.opennars.language.Term;
 import org.opennars.plugin.perception.SensoryChannel;
 
@@ -48,14 +49,14 @@ public class ConcatVisionChannel extends SensoryChannel {
     
     List<Position> sampling = new ArrayList<>(); //TODO replace duplicates by using counter
     @Override
-    public Nar addInput(Task t) {
+    public Nar addInput(final Task t, final Timable time) {
         AddToSpatialBag(t);
-        step_start(); //just input driven for now   
+        step_start(time); //just input driven for now   
         return nar; //but could as well listen to nar cycle end or even spawn own thread instead
     }
     
     @Override
-    public void step_start()
+    public void step_start(final Timable time)
     {
         Position samplePos = sampling.get(0);
         Task current = inputs[samplePos.Y][samplePos.X];
@@ -64,7 +65,7 @@ public class ConcatVisionChannel extends SensoryChannel {
             Position samplePos2 = sampling.get(i);
             Task prem2 = inputs[samplePos2.Y][samplePos2.X];
             List<Task> seq = proceedWithTemporalInduction(current.sentence, prem2.sentence, prem2, 
-                                                              new DerivationContext(nar.memory, nar.narParameters), true, false, true);
+                                                              new DerivationContext(nar.memory, nar.narParameters, time), true, false, true);
             if(seq != null) {
                 for(Task t : seq) {
                     if(!t.sentence.isEternal()) { //TODO improve API, this check should not be necessary
@@ -78,7 +79,7 @@ public class ConcatVisionChannel extends SensoryChannel {
         System.out.println(k);
         System.out.println(current);
         this.results.add(current);//feeds results into "upper" sensory channels:
-        this.step_finished(); 
+        this.step_finished(time); 
     }
     
 }

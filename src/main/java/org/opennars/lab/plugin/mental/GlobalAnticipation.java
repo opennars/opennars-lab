@@ -199,7 +199,7 @@ public class GlobalAnticipation implements Plugin, EventEmitter.EventObserver {
                         c.sentence.term.clone(),
                         Symbols.JUDGMENT_MARK,
                         new TruthValue(1.0f,nal.narParameters.DEFAULT_JUDGMENT_CONFIDENCE, nal.narParameters),
-                        new Stamp(nal.memory));
+                        new Stamp(nar, nal.memory));
 
                     Task t=new Task(s2,new BudgetValue(nal.narParameters.DEFAULT_JUDGMENT_PRIORITY,nal.narParameters.DEFAULT_JUDGMENT_DURABILITY,s2.truth, nal.narParameters), Task.EnumType.INPUT);
                     derivetasks.add(t);
@@ -209,7 +209,7 @@ public class GlobalAnticipation implements Plugin, EventEmitter.EventObserver {
                         c.sentence.term.clone(),
                         Symbols.JUDGMENT_MARK,
                         new TruthValue(0.0f,nal.narParameters.DEFAULT_JUDGMENT_CONFIDENCE, nal.narParameters),
-                        new Stamp(nal.memory));
+                        new Stamp(nar, nal.memory));
 
                     Task t=new Task(s2,new BudgetValue(nal.narParameters.DEFAULT_JUDGMENT_PRIORITY,nal.narParameters.DEFAULT_JUDGMENT_DURABILITY,s2.truth, nal.narParameters), Task.EnumType.INPUT);
                     derivetasks.add(t);
@@ -232,9 +232,10 @@ public class GlobalAnticipation implements Plugin, EventEmitter.EventObserver {
             current_tasks.remove(t);
         }
     }
-    
+    Nar nar;
     @Override
     public boolean setEnabled(Nar n, boolean enabled) {
+        this.nar = n;
         //Events.TaskDerive.class Events.ConceptBeliefRemove.class
         n.memory.event.set(this, enabled, Events.InduceSucceedingEvent.class, Events.TaskDerive.class, Events.ConceptBeliefRemove.class);
         return true;

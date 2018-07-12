@@ -17,6 +17,7 @@ package org.opennars.lab.grid2d.operator;
 import java.util.List;
 import org.opennars.storage.Memory;
 import org.opennars.entity.Task;
+import org.opennars.interfaces.Timable;
 import org.opennars.lab.grid2d.main.TestChamber;
 import org.opennars.language.Term;
 import org.opennars.operator.Operation;
@@ -35,7 +36,7 @@ public class Activate extends Operator {
     }
 
     @Override
-    protected List<Task> execute(Operation operation, Term[] args, Memory memory) {
+    protected List<Task> execute(Operation operation, Term[] args, Memory memory, Timable time) {
         //Operation content = (Operation) task.getContent();
         //Operator op = content.getOperator();
          
