@@ -34,12 +34,9 @@ import java.util.logging.Logger;
 import javax.swing.*;
 import javax.xml.parsers.ParserConfigurationException;
 import org.opennars.main.Nar;
-import org.opennars.main.MiscFlags;
 import org.opennars.entity.Sentence;
 import org.opennars.io.events.AnswerHandler;
 import org.opennars.io.Narsese;
-import org.opennars.language.SetInt;
-import org.opennars.language.Term;
 import org.opennars.plugin.perception.VisionChannel;
 import org.xml.sax.SAXException;
 
@@ -381,7 +378,7 @@ public class SymRecognizerWithVisionChannel extends javax.swing.JFrame {
             }
             //to the nar instance, and nar is also the "next higher" sensory channel
             //to report the results to
-            nar.addPlugin(new VisionChannel(LABEL, nar, nar, sensor_H, sensor_W, sensor_W*sensor_H));
+            nar.addPlugin(new VisionChannel(LABEL, nar, nar, sensor_H, sensor_W, sensor_W*sensor_H, 0.1f, 0));
             
             if(invar1.isSelected()) {
                 gui = new NARSwing(nar);
