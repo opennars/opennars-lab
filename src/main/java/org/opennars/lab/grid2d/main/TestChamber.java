@@ -53,8 +53,6 @@ public class TestChamber {
 
         //set Nar parameters:
         Nar nar = new Nar();
-        nar.narParameters.CONSIDER_NEW_OPERATION_BIAS = 1.0f;
-        nar.narParameters.DECISION_THRESHOLD = 0.51f;
         //set Nar runtime parmeters:
 
         /*for(Nar.PluginState pluginstate : nar.getPlugins()) {

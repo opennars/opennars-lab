@@ -91,10 +91,10 @@ public class SpatialSamplingVisionChannel extends SensoryChannel {
                     }
                 }
                 //todo improve API, putting an element bag should be easy
-                spatialbag[s2posY][s2posX].putBack(sampled2, nar.memory.cycles(nar.memory.param.conceptForgetDurations), nar.memory);
+                spatialbag[s2posY][s2posX].putBack(sampled2, nar.memory.cycles(nar.narParameters.CONCEPT_FORGET_DURATIONS), nar.memory);
             }
         }
-        spatialbag[samplePos.Y][samplePos.X].putBack(sampled, nar.memory.cycles(nar.memory.param.conceptForgetDurations), nar.memory);
+        spatialbag[samplePos.Y][samplePos.X].putBack(sampled, nar.memory.cycles(nar.narParameters.CONCEPT_FORGET_DURATIONS), nar.memory);
         //feeds results into "upper" sensory channels:
         this.step_finished(time); 
     }
