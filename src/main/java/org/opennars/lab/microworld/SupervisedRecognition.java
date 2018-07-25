@@ -18,12 +18,19 @@
  */
 package org.opennars.lab.microworld;
 
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.text.ParseException;
 import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.xml.parsers.ParserConfigurationException;
 import org.opennars.main.Nar;
 import org.opennars.entity.Sentence;
 import org.opennars.gui.NARSwing;
 import org.opennars.io.events.AnswerHandler;
 import org.opennars.io.Narsese;
+import org.xml.sax.SAXException;
 
 /**
  *
@@ -104,7 +111,28 @@ public class SupervisedRecognition {
         
         //training phase:
         
-        Nar nar = new Nar();
+        Nar nar = null;
+        try {
+            nar = new Nar();
+        } catch (IOException ex) {
+            Logger.getLogger(SupervisedRecognition.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            Logger.getLogger(SupervisedRecognition.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InvocationTargetException ex) {
+            Logger.getLogger(SupervisedRecognition.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (NoSuchMethodException ex) {
+            Logger.getLogger(SupervisedRecognition.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ParserConfigurationException ex) {
+            Logger.getLogger(SupervisedRecognition.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            Logger.getLogger(SupervisedRecognition.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SAXException ex) {
+            Logger.getLogger(SupervisedRecognition.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(SupervisedRecognition.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ParseException ex) {
+            Logger.getLogger(SupervisedRecognition.class.getName()).log(Level.SEVERE, null, ex);
+        }
         NARSwing.themeInvert();
         new NARSwing(nar);
         nar.param.noiseLevel.set(0);
@@ -143,7 +171,7 @@ public class SupervisedRecognition {
         for(int i=0;i<lines.length;i++) {
             for(int j=0;j<lines[i].length();j++) {
                 if(lines[i].charAt(j) == 'x') {
-                    String inp = "<T_"+String.valueOf(i)+"_"+String.valueOf(j) + "--> on>. :|:";
+                    String inp = "<M_"+String.valueOf(i)+"_"+String.valueOf(j) + "--> on>. :|:";
                     nar.addInput(inp);
                 }
             }

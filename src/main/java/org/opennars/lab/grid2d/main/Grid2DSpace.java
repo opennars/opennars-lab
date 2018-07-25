@@ -113,15 +113,6 @@ public class Grid2DSpace extends PApplet {
 
         JPanel menu = new JPanel(new FlowLayout(FlowLayout.LEFT));
         
-        
-        /*final JCheckBox syntaxEnable = new JCheckBox("Syntax");
-        syntaxEnable.addActionListener(new ActionListener() {
-        @Override public void actionPerformed(ActionEvent e) {
-        }
-        });
-        menu.add(syntaxEnable);
-         */
-        
         EditorPanel editor = new EditorPanel(this);
         NWindow editorWindow = new NWindow("Edit", editor);
         editorWindow.setSize(200, 400);

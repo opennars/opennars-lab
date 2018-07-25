@@ -38,7 +38,7 @@ public class Workspace {
     public Workspace(FluidAnalogiesAgents farg, Nar nar) {
         this.nar=nar;
         Workspace ws=this;
-        farg.coderack=new LevelBag(farg.codelet_level,farg.max_codelets);
+        farg.coderack=new LevelBag(farg.codelet_level,farg.max_codelets, nar.narParameters);
         nar.on(CycleEnd.class, new EventObserver() { 
 
             @Override

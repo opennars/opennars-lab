@@ -21,6 +21,7 @@ import org.opennars.control.DerivationContext;
 import static org.opennars.control.TemporalInferenceControl.proceedWithTemporalInduction;
 import org.opennars.entity.Sentence;
 import org.opennars.entity.Task;
+import org.opennars.interfaces.Timable;
 import org.opennars.plugin.perception.SensoryChannel;
 import org.opennars.language.Term;
 import org.opennars.storage.LevelBag;
@@ -34,7 +35,7 @@ public class SpatialSamplingVisionChannel extends SensoryChannel {
     
     LevelBag<Task<Term>,Sentence<Term>>[][] spatialbag;
     public SpatialSamplingVisionChannel(Nar nar, SensoryChannel reportResultsTo, int width, int height) {
-        super(nar,reportResultsTo, width, height, -1);
+        super(nar,reportResultsTo, width, height, -1, new Term("BRIGHT"));
         spatialbag = new LevelBag[height][width];
     }
     
@@ -42,7 +43,7 @@ public class SpatialSamplingVisionChannel extends SensoryChannel {
         int x = t.getTerm().term_indices[2];
         int y = t.getTerm().term_indices[3];
         if(spatialbag[y][x] == null) {
-            spatialbag[y][x] = new LevelBag(100, 100);
+            spatialbag[y][x] = new LevelBag(100, 100, this.nar.narParameters);
         }
         t.incPriority((float) this.topDownPriority(t.getTerm()));
         spatialbag[y][x].putIn(t);
@@ -54,17 +55,17 @@ public class SpatialSamplingVisionChannel extends SensoryChannel {
     
     List<Position> sampling = new ArrayList<>(); //TODO replace duplicates by using counter
     @Override
-    public Nar addInput(Task t) {
+    public Nar addInput(final Task t, final Timable time) {
         int[] test = t.getTerm().term_indices;
         AddToSpatialBag(t);
         for(int i=0;i<100000;i++) {
-            step_start(); //just input driven for now   
+            step_start(time); //just input driven for now   
         }
         return nar; //but could as well listen to nar cycle end or even spawn own thread instead
     }
     
     @Override
-    public void step_start()
+    public void step_start(final Timable time)
     {
         int ind = Memory.randomNumber.nextInt(sampling.size());
         Position samplePos = sampling.get(ind);
@@ -80,7 +81,7 @@ public class SpatialSamplingVisionChannel extends SensoryChannel {
             if(sampled2 != null) {
                 //improve API, carrying out temporal inference should be easier..
                 List<Task> seq = proceedWithTemporalInduction(sampled.sentence, sampled2.sentence, sampled2, 
-                                                              new DerivationContext(nar.memory, nar.narParameters), true, false, true);
+                                                              new DerivationContext(nar.memory, nar.narParameters, time), true, false, true);
                 if(seq != null) {
                     for(Task t : seq) {
                         if(!t.sentence.isEternal()) { //TODO improve API, this check should not be necessary
@@ -90,12 +91,12 @@ public class SpatialSamplingVisionChannel extends SensoryChannel {
                     }
                 }
                 //todo improve API, putting an element bag should be easy
-                spatialbag[s2posY][s2posX].putBack(sampled2, nar.memory.cycles(nar.memory.param.conceptForgetDurations), nar.memory);
+                spatialbag[s2posY][s2posX].putBack(sampled2, nar.memory.cycles(nar.narParameters.CONCEPT_FORGET_DURATIONS), nar.memory);
             }
         }
-        spatialbag[samplePos.Y][samplePos.X].putBack(sampled, nar.memory.cycles(nar.memory.param.conceptForgetDurations), nar.memory);
+        spatialbag[samplePos.Y][samplePos.X].putBack(sampled, nar.memory.cycles(nar.narParameters.CONCEPT_FORGET_DURATIONS), nar.memory);
         //feeds results into "upper" sensory channels:
-        this.step_finished(); 
+        this.step_finished(time); 
     }
     
 }

@@ -25,15 +25,20 @@ import org.opennars.gui.NARSwing;
 import java.awt.*;
 import java.awt.image.*;
 import java.awt.event.*;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.*;
+import javax.xml.parsers.ParserConfigurationException;
 import org.opennars.main.Nar;
-import org.opennars.main.Parameters;
+import org.opennars.main.MiscFlags;
 import org.opennars.entity.Sentence;
 import org.opennars.io.events.AnswerHandler;
 import org.opennars.io.Narsese;
+import org.xml.sax.SAXException;
 
 
 
@@ -69,7 +74,7 @@ public class SymRecognizer extends javax.swing.JFrame {
                 //maxDistance*=maxDistance;
                 float R = 255.0f;// - 255.0f*(distance / maxDistance);
                 Color col1 = new Color(canvasIMG.getRGB(x, y));
-                R*=0.2;
+                R*=0.4;
                 R+=col1.getRed();
                 if(R > 255) {
                     R = 255;
@@ -302,12 +307,6 @@ public class SymRecognizer extends javax.swing.JFrame {
         
     }
     
-    static {
-        Parameters.SEQUENCE_BAG_ATTEMPTS = 10000;
-        Parameters.SEQUENCE_BAG_LEVELS = 1000;
-        Parameters.SEQUENCE_BAG_SIZE=10000;
-    }
-    
     Nar nar = null;
     NARSwing gui = null;
     ArrayList<AnswerHandler> q = new ArrayList<AnswerHandler>();
@@ -350,7 +349,29 @@ public class SymRecognizer extends javax.swing.JFrame {
         }
         else {
             
-            nar = new Nar();
+            try {
+                nar = new Nar();
+                nar.narParameters.SEQUENCE_BAG_ATTEMPTS = 10000;
+                nar.narParameters.DURATION = 1000;
+            } catch (IOException ex) {
+                Logger.getLogger(SymRecognizer.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (InstantiationException ex) {
+                Logger.getLogger(SymRecognizer.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (InvocationTargetException ex) {
+                Logger.getLogger(SymRecognizer.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (NoSuchMethodException ex) {
+                Logger.getLogger(SymRecognizer.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (ParserConfigurationException ex) {
+                Logger.getLogger(SymRecognizer.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IllegalAccessException ex) {
+                Logger.getLogger(SymRecognizer.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (SAXException ex) {
+                Logger.getLogger(SymRecognizer.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (ClassNotFoundException ex) {
+                Logger.getLogger(SymRecognizer.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (ParseException ex) {
+                Logger.getLogger(SymRecognizer.class.getName()).log(Level.SEVERE, null, ex);
+            }
             if(invar1.isSelected()) {
                 gui = new NARSwing(nar);
             }
@@ -442,7 +463,6 @@ public class SymRecognizer extends javax.swing.JFrame {
 
     public static void main(String args[]) {
         NARSwing.themeInvert();
-        Parameters.DURATION = 1000;
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new SymRecognizer().setVisible(true);

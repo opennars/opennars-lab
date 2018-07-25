@@ -24,15 +24,19 @@ import automenta.vivisect.swing.PCanvas;
 import automenta.vivisect.timeline.LineChart;
 import automenta.vivisect.timeline.TimelineVis;
 import java.awt.Color;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.text.ParseException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.xml.parsers.ParserConfigurationException;
 
 import org.opennars.io.events.Events.TaskImmediateProcess;
 import org.opennars.main.Nar;
-import org.opennars.main.Parameters;
+import org.opennars.main.MiscFlags;
 import org.opennars.control.DerivationContext;
 import org.opennars.entity.Sentence;
 import org.opennars.entity.Task;
@@ -42,6 +46,7 @@ import org.opennars.io.events.AnswerHandler;
 import org.opennars.util.io.ChangedTextInput;
 import org.opennars.io.Narsese;
 import org.opennars.language.Term;
+import org.xml.sax.SAXException;
 
 /**
  *
@@ -104,9 +109,9 @@ public class Predict_NARS_Core {
                     float conf = t.truth.getConfidence();
                     float freq = t.truth.getFrequency();
                     aa = 0.25f + conf * 0.75f;
-                    float evidence = TruthFunctions.c2w(conf);
-                    float positive_evidence_in_0_1 = TruthFunctions.w2c(evidence*freq);
-                    float negative_evidence_in_0_1 = TruthFunctions.w2c(evidence*(1.0f-freq));
+                    float evidence = TruthFunctions.c2w(conf, n.narParameters);
+                    float positive_evidence_in_0_1 = TruthFunctions.w2c(evidence*freq, n.narParameters);
+                    float negative_evidence_in_0_1 = TruthFunctions.w2c(evidence*(1.0f-freq), n.narParameters);
                     rr = positive_evidence_in_0_1;
                     bb = negative_evidence_in_0_1;
                     gg = 0.0f;
@@ -125,13 +130,33 @@ public class Predict_NARS_Core {
     
     public static void main(String[] args) throws InterruptedException {
 
-        Parameters.DEBUG = false;
+        MiscFlags.DEBUG = false;
         int duration = 4;
         float freq = 1.0f / duration * 0.03f;        
         
         double discretization = 10;
 
-        n = new Nar();
+        try {
+            n = new Nar();
+        } catch (IOException ex) {
+            Logger.getLogger(Predict_NARS_Core.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            Logger.getLogger(Predict_NARS_Core.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InvocationTargetException ex) {
+            Logger.getLogger(Predict_NARS_Core.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (NoSuchMethodException ex) {
+            Logger.getLogger(Predict_NARS_Core.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ParserConfigurationException ex) {
+            Logger.getLogger(Predict_NARS_Core.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            Logger.getLogger(Predict_NARS_Core.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SAXException ex) {
+            Logger.getLogger(Predict_NARS_Core.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(Predict_NARS_Core.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ParseException ex) {
+            Logger.getLogger(Predict_NARS_Core.class.getName()).log(Level.SEVERE, null, ex);
+        }
         n.param.noiseLevel.set(0);
         Random rnd = new Random();
         
@@ -139,10 +164,10 @@ public class Predict_NARS_Core {
             
             
             @Override
-            public void onProcessed(Task t, DerivationContext n) {
+            public void onProcessed(Task t, DerivationContext cont) {
                // if(true)
                //     return;
-                if (t.sentence.getOccurenceTime() >= n.memory.time() && t.sentence.truth.getExpectation()>0.5) {
+                if (t.sentence.getOccurenceTime() >= n.time() && t.sentence.truth.getExpectation()>0.5) {
                                         Term term = t.getTerm();
                     int time = (int) t.sentence.getOccurenceTime() / thinkInterval;
                     /*if(positionTruthExp.containsKey(time)) {

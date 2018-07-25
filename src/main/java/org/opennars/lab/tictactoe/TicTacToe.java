@@ -48,6 +48,8 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -58,12 +60,13 @@ import org.opennars.entity.BudgetValue;
 import org.opennars.entity.Concept;
 import org.opennars.entity.Task;
 import org.opennars.gui.NARSwing;
+import org.opennars.interfaces.Timable;
 import org.opennars.io.events.OutputHandler.OUT;
 import org.opennars.language.Term;
 import org.opennars.operator.Operation;
 import org.opennars.operator.Operator;
 import org.opennars.io.events.Events.CyclesEnd;
-import org.opennars.main.Parameters;
+import org.opennars.main.MiscFlags;
 
 /**
  *
@@ -94,10 +97,11 @@ public class TicTacToe extends JPanel {
     
     
     
-    public TicTacToe() {
+    public TicTacToe() throws Exception {
         super(new BorderLayout());
-        Parameters.DURATION = 1000;
+        
         nar = new Nar();
+        nar.narParameters.DURATION = 1000;
         
         nar.memory.addOperator(new AddO("^addO"));        
         (nar.param).noiseLevel.set(0);
@@ -145,7 +149,7 @@ public class TicTacToe extends JPanel {
             public Concept initTerm(int x, int y) {
                 Term t = new Term( Integer.toString(y * 3 + x) );
                 fieldTerms.add(t);
-                return nar.memory.conceptualize(new BudgetValue(0.5f, 0.5f, 0.5f), t);
+                return nar.memory.conceptualize(new BudgetValue(0.5f, 0.5f, 0.5f, nar.narParameters), t);
             }
 
             @Override
@@ -235,7 +239,7 @@ public class TicTacToe extends JPanel {
         }
 
         @Override
-        protected List<Task> execute(Operation operation, Term[] args, Memory memory) {
+        protected List<Task> execute(Operation operation, Term[] args, Memory memory, final Timable time) {
 
             int i = -1;
             try {
@@ -429,7 +433,11 @@ public class TicTacToe extends JPanel {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new NWindow("NARTacToe", new TicTacToe()).show(400,400,true);
+                try {
+                    new NWindow("NARTacToe", new TicTacToe()).show(400,400,true);
+                } catch (Exception ex) {
+                    Logger.getLogger(TicTacToe.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         });
 

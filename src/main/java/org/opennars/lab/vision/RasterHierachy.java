@@ -15,9 +15,17 @@
 package org.opennars.lab.vision;
 
 //import boofcv.core.image.ConvertBufferedImage;
+import boofcv.alg.feature.detect.edge.CannyEdge;
+import boofcv.alg.filter.blur.BlurImageOps;
+import boofcv.alg.filter.derivative.GradientSobel;
 import boofcv.io.webcamcapture.UtilWebcamCapture;
 import boofcv.alg.misc.ImageMiscOps;
+import boofcv.core.image.ConvertImage;
+import boofcv.core.image.border.FactoryImageBorderAlgs;
+import boofcv.factory.feature.detect.edge.FactoryEdgeDetectors;
+import boofcv.gui.image.VisualizeImageData;
 import boofcv.io.image.*;
+import boofcv.struct.image.GrayS16;
 import boofcv.struct.image.GrayU8;
 import boofcv.struct.image.Planar;
 import com.github.sarxos.webcam.Webcam;
@@ -28,8 +36,15 @@ import org.opennars.main.Nar;
 
 import javax.swing.*;
 import java.awt.*;
+import static java.awt.Color.gray;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
+import org.opennars.entity.Task;
+import org.opennars.io.events.EventEmitter.EventObserver;
+import org.opennars.io.events.OutputHandler.IN;
+import org.opennars.language.Inheritance;
+import org.opennars.language.Term;
+import org.opennars.plugin.perception.VisionChannel;
 
 /**
  *
@@ -150,8 +165,52 @@ public class RasterHierachy extends JPanel {
         int blockYSize = height/divisions;
 
         Planar<GrayU8> image = ConvertBufferedImage.convertFromPlanar(input,null,true,GrayU8.class);
+        
+        GrayU8 blurred = new GrayU8(image.width,image.height);
+        GrayS16 derivX = new GrayS16(image.width,image.height);
+        GrayS16 derivY = new GrayS16(image.width,image.height);
+
+        GrayU8 unweighted = new GrayU8(image.width,image.height);
+        ConvertImage.average(image,unweighted);
+        
+        boolean sobel = true;
+        GrayU8 Result = new GrayU8(image.width,image.height);
+        if(sobel) {
+            // Gaussian blur: Convolve a Gaussian kernel
+            BlurImageOps.gaussian(unweighted,blurred,-1, 5,null);
+
+            // Calculate image's derivative
+            GradientSobel.process(blurred, derivX, derivY, FactoryImageBorderAlgs.extend(unweighted));
+
+            // display the results
+            //BufferedImage outputImage = VisualizeImageData.colorizeGradient(derivX, derivY, -1);
+            //panel.addImage(outputImage,"Procedural Fixed Type");
+
+            for(int i=0; i<image.width; i++) {
+                for(int j=0; j<image.height; j++) {
+                    Result.set(i, j, Math.max(derivX.get(i, j), derivY.get(i, j)));
+                }
+            }
+        } else {
+            CannyEdge<GrayU8,GrayS16> canny = FactoryEdgeDetectors.canny(5,true, true, GrayU8.class, GrayS16.class);
+            // The edge image is actually an optional parameter.  If you don't need it just pass in null
+            canny.process(unweighted,0.1f,0.2f,Result);
+            for(int i=0; i<image.width; i++) {
+                for(int j=0; j<image.height; j++) {
+                    if(Result.get(i, j) != 0) {
+                        Result.set(i, j, 255);
+                    }
+                    //Result.set(i, j, Result.get(i, j)*500);
+                }
+            }
+        }
+        image.setBand(0, Result);
+        image.setBand(1, Result);
+        image.setBand(2, Result);
+        
         Planar<GrayU8> output = new Planar<>(GrayU8.class, width, height, 3);
 
+        
         BufferedImage rasterizedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
 
         // Set the initial raster region
@@ -232,29 +291,22 @@ public class RasterHierachy extends JPanel {
                     lastvalG.put(key, fgreen);
                     lastvalB.put(key, fblue);
 
-
                     float inputChance = 0.33f; //approx 6 inputs per image
                     if(putin && step==numberRasters) { //only most finest raster
-                        //input Narsese translation //String.valueOf(step)
-                        String st="<r_"+ String.valueOf(h)+"_"+String.valueOf(j)+" --> RED>. :|: %"+String.valueOf(fred)+"%";
-                        // String st="<(*,r"+ String.valueOf(step)+","+String.valueOf(h)+","+String.valueOf(j)+") --> RED>. :|: %"+String.valueOf(fred)+"%";
-                        if(((h%2 == 0 && j%2 == 0 && even) ||
-                            (h%2 == 1 && j%2 == 1 && !even)) && Math.random() < inputChance) { //not every pixel needs to go in
-                            nar.addInput(st);
-                        }
-                        //focal point:
-                        if(x == 0 && y == 0){
-                            nar.addInput("<p_" + String.valueOf(this.focusX/100) + " --> pointX>. :|:");
-                            nar.addInput("<p_" + String.valueOf(this.focusY/100) + " --> pointY>. :|:");
-                        }
-
-                        nar.cycles(10);
+                        int used_X = h-1;
+                        int used_Y = j-1;
+                        float USED_X = 2.0f*(used_X / (float) (res-1))-1.0f;
+                        float USED_Y = 2.0f*(used_Y / (float) (res-1))-1.0f;
+                        String st="<{M["+ String.valueOf(USED_X)+","+String.valueOf(USED_Y)+"]} --> [WHITE]>. :|: %"+String.valueOf(fred)+"%";
+                        nar.addInput(st);
+                        //nar.cycles(10);
                     }
                     // Here we can generate NAL, since we know all of the required values.
-
-                    ImageMiscOps.fillRectangle(output.getBand(0), red, x, y, blockXSize, blockYSize);
-                    ImageMiscOps.fillRectangle(output.getBand(1), green, x, y, blockXSize, blockYSize);
-                    ImageMiscOps.fillRectangle(output.getBand(2), blue, x, y, blockXSize, blockYSize);
+                    //if(step == numberRasters) {
+                        ImageMiscOps.fillRectangle(output.getBand(0), red, x, y, blockXSize, blockYSize);
+                        ImageMiscOps.fillRectangle(output.getBand(1), green, x, y, blockXSize, blockYSize);
+                        ImageMiscOps.fillRectangle(output.getBand(2), blue, x, y, blockXSize, blockYSize);
+                    //}
                 }
             }
         }
@@ -273,6 +325,7 @@ public class RasterHierachy extends JPanel {
 
             if (maxvalue != null && maxvalue.x!=0 && maxvalue.y!=0) {
                 this.setFocus((this.focusX+maxvalue.x)/2, (this.focusY+maxvalue.y)/2);
+                chan.setFocus(this.focusX, this.focusY);
                 // this.setFocus(maxvalue.x, maxvalue.y);
             }
         }
@@ -343,18 +396,36 @@ public class RasterHierachy extends JPanel {
         }
     }
 
+    static int resolution = 16; //on change re-set res!!
+    static int res = 0;
     static Nar nar;
-    public static void main(String[] args) {
+    static VisionChannel chan = null;
+    public static void main(String[] args) throws Exception {
 
         //RasterHierarchy rh = new RasterHierarchy(8, 640, 480, 12, 2);
         // RasterHierarchy rh = new RasterHierarchy(3, 640, 480, 5, 2);
         nar = new Nar();
+        res = 22; //determined according to resolution, don't change, but needs to be changed if resolution changes
+        chan = new VisionChannel("WHITE", nar, nar, res, res, res*res, 0.5f, 12);
+        nar.addPlugin(chan);
         nar.param.noiseLevel.set(0);
         NARSwing.themeInvert();
         NARSwing swing = new NARSwing(nar);
+        
+        nar.event(new EventObserver() {
+            @Override
+            public void event(Class event, Object[] args) {
+                if(event == IN.class) {
+                    Task task = (Task) args[0];
+                    Inheritance inh = (Inheritance) task.getTerm();
+                    Term subj = inh.getSubject();
+                    //TODO visualize re-detected prototype for the user
+                }
+            }
+        }, true, IN.class);
         // nar.start(0);
 
-        RasterHierachy rh = new RasterHierachy(3, 640, 480, 5, 3); //new RasterHierachy(3, 640, 480, 8, 3);
+        RasterHierachy rh = new RasterHierachy(2, 640, 480, resolution, 3); //new RasterHierachy(3, 640, 480, 8, 3);
 
         rh.process();
     }

@@ -28,8 +28,11 @@ import java.awt.*;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.opennars.entity.Task;
 import org.opennars.gui.NARSwing;
+import org.opennars.interfaces.Timable;
 import org.opennars.language.Term;
 import org.opennars.operator.Operation;
 import org.opennars.operator.Operator;
@@ -252,7 +255,7 @@ public class SimNAR extends Frame {
             Hai(){}
             Nar nar;
             int nActions = 3;
-            Hai(int nactions,int nstates)
+            Hai(int nactions,int nstates) throws Exception
             {
                 this.nActions = nactions; //for actions since we allow the same randomization phase as in QL
                 nar = new Nar();
@@ -276,7 +279,7 @@ public class SimNAR extends Frame {
                 }
 
                 @Override
-                public List<Task> execute(Operation operation, Term[] args, Memory memory) {
+                public List<Task> execute(Operation operation, Term[] args, Memory memory, Timable time) {
                     lastAction = 1;
                     memory.allowExecution = false;
                     System.out.println("Nar decide left");
@@ -289,7 +292,7 @@ public class SimNAR extends Frame {
                 }
 
                 @Override
-                public List<Task> execute(Operation operation, Term[] args, Memory memory) {
+                public List<Task> execute(Operation operation, Term[] args, Memory memory, Timable time) {
                     lastAction = 2;
                     memory.allowExecution = false;
                     System.out.println("Nar decide right");
@@ -1345,17 +1348,21 @@ public class SimNAR extends Frame {
             //mem.simulate_damping=0.90;
             //size(worldSize-200,worldSize-200);
             hamlib.Init(false);
-            im[0]=loadImage("."+File.separator+"nars_lab"+File.separator+"opennars"+File.separator+"lab"+File.separator+"microworld"+File.separator+"agent.png");
-            im[1]=loadImage("."+File.separator+"nars_lab"+File.separator+"opennars"+File.separator+"lab"+File.separator+"microworld"+File.separator+"food.png");
-            im[2]=loadImage("."+File.separator+"nars_lab"+File.separator+"opennars"+File.separator+"lab"+File.separator+"microworld"+File.separator+"fire.png");
+            im[0]=loadImage("./src/main/java/org/opennars/lab/microworld/agent.png");
+            im[1]=loadImage("./src/main/java/org/opennars/lab/microworld/food.png");
+            im[2]=loadImage("./src/main/java/org/opennars/lab/microworld/fire.png");
             for(int i=0;i<1;i++)
             {
-                int SomSize=10;
-                Hai h=new Hai(nactions,SomSize);
-                //h.som=new Hsom(SomSize,Hsim_eyesize*2);
-                //h.som.Leaky=false;
-                test=new Obj(new Hsim_Custom(),h,(int)(padding+random(1)*(width-padding)),(int)(padding+random(1)*(height-padding)),random(1)*2*PI-PI,random(1),0,0,random(1)*5+20,0,Hsim_eyesize);
-                hsim.obj.add(test);
+                try {
+                    int SomSize=10;
+                    Hai h=new Hai(nactions,SomSize);
+                    //h.som=new Hsom(SomSize,Hsim_eyesize*2);
+                    //h.som.Leaky=false;
+                    test=new Obj(new Hsim_Custom(),h,(int)(padding+random(1)*(width-padding)),(int)(padding+random(1)*(height-padding)),random(1)*2*PI-PI,random(1),0,0,random(1)*5+20,0,Hsim_eyesize);
+                    hsim.obj.add(test);
+                } catch (Exception ex) {
+                    Logger.getLogger(SimNAR.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
             lastclicked=((Obj)hsim.obj.get(0));
             for(int i=0;i<5;i++)
