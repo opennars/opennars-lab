@@ -135,7 +135,7 @@ public class SupervisedRecognition {
         }
         NARSwing.themeInvert();
         new NARSwing(nar);
-        nar.param.noiseLevel.set(0);
+        nar.narParameters.VOLUME = 0;
         
         for(String example : map.keySet()) {
             int solution = map.get(example);

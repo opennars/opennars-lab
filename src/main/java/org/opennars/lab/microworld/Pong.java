@@ -74,7 +74,7 @@ public class Pong extends Frame {
                 nar = new Nar();
                 nar.memory.addOperator(new Right("^Right"));
                 nar.memory.addOperator(new Left("^Left"));
-                (nar.param).noiseLevel.set(0);
+                nar.narParameters.VOLUME = 0;
                 new NARSwing(nar); 
                 //nar.start(0);
                 Memory m = nar.memory;

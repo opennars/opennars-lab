@@ -420,7 +420,7 @@ public class SymRecognizer extends javax.swing.JFrame {
                 }
                 u++;
             }
-            nar.param.noiseLevel.set(0);
+            nar.narParameters.VOLUME = 0;
             nar.addInput(inputPanel.getText());
             nar.start(0);
         }

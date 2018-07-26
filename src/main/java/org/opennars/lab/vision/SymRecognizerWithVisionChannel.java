@@ -395,7 +395,7 @@ public class SymRecognizerWithVisionChannel extends javax.swing.JFrame {
                             //System.out.println("solution: " + belief);
                             System.out.println(belief);
                             float howconf = belief.truth.getConfidence();
-                            if(howconf >= 0.001f) { //only mark if above 0.1 confidence
+                            if(howconf >= 0.001f  && belief.getTerm().toString().contains("example")) { //only mark if above 0.1 confidence
                                 //also mark image:
                                 int maxu = Integer.valueOf(belief.getTerm().toString().split("example")[1].split("\\)")[0]);
                                 clear();
@@ -428,7 +428,7 @@ public class SymRecognizerWithVisionChannel extends javax.swing.JFrame {
                 }
                 u++;
             }
-            nar.param.noiseLevel.set(0);
+            nar.narParameters.VOLUME = 0;
             nar.addInput(inputPanel.getText());
             nar.addInput(s);
             nar.start(0);

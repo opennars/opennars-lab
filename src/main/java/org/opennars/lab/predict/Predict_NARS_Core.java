@@ -157,7 +157,7 @@ public class Predict_NARS_Core {
         } catch (ParseException ex) {
             Logger.getLogger(Predict_NARS_Core.class.getName()).log(Level.SEVERE, null, ex);
         }
-        n.param.noiseLevel.set(0);
+        n.narParameters.VOLUME = 0;
         Random rnd = new Random();
         
         n.on(TaskImmediateProcess.class, new TaskImmediateProcess() {

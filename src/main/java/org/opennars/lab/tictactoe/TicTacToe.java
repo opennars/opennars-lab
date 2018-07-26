@@ -104,7 +104,7 @@ public class TicTacToe extends JPanel {
         nar.narParameters.DURATION = 1000;
         
         nar.memory.addOperator(new AddO("^addO"));        
-        (nar.param).noiseLevel.set(0);
+        nar.narParameters.VOLUME = 0;
         
         new NARSwing(nar);    
         nar.on(CyclesEnd.class, new EventObserver() {
