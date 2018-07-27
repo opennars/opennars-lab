@@ -18,7 +18,6 @@ import java.util.List;
 import org.opennars.io.events.EventEmitter.EventObserver;
 import org.opennars.io.events.Events;
 import org.opennars.main.Nar;
-import org.opennars.main.MiscFlags;
 import org.opennars.lab.grid2d.main.Cell.Logic;
 import org.opennars.lab.grid2d.main.Cell.Material;
 import static org.opennars.lab.grid2d.main.Hauto.DOWN;
@@ -64,7 +63,7 @@ public class TestChamber {
         //nar.addPlugin(new TemporalParticlePlanner());
         
         //(nar.param).duration.set(10);
-        (nar.param).noiseLevel.set(0); 
+        (nar.narParameters).VOLUME = 0; 
         new NARSwing(nar);
 
         new TestChamber(nar);

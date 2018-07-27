@@ -408,7 +408,7 @@ public class RasterHierachy extends JPanel {
         res = 22; //determined according to resolution, don't change, but needs to be changed if resolution changes
         chan = new VisionChannel("WHITE", nar, nar, res, res, res*res, 0.5f, 12);
         nar.addPlugin(chan);
-        nar.param.noiseLevel.set(0);
+        nar.narParameters.VOLUME = 0;
         NARSwing.themeInvert();
         NARSwing swing = new NARSwing(nar);
         

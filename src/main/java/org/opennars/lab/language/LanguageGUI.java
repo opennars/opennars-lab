@@ -69,8 +69,8 @@ public class LanguageGUI extends javax.swing.JFrame {
         lang.mainWindow.setTitle("Language Nar (OpenNARS v1.6.5)");
         NARSwing reas = new NARSwing(reasonerNAR);  
         reas.mainWindow.setTitle("Reasoner Nar (OpenNARS v1.6.5)");
-        languageNAR.param.noiseLevel.set(0);
-        reasonerNAR.param.noiseLevel.set(0);
+        languageNAR.narParameters.VOLUME = 0;
+        reasonerNAR.narParameters.VOLUME = 0;
         reasonerNAR.start(0);
     }
 
