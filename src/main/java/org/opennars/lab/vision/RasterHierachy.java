@@ -23,7 +23,6 @@ import boofcv.alg.misc.ImageMiscOps;
 import boofcv.core.image.ConvertImage;
 import boofcv.core.image.border.FactoryImageBorderAlgs;
 import boofcv.factory.feature.detect.edge.FactoryEdgeDetectors;
-import boofcv.gui.image.VisualizeImageData;
 import boofcv.io.image.*;
 import boofcv.struct.image.GrayS16;
 import boofcv.struct.image.GrayU8;
@@ -247,14 +246,20 @@ public class RasterHierachy extends JPanel {
 
             int pixelCount = blockXSize * blockYSize; // Number of pixels per block
 
+            int blockXSizeCur = regionWidth/divisions;
+            int blockYSizeCur = regionHeight/divisions;
+            
             even = !even;
             int h=0,j=0;
-            for (x = newX; x < ((step == 1 ? 0 : startX) + regionWidth); x += blockXSize) {
+            for (x = newX; x < ((step == 1 ? 0 : startX) + regionWidth); x += blockXSizeCur) {
                 h++;
                 j = 0;
-                for (y = newY; y < ((step == 1 ? 0 : startY) + regionHeight); y += blockYSize) {
+                for (y = newY; y < ((step == 1 ? 0 : startY) + regionHeight); y += blockYSizeCur) {
                     j++;
 
+                    if(j > resolution || h > resolution) {
+                        continue;
+                    }
                     redSum = 0;
                     greenSum = 0;
                     blueSum = 0;
@@ -291,7 +296,6 @@ public class RasterHierachy extends JPanel {
                     lastvalG.put(key, fgreen);
                     lastvalB.put(key, fblue);
 
-                    float inputChance = 0.33f; //approx 6 inputs per image
                     if(putin && step==numberRasters) { //only most finest raster
                         int used_X = h-1;
                         int used_Y = j-1;
@@ -324,7 +328,7 @@ public class RasterHierachy extends JPanel {
             }
 
             if (maxvalue != null && maxvalue.x!=0 && maxvalue.y!=0) {
-                this.setFocus((this.focusX+maxvalue.x)/2, (this.focusY+maxvalue.y)/2);
+                this.setFocus((this.focusX+(maxvalue.x+regionWidth/2))/2, (this.focusY+(maxvalue.y+regionHeight/2))/2);
                 chan.setFocus(this.focusX, this.focusY);
                 // this.setFocus(maxvalue.x, maxvalue.y);
             }
@@ -396,7 +400,7 @@ public class RasterHierachy extends JPanel {
         }
     }
 
-    static int resolution = 16; //on change re-set res!!
+    static int resolution = 20; //on change re-set res!!
     static int res = 0;
     static Nar nar;
     static VisionChannel chan = null;
@@ -405,7 +409,7 @@ public class RasterHierachy extends JPanel {
         //RasterHierarchy rh = new RasterHierarchy(8, 640, 480, 12, 2);
         // RasterHierarchy rh = new RasterHierarchy(3, 640, 480, 5, 2);
         nar = new Nar();
-        res = 22; //determined according to resolution, don't change, but needs to be changed if resolution changes
+        res = resolution; //determined according to resolution, don't change, but needs to be changed if resolution changes
         chan = new VisionChannel("WHITE", nar, nar, res, res, res*res, 0.5f, 12);
         nar.addPlugin(chan);
         nar.narParameters.VOLUME = 0;
