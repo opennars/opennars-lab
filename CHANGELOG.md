@@ -7,3 +7,4 @@
 * Removed jbox2d and related functionality.
 * Refactored root package from nars to org.opennars
 
+* added Perception experiment
