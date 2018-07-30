@@ -105,6 +105,11 @@
             <artifactId>WebcamCapture</artifactId>
             <version>0.26</version>
         </dependency>
+        <dependency>
+            <groupId>org.processing</groupId>
+            <artifactId>core</artifactId>
+            <version>2.2.1</version>
+        </dependency>
     </dependencies>
 
     <build>
