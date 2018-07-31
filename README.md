@@ -1,8 +1,8 @@
 ![OpenNARS Logo](https://github.com/opennars/opennars/blob/bf53ceef9f2399de70dc63e5507e42d639144c96/doc/opennars_logo2.png)
 **Open-NARS** is the open-source version of [NARS](https://sites.google.com/site/narswang/home), a general-purpose AI system, designed in the framework of a reasoning system.  This project is an evolution of the [v1.5 system](http://code.google.com/p/open-org.nars/).  The [mailing list](https://groups.google.com/forum/?fromgroups#!forum/open-org.nars) discusses both its theory and implementation.
 
-[![Build Status](https://travis-ci.org/opennars/opennars-gui.svg?branch=master)](https://travis-ci.org/opennars/opennars-gui)
-[![codecov](https://codecov.io/gh/opennars/opennars-gui/branch/master/graph/badge.svg)](https://codecov.io/gh/opennars/opennars-gui)
+[![Build Status](https://travis-ci.org/opennars/opennars-lab.svg?branch=master)](https://travis-ci.org/opennars/opennars-lab)
+[![codecov](https://codecov.io/gh/opennars/opennars-lab/branch/master/graph/badge.svg)](https://codecov.io/gh/opennars/opennars-lab)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/01e3de8c036d4b25ac3024ddfa68fcf0)](https://www.codacy.com/app/freemo/opennars-lab?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=opennars/opennars-lab&amp;utm_campaign=Badge_Grade)
 
 Theory Overview
