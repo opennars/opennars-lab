@@ -21,6 +21,7 @@ package org.opennars.lab.predict;
 import automenta.vivisect.TreeMLData;
 import automenta.vivisect.swing.NWindow;
 import automenta.vivisect.swing.PCanvas;
+import automenta.vivisect.timeline.BarChart;
 import automenta.vivisect.timeline.LineChart;
 import automenta.vivisect.timeline.TimelineVis;
 import java.awt.Color;
@@ -28,24 +29,17 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.text.ParseException;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.parsers.ParserConfigurationException;
-
-import org.opennars.io.events.Events.TaskImmediateProcess;
-import org.opennars.main.Nar;
-import org.opennars.main.MiscFlags;
 import org.opennars.control.DerivationContext;
-import org.opennars.entity.Sentence;
 import org.opennars.entity.Task;
+import org.opennars.entity.TruthValue;
 import org.opennars.gui.NARSwing;
-import org.opennars.inference.TruthFunctions;
-import org.opennars.io.events.AnswerHandler;
-import org.opennars.util.io.ChangedTextInput;
-import org.opennars.io.Narsese;
+import org.opennars.io.events.Events.TaskImmediateProcess;
 import org.opennars.language.Term;
+import org.opennars.main.Nar;
+import org.opennars.util.io.ChangedTextInput;
 import org.xml.sax.SAXException;
 
 /**
@@ -59,145 +53,74 @@ public class Predict_NARS_Core {
     
     static float signal = 0;
     
-    static TreeMLData predicted;
-    //static TreeMLData[] predictions;
+    static TreeMLData[] predictions;
     static double maxval=0;
-    static LineChart pred = null;
-    static int curmax=0;
-    static HashMap<Integer,Float> positionTruthExp = new HashMap<Integer,Float>();
-    static Nar n = null;
     static int thinkInterval = 10;
-    static HashMap<Integer,Integer> QUAnswers = new HashMap<Integer,Integer>();
-    static HashMap<Integer,Integer> QUShift = new HashMap<Integer,Integer>();
+    static HashMap<Integer,TruthValue> pred = new HashMap<Integer,TruthValue>();
     
-    public static void Prediction(Sentence t, String ts, int oritime) {
-        Prediction(t, ts, oritime, -1);
-    }
-    public static void Prediction(Sentence t, String ts, int oritime, int questionLeftValue) {
-            int time = 0;
-            if(oritime == -1) {
-                time = (int) (n.time()+thinkInterval) / thinkInterval;
-            } else {
-                time = oritime;
-            }
-            int value;
-            float exp = t.getTruth().getExpectation();
-            if (ts.trim().startsWith("<{") && exp > 0.5) {
-                char cc = ts.trim().charAt("<{".length());
-                value = cc - '0';
-                if(time>=curmax) {
-                    curmax=time;
-                }
-                //System.out.println("predicted "+value);
-                maxval=Math.max(maxval,(value)/10.0);
-                //predictions[0].add(time, (value)/10.0 );
-                if(!positionTruthExp.containsKey(time)) {
-                    predicted.add(time, (value)/10.0);
-                    positionTruthExp.put(time,exp);
-                    if(oritime == -1) {
-                        QUAnswers.put(questionLeftValue, value);
-                        int shift = Integer.valueOf(t.getTerm().toString().split("\\+")[1].split("\\)")[0]);
-                        QUShift.put(questionLeftValue, shift);
-                    }
-                }
+    public static void main(String[] args) throws InterruptedException, IOException, InstantiationException, InvocationTargetException, 
+            NoSuchMethodException, ParserConfigurationException, IllegalAccessException, SAXException, ClassNotFoundException, ParseException {
 
-                float rr=0;
-                float gg=0;
-                float bb=0;
-                float aa=0;
-                if(t.truth!=null) {
-                    float conf = t.truth.getConfidence();
-                    float freq = t.truth.getFrequency();
-                    aa = 0.25f + conf * 0.75f;
-                    float evidence = TruthFunctions.c2w(conf, n.narParameters);
-                    float positive_evidence_in_0_1 = TruthFunctions.w2c(evidence*freq, n.narParameters);
-                    float negative_evidence_in_0_1 = TruthFunctions.w2c(evidence*(1.0f-freq), n.narParameters);
-                    rr = positive_evidence_in_0_1;
-                    bb = negative_evidence_in_0_1;
-                    gg = 0.0f;
-                }
+        int duration = 8;
+        float freq = 1.0f / duration * 0.1f;        
+        double discretization = 5;
 
-                Color HSB = new Color(rr,gg,bb,aa);
-
-
-                int R = (int) (t.getTruth().getConfidence() *255);
-                int B = (int) ((1.0f-t.getTruth().getFrequency()) *255);
-                pred.customColor.put(time, HSB.getRGB());
-                pred.customColor.put(time+1, HSB.getRGB());
-
-            }
-        }
-    
-    public static void main(String[] args) throws InterruptedException {
-
-        MiscFlags.DEBUG = false;
-        int duration = 4;
-        float freq = 1.0f / duration * 0.03f;        
-        
-        double discretization = 10;
-
-        try {
-            n = new Nar();
-        } catch (IOException ex) {
-            Logger.getLogger(Predict_NARS_Core.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            Logger.getLogger(Predict_NARS_Core.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (InvocationTargetException ex) {
-            Logger.getLogger(Predict_NARS_Core.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (NoSuchMethodException ex) {
-            Logger.getLogger(Predict_NARS_Core.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (ParserConfigurationException ex) {
-            Logger.getLogger(Predict_NARS_Core.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            Logger.getLogger(Predict_NARS_Core.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (SAXException ex) {
-            Logger.getLogger(Predict_NARS_Core.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (ClassNotFoundException ex) {
-            Logger.getLogger(Predict_NARS_Core.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (ParseException ex) {
-            Logger.getLogger(Predict_NARS_Core.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        final Nar n = new Nar();
         n.narParameters.VOLUME = 0;
-        Random rnd = new Random();
         
         n.on(TaskImmediateProcess.class, new TaskImmediateProcess() {
-            
-            
+            int curmax=0;
             @Override
-            public void onProcessed(Task t, DerivationContext cont) {
-               // if(true)
-               //     return;
-                if (t.sentence.getOccurenceTime() >= n.time() && t.sentence.truth.getExpectation()>0.5) {
-                                        Term term = t.getTerm();
-                    int time = (int) t.sentence.getOccurenceTime() / thinkInterval;
-                    /*if(positionTruthExp.containsKey(time)) {
-                        if(positionTruthExp.get(time) > t.sentence.truth.getExpectation()) {
-                            return;
-                        }
-                    }*/
+            public void onProcessed(Task t, DerivationContext d) {
+                if (t.sentence.getOccurenceTime() > n.time() && t.sentence.truth.getExpectation()>0.5) {
+                    Term term = t.getTerm();
+                    int time = (int) t.sentence.getOccurenceTime();
                     int value = -1;
                     String ts = term.toString();
-                    //Prediction(t.sentence, ts, time);
+                    if (ts.startsWith("<{x} --> y")) {
+                        char cc = ts.charAt("<{x} --> y".length());
+                        value = cc - '0';
+                        if(time>=curmax) {
+                            curmax=time;
+                        }
+                        maxval=Math.max(maxval, (value)/10.0);
+                        Integer T = time/thinkInterval;
+                        boolean add = true;
+                        if(pred.containsKey(T)) { //don't override predictions that were more "futuristic"
+                            //if(t.sentence.truth.getExpectation() > pred.get(T).getExpectation()) {
+                            //    pred.put(T, t.sentence.truth);
+                            //} else {
+                                add = false;
+                            //}
+                        } else {
+                            pred.put(T, t.sentence.truth);
+                        }
+                        if(add) {
+                            predictions[0].add(T, (value)/10.0 );
+                        }
+                    }
                 }
             }
-
-            
         });
         
         
         TreeMLData observed = new TreeMLData("value", Color.WHITE).setRange(0, 1f);
-        //predictions = new TreeMLData[(int)discretization];
-        predicted = new TreeMLData("seen", Color.WHITE).setRange(0, 1f);
+        predictions = new TreeMLData[(int)discretization];
+        TreeMLData[] reflections = new TreeMLData[(int)discretization];
 
-        //for (int i = 0; i < predictions.length; i++) {
-        //    predictions[i] = new TreeMLData("Pred" + i,
-        //            Color.getHSBColor(0.25f + i / 4f, 0.85f, 0.85f));
-       // }
-       pred = (LineChart) new LineChart(predicted).thickness(16f).height(128).drawOverlapped();
+        for (int i = 0; i < predictions.length; i++) {
+            predictions[i] = new TreeMLData("Pred" + i,
+                    Color.getHSBColor(0.25f + i / 4f, 0.85f, 0.85f));
+            
+            reflections[i] = new TreeMLData("Refl" + i,
+                    Color.getHSBColor(0.25f + i / 4f, 0.85f, 0.85f));
+            reflections[i].setDefaultValue(0.0);
+        }
         TimelineVis tc = new TimelineVis(
-                pred,
-                new LineChart(observed).thickness(16f).height(128).drawOverlapped()
-                
+                new LineChart(observed).thickness(16f).height(128),
+                new LineChart(predictions[0]).thickness(16f).height(128),
+                new BarChart(observed).thickness(16f).height(128),
+                new BarChart(predictions[0]).thickness(16f).height(128)
         );
 
         new NWindow("_", new PCanvas(tc)).show(800, 800, true);
@@ -210,131 +133,18 @@ public class Predict_NARS_Core {
         
         ChangedTextInput chg=new ChangedTextInput(n);
         
-        int k =0;
-        String lastInput="";
-        boolean pause = false;
-        HashSet<String> qus = new HashSet<String>();
-        int truecnt = 0;
-        String saved = "";
-        int lastOrival = 0;
         while (true) {
-            int steps = 40;
-            int h = 0;
-            do
-            {
-                truecnt++;
-                if(truecnt%100 == 0) {
-                    //qus.clear();
-                }
-                for(int i=0;i<thinkInterval;i++) 
-                {
-                    n.cycles(1);
-                }
-                Thread.sleep(10);
-                h++;
 
-                int repeat = 500;
-                signal  = (float)Math.sin(freq * (k/2%500) - Math.PI/2) * 0.5f + 0.5f;
-                
-                int time = (int) (n.time() / thinkInterval);
-                int val2=(int)(((int)(((signal)*discretization))*(10.0/discretization)));
-                //System.out.println("observed "+val);
-                int tmp = val2;
-                if(!pause && val2 != lastOrival) {
-                    float noise_amp = 0.5f;
-                    val2+=(rnd.nextDouble()*noise_amp*0.5f-noise_amp*0.25f); //noise
-                }
-                lastOrival = tmp;
-                final int val = val2;
-                
-                lastInput = "<{"+val+"} --> value>. :|:";
-                if(k % repeat == 0 && k!=0) 
-                {
-                    pause = true;
-                    n.memory.seq_current.clear(); //new run
-                }
-                if(!pause && !saved.isEmpty()) {
-                    chg.set(saved);
-                    saved = "";
-                }
-                
-                observed.add(time, val/10.0);
-                
-                int curval = val;
-                if(QUAnswers.containsKey(val)) {
-                    curval = QUAnswers.get(val);
-                }
-                int curtime = time;
-                int hh=0;
-                //QUShift.put(0, repeat);
-                //if(!QUShift.containsKey(8))
-                //    QUShift.put(8, 1);
-                //QUAnswers.put(8, 0); //end to start link is fixed
-                while(QUAnswers.containsKey(curval)) {
-                    int shift = QUShift.get(curval) / thinkInterval;
-                    for(int i=0;i<shift;i++) {
-                        predicted.add(curtime +i, (curval)/10.0);
-                        pred.customColor.put(curtime+i, Color.RED.getRGB());
-                        pred.customColor.put(curtime+i+1, Color.RED.getRGB());
-                    }
-                    curtime = curtime+shift;
-                    
-                    curval = QUAnswers.get(curval);
-                    if(curval == 0) {
-                        break;
-                    }
-                    hh++;
-                    if(hh>discretization*2) {
-                        break;
-                    }
-                }
-                
-                //if(!positionTruthExp.containsKey(time)) { //keep pred line up to date
-                    //but don't overwrite predictions
-                     predicted.add(time, val/10.0);
-                //}
+            n.cycles(thinkInterval);
+            Thread.sleep(30);
+            
+            signal  = (float)Math.sin(freq * n.time()) * 0.5f + 0.5f;
+            observed.add((int) n.time()/thinkInterval, signal);
 
-                if(true) {
-                    chg.set(lastInput);
-                    if(!pause) {
-                    } else {
-                        saved = lastInput;
-                    }
-                    //n.addInput(lastInput);
-                    String S = "<(&/,"+"<{"+val+"} --> value>,?I1) =/> ?what>";
-                    if(!qus.contains(S)) {
-                        //n.addInput(S);
-                        AnswerHandler cur = new AnswerHandler() 
-                        {
-                            @Override
-                            public void onSolution(Sentence belief) {
-                                //System.out.println("solution: " + belief);
-                                System.out.println(belief);
-                                String rpart = belief.toString().split("=/>")[1];
-                                Prediction(belief, rpart,-1, val);
-                            }
-                        };
-                    
-                        try {
-                            //if(truecnt%10 == 0) {
-                                qus.add(S);
-                                n.askNow(S, cur);
-                            //}
-                        } catch (Narsese.InvalidInputException ex) {
-                            Logger.getLogger(Predict_NARS_Core.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-                        
-                           
-                   }
-                }
-                    
-                if(h>20) 
-                {
-                    pause = false;
-                }
-            }while(pause);
-            k+=steps;
+            predictions[0].setData(0, maxval);
+            int val=(int)(((int)((signal*discretization))*(10.0/discretization)));
+            n.addInput("<{x} --> y"+val+">. :|:");
+
         }
-
     }
 }
