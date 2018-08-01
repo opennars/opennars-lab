@@ -61,9 +61,9 @@ public class Predict_NARS_Core {
     public static void main(String[] args) throws InterruptedException, IOException, InstantiationException, InvocationTargetException, 
             NoSuchMethodException, ParserConfigurationException, IllegalAccessException, SAXException, ClassNotFoundException, ParseException {
 
-        int duration = 8;
+        int duration = 10;
         float freq = 1.0f / duration * 0.1f;        
-        double discretization = 5;
+        double discretization = 3;
 
         final Nar n = new Nar();
         n.narParameters.VOLUME = 0;
@@ -124,8 +124,6 @@ public class Predict_NARS_Core {
         );
 
         new NWindow("_", new PCanvas(tc)).show(800, 800, true);
-
-        n.cycles((int)discretization*4);
         
         NARSwing.themeInvert();
 
@@ -137,8 +135,7 @@ public class Predict_NARS_Core {
 
             n.cycles(thinkInterval);
             Thread.sleep(30);
-            
-            signal  = (float)Math.sin(freq * n.time()) * 0.5f + 0.5f;
+            signal  = ((float)Math.sin(freq * n.time()) * 0.5f + 0.5f);
             observed.add((int) n.time()/thinkInterval, signal);
 
             predictions[0].setData(0, maxval);
