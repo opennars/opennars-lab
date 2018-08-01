@@ -448,7 +448,7 @@ public class Launcher extends javax.swing.JFrame {
         try {
             org.opennars.lab.predict.Predict_NARS_Core.main(null);
             this.dispose();
-        } catch (InterruptedException ex) {
+        } catch (Exception ex) {
             Logger.getLogger(Launcher.class.getName()).log(Level.SEVERE, null, ex);
         }
         
