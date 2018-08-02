@@ -14,10 +14,10 @@
  */
 package org.opennars.lab.vision;
 
-//import boofcv.core.image.ConvertBufferedImage;
 import boofcv.alg.feature.detect.edge.CannyEdge;
 import boofcv.alg.filter.blur.BlurImageOps;
 import boofcv.alg.filter.derivative.GradientSobel;
+import boofcv.gui.image.VisualizeImageData;
 import boofcv.io.webcamcapture.UtilWebcamCapture;
 import boofcv.alg.misc.ImageMiscOps;
 import boofcv.core.image.ConvertImage;
@@ -47,30 +47,33 @@ import org.opennars.plugin.perception.VisionChannel;
 
 /**
  *
- * @author patrick.hammer
+ * @author Patrick Hammer
  */
 public class RasterHierachy extends JPanel {
-    // The number of rasters to calculate.
+    /** The number of rasters to calculate. */
     int numberRasters;
 
 
-    // The dimensions of the input frame.
+    /** The dimensions of the input frame. */
     int frameWidth, frameHeight;
 
-    // The number of blocks to divide the coarsest raster into.
+    /** The number of blocks to divide the coarsest raster into. */
     int divisions;
 
-    // The scaling factor for each raster in the hierarchy.
+    /** The scaling factor for each raster in the hierarchy. */
     int scalingFactor;
 
     // The center of the region of focus
     //Point2D_I32 focusPoint = new Point2D_I32();
 
-    // Image for visualization
+    /** Image for visualization */
     BufferedImage workImage;
 
-    // Window for visualization
+    /** Window for visualization */
     JFrame window;
+
+    int focusX = 0;
+    int focusY = 0;
 
     /**
      * Configure the Raster Hierarchy
@@ -98,6 +101,8 @@ public class RasterHierachy extends JPanel {
         window.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     }
 
+
+
     /**
      * Set the focus to the given location.  All rasters (other than the most coarse-grained) are centered on
      * this point.
@@ -105,23 +110,14 @@ public class RasterHierachy extends JPanel {
      * @param x The x-coordinate of the focal point
      * @param y The y-coordinate of the focal point
      */
-    int focusX = 0;
-    int focusY = 0;
-    public void setFocus(int x, int y)
-    {
+    public void setFocus(int x, int y) {
         focusX = x;
         focusY = y;
     }
 
-    /**
-     * Generate the raster hierarchy for a given image.
-     * C
-     * @param input The image to rasterize
-     * @return The rasterized image.
-     */
-    int updaterate=1; //1ß
+    int updaterate=1;
     int cnt=1;
-    static int arrsz=1000; //todo refine
+
     HashMap<Integer,Float> lastvalR=new HashMap<>();
     HashMap<Integer,Float> lastvalG=new HashMap<>();
     HashMap<Integer,Float> lastvalB=new HashMap<>();
@@ -182,9 +178,6 @@ public class RasterHierachy extends JPanel {
             GradientSobel.process(blurred, derivX, derivY, FactoryImageBorderAlgs.extend(unweighted));
 
             // display the results
-            //BufferedImage outputImage = VisualizeImageData.colorizeGradient(derivX, derivY, -1);
-            //panel.addImage(outputImage,"Procedural Fixed Type");
-
             for(int i=0; i<image.width; i++) {
                 for(int j=0; j<image.height; j++) {
                     Result.set(i, j, Math.max(derivX.get(i, j), derivY.get(i, j)));
@@ -192,6 +185,7 @@ public class RasterHierachy extends JPanel {
             }
         } else {
             CannyEdge<GrayU8,GrayS16> canny = FactoryEdgeDetectors.canny(5,true, true, GrayU8.class, GrayS16.class);
+
             // The edge image is actually an optional parameter.  If you don't need it just pass in null
             canny.process(unweighted,0.1f,0.2f,Result);
             for(int i=0; i<image.width; i++) {
@@ -199,7 +193,6 @@ public class RasterHierachy extends JPanel {
                     if(Result.get(i, j) != 0) {
                         Result.set(i, j, 255);
                     }
-                    //Result.set(i, j, Result.get(i, j)*500);
                 }
             }
         }
@@ -303,19 +296,19 @@ public class RasterHierachy extends JPanel {
                         float USED_Y = 2.0f*(used_Y / (float) (res-1))-1.0f;
                         String st="<{M["+ String.valueOf(USED_X)+","+String.valueOf(USED_Y)+"]} --> [WHITE]>. :|: %"+String.valueOf(fred)+"%";
                         nar.addInput(st);
-                        //nar.cycles(10);
                     }
+
                     // Here we can generate NAL, since we know all of the required values.
-                    //if(step == numberRasters) {
+                    if(true /*|| step == numberRasters*/) {
                         ImageMiscOps.fillRectangle(output.getBand(0), red, x, y, blockXSize, blockYSize);
                         ImageMiscOps.fillRectangle(output.getBand(1), green, x, y, blockXSize, blockYSize);
                         ImageMiscOps.fillRectangle(output.getBand(2), blue, x, y, blockXSize, blockYSize);
-                    //}
+                    }
                 }
             }
         }
 
-        //search for maximum vote to move heuristic
+        // search for maximum vote to move heuristic
         if(putin) {
             Value maxvalue = null;
             float threshold = 0.05f;
@@ -409,7 +402,7 @@ public class RasterHierachy extends JPanel {
         //RasterHierarchy rh = new RasterHierarchy(8, 640, 480, 12, 2);
         // RasterHierarchy rh = new RasterHierarchy(3, 640, 480, 5, 2);
         nar = new Nar();
-        res = resolution; //determined according to resolution, don't change, but needs to be changed if resolution changes
+        res = resolution; // determined according to resolution, don't change, but needs to be changed if resolution changes
         chan = new VisionChannel("WHITE", nar, nar, res, res, res*res, 0.5f, 12);
         nar.addPlugin(chan);
         nar.narParameters.VOLUME = 0;
