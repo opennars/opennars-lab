@@ -51,29 +51,49 @@ import org.opennars.plugin.perception.VisionChannel;
  */
 public class RasterHierachy extends JPanel {
     /** The number of rasters to calculate. */
-    int numberRasters;
+    private int numberRasters;
 
 
     /** The dimensions of the input frame. */
-    int frameWidth, frameHeight;
+    private int frameWidth, frameHeight;
 
     /** The number of blocks to divide the coarsest raster into. */
-    int divisions;
+    private int divisions;
 
     /** The scaling factor for each raster in the hierarchy. */
-    int scalingFactor;
+    private int scalingFactor;
 
     // The center of the region of focus
     //Point2D_I32 focusPoint = new Point2D_I32();
 
     /** Image for visualization */
-    BufferedImage workImage;
+    private BufferedImage workImage;
 
     /** Window for visualization */
-    JFrame window;
+    private JFrame window;
 
-    int focusX = 0;
-    int focusY = 0;
+    private int focusX = 0;
+    private int focusY = 0;
+
+
+    private int updaterate=1;
+    private int cnt=1;
+
+    private boolean even = false;
+
+
+    private HashMap<Integer,Float> lastvalR=new HashMap<>();
+    private HashMap<Integer,Float> lastvalG=new HashMap<>();
+    private HashMap<Integer,Float> lastvalB=new HashMap<>();
+    private HashMap<Integer,Value> voter=new HashMap<>();
+
+
+
+    static int resolution = 20; // is reseted on change
+    static int res = 0;
+    static Nar nar;
+    static VisionChannel chan = null;
+
 
     /**
      * Configure the Raster Hierarchy
@@ -84,8 +104,7 @@ public class RasterHierachy extends JPanel {
      * @param divisions The number of blocks to divide the coarsest grained raster into
      * @param scalingFactor The scaling factor for each raster in the heirarchy.
      */
-    public  RasterHierachy(int numberRasters, int frameWidth, int frameHeight, int divisions, int scalingFactor)
-    {
+    public RasterHierachy(int numberRasters, int frameWidth, int frameHeight, int divisions, int scalingFactor) {
         this.numberRasters = numberRasters;
         this.frameWidth = frameWidth;
         this.frameHeight = frameHeight;
@@ -115,31 +134,7 @@ public class RasterHierachy extends JPanel {
         focusY = y;
     }
 
-    int updaterate=1;
-    int cnt=1;
-
-    HashMap<Integer,Float> lastvalR=new HashMap<>();
-    HashMap<Integer,Float> lastvalG=new HashMap<>();
-    HashMap<Integer,Float> lastvalB=new HashMap<>();
-    HashMap<Integer,Value> voter=new HashMap<>();
-
-    public class Value
-    {
-        public int x;
-        public int y;
-        public int r;
-        public double value;
-        public Value(int r, int x, int y, double value) {
-            this.x=x;
-            this.y=y;
-            this.r=r;
-            this.value=value;
-        }
-    }
-
-    boolean even = false;
-    public BufferedImage rasterizeImage(BufferedImage input)
-    {
+    public BufferedImage rasterizeImage(BufferedImage input) {
         voter = new HashMap<>();
         boolean putin=false; //vladimir
         cnt--;
@@ -368,7 +363,7 @@ public class RasterHierachy extends JPanel {
                         yy = 0;
                 }
                 this.setFocus(xx, yy);
-                */
+                //*/
             input = webcam.getImage();
 
             synchronized( workImage ) {
@@ -393,10 +388,6 @@ public class RasterHierachy extends JPanel {
         }
     }
 
-    static int resolution = 20; //on change re-set res!!
-    static int res = 0;
-    static Nar nar;
-    static VisionChannel chan = null;
     public static void main(String[] args) throws Exception {
 
         //RasterHierarchy rh = new RasterHierarchy(8, 640, 480, 12, 2);
@@ -409,15 +400,12 @@ public class RasterHierachy extends JPanel {
         NARSwing.themeInvert();
         NARSwing swing = new NARSwing(nar);
         
-        nar.event(new EventObserver() {
-            @Override
-            public void event(Class event, Object[] args) {
-                if(event == IN.class) {
-                    Task task = (Task) args[0];
-                    Inheritance inh = (Inheritance) task.getTerm();
-                    Term subj = inh.getSubject();
-                    //TODO visualize re-detected prototype for the user
-                }
+        nar.event((event, args1) -> {
+            if(event == IN.class) {
+                Task task = (Task) args1[0];
+                Inheritance inh = (Inheritance) task.getTerm();
+
+                //TODO visualize re-detected prototype for the user
             }
         }, true, IN.class);
         // nar.start(0);
@@ -449,5 +437,19 @@ public class RasterHierachy extends JPanel {
 
     public void setScalingFactor(int scalingFactor) {
         this.scalingFactor = scalingFactor;
+    }
+
+    public class Value {
+        public int x;
+        public int y;
+        public int r;
+        public double value;
+
+        public Value(int r, int x, int y, double value) {
+            this.x=x;
+            this.y=y;
+            this.r=r;
+            this.value=value;
+        }
     }
 }
