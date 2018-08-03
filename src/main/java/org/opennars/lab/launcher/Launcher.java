@@ -30,6 +30,8 @@ import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.SwingUtilities;
 import javax.xml.parsers.ParserConfigurationException;
+
+import org.opennars.io.ConfigReader;
 import org.opennars.main.Nar;
 import org.opennars.gui.NARSwing;
 import org.opennars.web.httpnar.NARServer;
@@ -42,7 +44,7 @@ import org.xml.sax.SAXException;
 public class Launcher extends javax.swing.JFrame {
 
     public static File resource(String path) {
-        ClassLoader classloader = Thread.currentThread().getContextClassLoader();
+        ClassLoader classloader = Launcher.class.getClassLoader();
         try {
             return new File(classloader.getResource("./launcher/"+path).toURI());
         } catch (URISyntaxException ex) {
@@ -56,7 +58,7 @@ public class Launcher extends javax.swing.JFrame {
      */
     public Launcher() {
         initComponents();
-        ClassLoader classloader = Thread.currentThread().getContextClassLoader();
+        ClassLoader classloader = Launcher.class.getClassLoader();
         jLabel1.setIcon(new ImageIcon(classloader.getResource("./launcher/opennars_logo.png")));
 
         this.setTitle("OpenNARS Launcher");
@@ -109,7 +111,7 @@ public class Launcher extends javax.swing.JFrame {
         }
         
         try {
-            BufferedImage myPicture = ImageIO.read(resource("NLP.png"));
+            BufferedImage myPicture = ImageIO.read(resource("nlp.png"));
             jLabel10.setIcon(new ImageIcon(myPicture));
             
         } catch (IOException ex) {
