@@ -301,7 +301,11 @@ public class LanguageGUI extends javax.swing.JFrame {
                             inp = "<"+s + " --> "+p + ">" + punct;
                         }
                         reasonerNAR.stop();
-                        reasonerNAR.addInput(inp+ " " + (isQuestion ? "" : belief.truth.toString()));
+                        try {
+                            reasonerNAR.addInput(inp+ " " + (isQuestion ? "" : belief.truth.toString()));
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                        }
                         reasonerNAR.start(0);
                     }
                 };
@@ -321,7 +325,12 @@ public class LanguageGUI extends javax.swing.JFrame {
                         String s = considerQWord(concepts[1],qWords).toUpperCase();
                         String inp = "<"+s + " --> " + attribute + ">" + punct;
                         reasonerNAR.stop();
-                        reasonerNAR.addInput(inp+ " " + (isQuestion ? "" : belief.truth.toString()));
+                        try
+                        {
+                            reasonerNAR.addInput(inp+ " " + (isQuestion ? "" : belief.truth.toString()));
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                        }
                         reasonerNAR.start(0);
                     }
                 };
