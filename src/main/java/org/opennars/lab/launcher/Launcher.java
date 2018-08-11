@@ -387,7 +387,7 @@ public class Launcher extends javax.swing.JFrame {
      */
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {                                         
         try {
-            Desktop.getDesktop().browse(new URI("http://code.google.com/p/open-org.opennars/"));
+            Desktop.getDesktop().browse(new URI("http://opennars.github.io/"));
         } catch (IOException | URISyntaxException ex) {
             Logger.getLogger(Launcher.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -428,9 +428,10 @@ public class Launcher extends javax.swing.JFrame {
      */
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {                                         
         try {
-            NARServer.main(new String[]{"9999", "localhost", "9100", "1000"});
+            NARServer.main(new String[]{"null", "null", "null", "null", "9999"});
             Desktop.getDesktop().browse(new URI("http://127.0.0.1:9999"));
         } catch (Exception ex) {
+            Logger.getLogger(Launcher.class.getName()).log(Level.SEVERE, null, ex);
         }
     }                                        
 
