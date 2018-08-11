@@ -22,6 +22,9 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -32,8 +35,11 @@ import java.util.logging.Logger;
 import org.opennars.main.Nar;
 import org.opennars.entity.Sentence;
 import org.opennars.gui.NARSwing;
+import org.opennars.io.ConfigReader;
 import org.opennars.io.events.AnswerHandler;
 import org.opennars.storage.Memory;
+import com.google.common.io.Resources;
+import java.io.InputStream;
 
 /**
  *
@@ -41,15 +47,39 @@ import org.opennars.storage.Memory;
  */
 public class LanguageGUI extends javax.swing.JFrame {
 
+    //from https://stackoverflow.com/questions/309424/read-convert-an-inputstream-to-a-string
+    static String convertStreamToString(java.io.InputStream is) {
+        java.util.Scanner s = new java.util.Scanner(is).useDelimiter("\\A");
+        return s.hasNext() ? s.next() : "";
+    }
+    
     /**
      * Creates new form LanguageGUI
      */
     public LanguageGUI() throws Exception {
         initComponents();
         
-        String everything;
+        String everything = "";
         try {
-            everything = new Scanner(new File("./src/main/java/org/opennars/lab/language/language_knowledge.nal")).useDelimiter("\\Z").next();
+            File f = null;
+            f = new File("./language/language_knowledge.nal"); //load from file
+            if(!f.exists()) {
+                //else from resources
+                
+                URL n = Resources.getResource("language/language_knowledge.nal");
+                try {
+                    System.out.println(n.toURI().toString());
+                    URLConnection connection = n.openConnection();
+                    InputStream stream = connection.getInputStream();
+                    everything = convertStreamToString(stream);
+                } catch (URISyntaxException ex) {
+                    Logger.getLogger(ConfigReader.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                
+            } else {
+                everything = new Scanner(new File("./src/main/java/org/opennars/lab/language/language_knowledge.nal")).useDelimiter("\\Z").next();
+            }
+            
             jTextPane1.setText(everything);
         } catch (FileNotFoundException ex) {
             Logger.getLogger(LanguageGUI.class.getName()).log(Level.SEVERE, null, ex);
