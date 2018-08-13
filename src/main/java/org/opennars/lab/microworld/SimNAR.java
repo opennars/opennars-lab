@@ -1347,9 +1347,9 @@ public class SimNAR extends Frame {
             //mem.simulate_damping=0.90;
             //size(worldSize-200,worldSize-200);
             hamlib.Init(false);
-            im[0]=loadImage("./src/main/java/org/opennars/lab/microworld/agent.png");
-            im[1]=loadImage("./src/main/java/org/opennars/lab/microworld/food.png");
-            im[2]=loadImage("./src/main/java/org/opennars/lab/microworld/fire.png");
+            im[0]=loadImage("microworld/agent.png");
+            im[1]=loadImage("microworld/food.png");
+            im[2]=loadImage("microworld/fire.png");
             for(int i=0;i<1;i++)
             {
                 try {

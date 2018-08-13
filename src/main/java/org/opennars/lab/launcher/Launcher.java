@@ -14,6 +14,7 @@
  */
 package org.opennars.lab.launcher;
 
+import com.google.common.io.Resources;
 import java.awt.Desktop;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -22,19 +23,19 @@ import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.text.ParseException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
-import javax.swing.SwingUtilities;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.opennars.io.ConfigReader;
 import org.opennars.main.Nar;
 import org.opennars.gui.NARSwing;
+import org.opennars.io.ConfigReader;
 import org.opennars.lab.predict.Predict_NARS_Core;
-import org.opennars.web.httpnar.NARServer;
 import org.xml.sax.SAXException;
 
 /**
@@ -43,11 +44,17 @@ import org.xml.sax.SAXException;
  */
 public class Launcher extends javax.swing.JFrame {
 
-    public static File resource(String path) {
-        ClassLoader classloader = Launcher.class.getClassLoader();
+    public static InputStream resource(String path) {
+        URL n = Resources.getResource(path);
+        URLConnection connection = null;
         try {
-            return new File(classloader.getResource("./launcher/" + path).toURI());
-        } catch (URISyntaxException ex) {
+            connection = n.openConnection();
+        } catch (IOException ex) {
+            Logger.getLogger(Launcher.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        try {
+            return connection.getInputStream();
+        } catch (IOException ex) {
             Logger.getLogger(Launcher.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
@@ -58,8 +65,9 @@ public class Launcher extends javax.swing.JFrame {
      */
     public Launcher() {
         initComponents();
+        jButton3.setVisible(false);
         ClassLoader classloader = Launcher.class.getClassLoader();
-        jLabel1.setIcon(new ImageIcon(classloader.getResource("./launcher/opennars_logo.png")));
+        jLabel1.setIcon(new ImageIcon(classloader.getResource("launcher/opennars_logo.png")));
 
         this.setTitle("OpenNARS Launcher");
         /*try {
@@ -71,7 +79,7 @@ public class Launcher extends javax.swing.JFrame {
         }*/
 
         try {
-            BufferedImage myPicture = ImageIO.read(resource("testchamber.png"));
+            BufferedImage myPicture = ImageIO.read(resource("launcher/testchamber.png"));
             jLabel6.setIcon(new ImageIcon(myPicture));
 
         } catch (IOException ex) {
@@ -101,7 +109,7 @@ public class Launcher extends javax.swing.JFrame {
             Logger.getLogger(Launcher.class.getName()).log(Level.SEVERE, null, ex);
         }*/
         try {
-            BufferedImage myPicture = ImageIO.read(resource("pong.png"));
+            BufferedImage myPicture = ImageIO.read(resource("launcher/pong.png"));
             jLabel9.setIcon(new ImageIcon(myPicture));
 
         } catch (IOException ex) {
@@ -109,7 +117,7 @@ public class Launcher extends javax.swing.JFrame {
         }
 
         try {
-            BufferedImage myPicture = ImageIO.read(resource("nlp.png"));
+            BufferedImage myPicture = ImageIO.read(resource("launcher/nlp.png"));
             jLabel10.setIcon(new ImageIcon(myPicture));
 
         } catch (IOException ex) {
@@ -117,7 +125,7 @@ public class Launcher extends javax.swing.JFrame {
         }
 
         try {
-            BufferedImage myPicture = ImageIO.read(resource("microworld.png"));
+            BufferedImage myPicture = ImageIO.read(resource("launcher/microworld.png"));
             jLabel11.setIcon(new ImageIcon(myPicture));
 
         } catch (IOException ex) {
@@ -379,7 +387,7 @@ public class Launcher extends javax.swing.JFrame {
      */
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {                                         
         try {
-            Desktop.getDesktop().browse(new URI("http://code.google.com/p/open-org.opennars/"));
+            Desktop.getDesktop().browse(new URI("http://opennars.github.io/"));
         } catch (IOException | URISyntaxException ex) {
             Logger.getLogger(Launcher.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -419,11 +427,12 @@ public class Launcher extends javax.swing.JFrame {
      * @param evt
      */
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {                                         
-        try {
-            NARServer.main(new String[]{"9999", "localhost", "9100", "1000"});
+        /*try {
+            NARServer.main(new String[]{"null", "null", "null", "null", "9999"});
             Desktop.getDesktop().browse(new URI("http://127.0.0.1:9999"));
         } catch (Exception ex) {
-        }
+            Logger.getLogger(Launcher.class.getName()).log(Level.SEVERE, null, ex);
+        }*/
     }                                        
 
     /**
