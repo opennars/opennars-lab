@@ -39,6 +39,7 @@ import org.opennars.io.ConfigReader;
 import org.opennars.io.events.AnswerHandler;
 import org.opennars.storage.Memory;
 import com.google.common.io.Resources;
+import java.io.IOException;
 import java.io.InputStream;
 
 /**
@@ -48,7 +49,7 @@ import java.io.InputStream;
 public class LanguageGUI extends javax.swing.JFrame {
 
     //from https://stackoverflow.com/questions/309424/read-convert-an-inputstream-to-a-string
-    static String convertStreamToString(java.io.InputStream is) {
+    static String convertStreamToString(InputStream is) {
         java.util.Scanner s = new java.util.Scanner(is).useDelimiter("\\A");
         return s.hasNext() ? s.next() : "";
     }
@@ -61,23 +62,15 @@ public class LanguageGUI extends javax.swing.JFrame {
         
         String everything = "";
         try {
-            File f = null;
-            f = new File("./language/language_knowledge.nal"); //load from file
+            File f = new File("./language/language_knowledge.nal"); //load from file
             if(!f.exists()) {
                 //else from resources
                 
-                URL n = Resources.getResource("language/language_knowledge.nal");
-                try {
-                    System.out.println(n.toURI().toString());
-                    URLConnection connection = n.openConnection();
-                    InputStream stream = connection.getInputStream();
-                    everything = convertStreamToString(stream);
-                } catch (URISyntaxException ex) {
-                    Logger.getLogger(ConfigReader.class.getName()).log(Level.SEVERE, null, ex);
-                }
+                String res = "language/language_knowledge.nal";
+                everything = resourceFileContent(res);
                 
             } else {
-                everything = new Scanner(new File("./src/main/java/org/opennars/lab/language/language_knowledge.nal")).useDelimiter("\\Z").next();
+                everything = new Scanner(f).useDelimiter("\\Z").next();
             }
             
             jTextPane1.setText(everything);
@@ -102,6 +95,20 @@ public class LanguageGUI extends javax.swing.JFrame {
         languageNAR.narParameters.VOLUME = 0;
         reasonerNAR.narParameters.VOLUME = 0;
         reasonerNAR.start(0);
+    }
+
+    public static String resourceFileContent(String res) throws IOException {
+        String everything = "";
+        URL n = Resources.getResource(res);
+        try {
+            System.out.println(n.toURI().toString());
+            URLConnection connection = n.openConnection();
+            InputStream stream = connection.getInputStream();
+            everything = convertStreamToString(stream);
+        } catch (URISyntaxException ex) {
+            Logger.getLogger(ConfigReader.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return everything;
     }
 
     /**

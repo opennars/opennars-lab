@@ -91,11 +91,6 @@
             <version>3.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <groupId>org.opennars</groupId>
-            <artifactId>opennars-web</artifactId>
-            <version>3.0.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
             <groupId>org.encog</groupId>
             <artifactId>encog-core</artifactId>
             <version>3.4</version>

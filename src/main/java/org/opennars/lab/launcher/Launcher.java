@@ -36,7 +36,6 @@ import org.opennars.main.Nar;
 import org.opennars.gui.NARSwing;
 import org.opennars.io.ConfigReader;
 import org.opennars.lab.predict.Predict_NARS_Core;
-import org.opennars.web.httpnar.NARServer;
 import org.xml.sax.SAXException;
 
 /**
@@ -66,6 +65,7 @@ public class Launcher extends javax.swing.JFrame {
      */
     public Launcher() {
         initComponents();
+        jButton3.setVisible(false);
         ClassLoader classloader = Launcher.class.getClassLoader();
         jLabel1.setIcon(new ImageIcon(classloader.getResource("launcher/opennars_logo.png")));
 
@@ -427,12 +427,12 @@ public class Launcher extends javax.swing.JFrame {
      * @param evt
      */
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {                                         
-        try {
+        /*try {
             NARServer.main(new String[]{"null", "null", "null", "null", "9999"});
             Desktop.getDesktop().browse(new URI("http://127.0.0.1:9999"));
         } catch (Exception ex) {
             Logger.getLogger(Launcher.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        }*/
     }                                        
 
     /**
