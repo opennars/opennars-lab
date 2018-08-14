@@ -372,11 +372,15 @@ public class RasterHierachy extends JPanel {
                 // copy the latest image into the work buffer
                 Graphics2D g2 = workImage.createGraphics();
 
-                buffered = this.rasterizeImage(input);
-                g2.drawImage(buffered,0,0,null);
+                if(input != null) {
+                    buffered = this.rasterizeImage(input);
+                    g2.drawImage(buffered,0,0,null);
+                }
             }
 
-            repaint();
+            if(input != null) {
+                repaint();
+            }
         }
     }
 
