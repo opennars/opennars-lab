@@ -278,7 +278,7 @@ public class RasterHierachy extends JPanel {
                         double diff = Math.abs(fred - (lastvalR.get(key))) + Math.abs(fgreen - (lastvalG.get(key))) + Math.abs(fblue - (lastvalB.get(key)));
                         double vote = diff * area;// / area;
                         // vote*=step;
-                        voter.put(key, new Value(step, x + blockXSize / 2, y + blockYSize / 2, vote));
+                        voter.put(key, new Value(step, x, y, vote));
                     }
                     lastvalR.put(key, fred);
                     lastvalG.put(key, fgreen);
@@ -317,7 +317,9 @@ public class RasterHierachy extends JPanel {
 
             if (maxvalue != null && maxvalue.x!=0 && maxvalue.y!=0) {
                 this.setFocus((this.focusX+(maxvalue.x+regionWidth/2))/2, (this.focusY+(maxvalue.y+regionHeight/2))/2);
-                chan.setFocus(this.focusX, this.focusY);
+                System.out.println(maxvalue.x + " " + maxvalue.y);
+                chan.setFocus((int) (((float) this.focusX)/((float) RasterHierachy.resX) * (float) res), 
+                              (int) (((float) this.focusY)/((float) RasterHierachy.resY) * (float) res)); //here, use max. image pt directly, not making use of region knowledge
                 // this.setFocus(maxvalue.x, maxvalue.y);
             }
         }
@@ -388,12 +390,14 @@ public class RasterHierachy extends JPanel {
         }
     }
 
+    public static int resX = 640;
+    public static int resY = 480;
     public static void main(String[] args) throws Exception {
 
         //RasterHierarchy rh = new RasterHierarchy(8, 640, 480, 12, 2);
         // RasterHierarchy rh = new RasterHierarchy(3, 640, 480, 5, 2);
         nar = new Nar();
-        res = resolution; // determined according to resolution, don't change, but needs to be changed if resolution changes
+        res = resolution;
         chan = new VisionChannel("WHITE", nar, nar, res, res, res*res, 0.5f, 12);
         nar.addPlugin(chan);
         nar.narParameters.VOLUME = 0;
@@ -410,7 +414,7 @@ public class RasterHierachy extends JPanel {
         }, true, IN.class);
         // nar.start(0);
 
-        RasterHierachy rh = new RasterHierachy(2, 640, 480, resolution, 3); //new RasterHierachy(3, 640, 480, 8, 3);
+        RasterHierachy rh = new RasterHierachy(2, resX, resY, resolution, 3); //new RasterHierachy(3, 640, 480, 8, 3);
 
         rh.process();
     }
