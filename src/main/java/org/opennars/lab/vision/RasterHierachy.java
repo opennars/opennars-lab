@@ -349,24 +349,6 @@ public class RasterHierachy extends JPanel {
         //int counter = 0;
 
         while( true ) {
-            /*
-             * This section is used to scan the focal point across the frame
-             * automatically - just for demo purposes.
-             */
-            boolean enableExperimentalScan = false;
-            if (enableExperimentalScan) {
-                int xx = focusX;
-                int yy = focusY;
-                xx += 1;
-                if (xx > frameWidth) {
-                    xx = 0;
-                    yy += 1;
-                    if (yy > frameHeight)
-                        yy = 0;
-                }
-                this.setFocus(xx, yy);
-            }
-
             input = webcam.getImage();
 
             synchronized( workImage ) {
