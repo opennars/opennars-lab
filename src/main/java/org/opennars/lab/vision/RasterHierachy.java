@@ -136,10 +136,10 @@ public class RasterHierachy extends JPanel {
 
     public BufferedImage rasterizeImage(BufferedImage input) {
         voter = new HashMap<>();
-        boolean putin=false; //vladimir
+
         cnt--;
+        boolean putIn = cnt==0;
         if(cnt==0) {
-            putin = true;
             cnt=updaterate;
         }
 
@@ -272,7 +272,7 @@ public class RasterHierachy extends JPanel {
                     int brightness = (red+green+blue)/3; //maybe not needed
                     int key=step+10*x+10000*y;
 
-                    if(lastvalR.containsKey(key) && putin) {
+                    if(lastvalR.containsKey(key) && putIn) {
 
                         double area = blockXSize * blockYSize;
                         double diff = Math.abs(fred - (lastvalR.get(key))) + Math.abs(fgreen - (lastvalG.get(key))) + Math.abs(fblue - (lastvalB.get(key)));
@@ -284,7 +284,7 @@ public class RasterHierachy extends JPanel {
                     lastvalG.put(key, fgreen);
                     lastvalB.put(key, fblue);
 
-                    if(putin && step==numberRasters) { //only most finest raster
+                    if(putIn && step==numberRasters) { //only most finest raster
                         int used_X = h-1;
                         int used_Y = j-1;
                         float USED_X = 2.0f*(used_X / (float) (res-1))-1.0f;
@@ -304,7 +304,7 @@ public class RasterHierachy extends JPanel {
         }
 
         // search for maximum vote to move heuristic
-        if(putin) {
+        if(putIn) {
             Value maxvalue = null;
             float threshold = 0.05f;
             for (Integer key : voter.keySet()) {
@@ -349,23 +349,6 @@ public class RasterHierachy extends JPanel {
         //int counter = 0;
 
         while( true ) {
-            /*
-             * Uncomment this section to scan the focal point across the frame
-             * automatically - just for demo purposes.
-             */
-                /*
-                int xx = this.focusPoint.getX();
-                int yy = this.focusPoint.getY();
-                xx += 1;
-                if(xx > frameWidth)
-                {
-                    xx = 0;
-                    yy += 1;
-                    if (yy > frameHeight)
-                        yy = 0;
-                }
-                this.setFocus(xx, yy);
-                //*/
             input = webcam.getImage();
 
             synchronized( workImage ) {
