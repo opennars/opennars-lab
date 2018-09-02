@@ -1,0 +1,16 @@
+' weighted sum of all elements - used all over the place for NN's
+' TODO< we need a compact vector representation because the (NARS-term)complexity is a issue here >
+<(&&,<(*,$1,$2,$3) --> [madd]>,<(*,$1,$4,$5) --> [madd]>) =|> <(*,$1,$2,$3,$4,$5) --> [weighted]>>.
+<(&&,<(*,$1,$2,$3) --> [madd]>,<(*,$1,$4,$5) --> [madd]>,<(*,$1,$6,$7) --> [madd]>) =|> <(*,$1,$2,$3,$4,$5,$6,$7) --> [weighted]>>.
+<(&&,<(*,$1,$2,$3) --> [madd]>,<(*,$1,$4,$5) --> [madd]>,<(*,$1,$6,$7) --> [madd]>,<(*,$1,$8,$9) --> [madd]>) =|> <(*,$1,$2,$3,$4,$5,$6,$7,$8,$9) --> [weighted]>>.
+
+' multiply add  $1 = $1 + $2 * $3
+< (^pick, {SELF}, madd, $1, $2, $3) =/> <(*, $1, $2, $3) --> [madd]> >.
+
+
+' old more simpler example
+'<(*, v0, v1, v1) --> [madd]>!
+'<(*, v2, v1, v1) --> [madd]>!
+
+' request to generate the code for a weighted sum
+<(*, res0,  a0, b0, a1, b1) --> [weighted]>!
