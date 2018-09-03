@@ -26,6 +26,11 @@ public class Neuron {
         public int idx;
         public double weight;
         public boolean mark;
+
+        public OutputNeuronIndexWithWeight(final int idx, final double weight) {
+            this.idx = idx;
+            this.weight = weight;
+        }
     }
 
     public double threshold;
