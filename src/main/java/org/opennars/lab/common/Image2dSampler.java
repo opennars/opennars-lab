@@ -19,5 +19,5 @@ package org.opennars.lab.common;
  * Sampler are used to access 2d images
  */
 public interface Image2dSampler {
-    double sampleAt(double y, double x);
+    double sampleAt(final double y, final double x);
 }
