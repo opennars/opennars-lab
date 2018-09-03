@@ -65,7 +65,6 @@ public class Launcher extends javax.swing.JFrame {
      */
     public Launcher() {
         initComponents();
-        jButton3.setVisible(false);
         ClassLoader classloader = Launcher.class.getClassLoader();
         jLabel1.setIcon(new ImageIcon(classloader.getResource("launcher/opennars_logo.png")));
 
@@ -212,7 +211,7 @@ public class Launcher extends javax.swing.JFrame {
         });
 
         jButton3.setForeground(new java.awt.Color(255, 255, 254));
-        jButton3.setText("Web GUI");
+        jButton3.setText("Wiki");
         jButton3.setActionCommand("jButton1");
         jButton3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -422,17 +421,16 @@ public class Launcher extends javax.swing.JFrame {
     }                                        
 
     /**
-     * WebGui Button 3
+     * Wiki Button 3
      *
      * @param evt
      */
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {                                         
-        /*try {
-            NARServer.main(new String[]{"null", "null", "null", "null", "9999"});
-            Desktop.getDesktop().browse(new URI("http://127.0.0.1:9999"));
-        } catch (Exception ex) {
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) { 
+        try {
+            Desktop.getDesktop().browse(new URI("https://github.com/opennars/opennars/wiki"));
+        } catch (IOException | URISyntaxException ex) {
             Logger.getLogger(Launcher.class.getName()).log(Level.SEVERE, null, ex);
-        }*/
+        }
     }                                        
 
     /**
