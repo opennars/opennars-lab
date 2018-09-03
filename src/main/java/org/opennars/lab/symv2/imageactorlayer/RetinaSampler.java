@@ -24,6 +24,10 @@ import org.opennars.lab.common.Image2dSampler;
 public class RetinaSampler {
     public Image2dSampler sampler;
 
+    public RetinaSampler(final Image2dSampler sampler) {
+        this.sampler = sampler;
+    }
+
     public double[] sampleRetina(ImageActor.PositionAndOrientation positionAndOrientation) {
         double[] m=new double[3*3 + (3*3-1)];
 
