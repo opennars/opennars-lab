@@ -1,6 +1,8 @@
 ' weighted sum of all elements - used all over the place for NN's
 ' with a compact vector representation because the (NARS-term)complexity is a issue here
-<<(*,$1,$2,$3) --> [maddv]> =|> <(*,$1,$2,$3) --> [weighted]>>.
+' we need to add a bias
+<(&/, <(*,$1,$2,$3) --> [maddv]>, +1, <(*,$1,bias,$1) --> [add]>, +1) =/> <(*,$1,$2,$3) --> [weighted]>>.
+
 
 ' multiply add  $1 = $1 + $2 * $3
 < (^pick, {SELF}, madd, $1, $2, $3) =/> <(*, $1, $2, $3) --> [madd]> >.
@@ -8,10 +10,12 @@
 ' multiply add vector, result is $1, vectors are $2 and $3
 < (^pick, {SELF}, maddv, $1, $2, $3) =/> <(*, $1, $2, $3) --> [maddv]> >.
 
+' add
+< (^pick, {SELF}, add, $1, $2, $3) =/> <(*, $1, $2, $3) --> [add]> >.
 
-' old more simpler example
-'<(*, v0, v1, v1) --> [madd]>!
-'<(*, v2, v1, v1) --> [madd]>!
+
+' indirection to call an action which finishes the recording of the macro
+<(&/, <(*, res0,  a0, b0) --> [weighted]>, +10, (^pick, {SELF}, fin), +10) =/> <(*, res0,  a0, b0) --> [weighted2]> >.
 
 ' request to generate the code for a weighted sum
-<(*, res0,  a0, b0) --> [weighted]>!
+<(*, res0,  a0, b0) --> [weighted2]>!
