@@ -62,7 +62,7 @@ public class LanguageGUI extends javax.swing.JFrame {
         
         String everything = "";
         try {
-            File f = new File("./language/language_knowledge.nal"); //load from file
+            File f = new File("./nal/application/language_knowledge.nal"); //load from file
             if(!f.exists()) {
                 //else from resources
                 
