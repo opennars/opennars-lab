@@ -37,7 +37,7 @@ public class NeuralNetworkLayer {
                 neurons[iNeuron].weights = new DualNumber[numberOfWeightsOfThisNeuron];
 
                 for (int iWeightIdx=0;iWeightIdx<numberOfWeightsOfThisNeuron;iWeightIdx++) {
-                    DualNumber weight = new DualNumber(context.rng.nextDouble() * 2 - 1);
+                    DualNumber weight = new DualNumber(context.centralDistribution.sample());
                     weight.diff = Utilities.makeArrWithOnehot(context.sizeOfDiff, context.iDiffCounter);
 
                     // keep track of mapping of differential to actual weight/value

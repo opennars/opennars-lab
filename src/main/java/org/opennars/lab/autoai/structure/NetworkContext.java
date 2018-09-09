@@ -1,5 +1,6 @@
 package org.opennars.lab.autoai.structure;
 
+import org.apache.commons.math3.distribution.NormalDistribution;
 import org.opennars.lab.common.math.DualNumber;
 
 import java.util.ArrayList;
@@ -11,6 +12,8 @@ import java.util.Random;
  */
 public class NetworkContext {
     public Random rng = new Random();
+
+    public NormalDistribution centralDistribution = new NormalDistribution();
 
     /** we need to store which differentiation of any DualNumber is mapped to which value
      * we are using the index of the DualNumberDiff as a array Index
