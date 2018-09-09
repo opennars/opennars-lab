@@ -1,5 +1,6 @@
 package org.opennars.lab.autoai;
 
+import org.opennars.lab.autoai.structure.NeuralNetworkLayer;
 import org.opennars.lab.common.math.DualNumber;
 import org.opennars.lab.common.math.DualNumberHelper;
 
@@ -76,107 +77,55 @@ public class DualNumberTest1 {
 
     }
 
-    // helper to generate a vector where a index is set to 1
-    public static double[] makeArrWithOnehot(final int size, final int onehotIndex) {
-        double[] result = new double[size];
-        result[onehotIndex] = 1;
-        return result;
-    }
 
     // basic backprop with one neuron which has 3 weights
     public static void main(String[] args) {
-        Random rng = new Random();
-
-        Layer[] layers = new Layer[1];
-        layers[0] = new Layer();
-        layers[0].neurons = new Neuron[2];
-
-        int iDiffCounter = 0;
-
-        int sizeOfDiff = 0;
-
-        /** we need to store which differentiation of any DualNumber is mapped to which value
-         * we are using the index of the DualNumberDiff as a array Index
-         * */
-        List<DualNumber> mapDiffToDualNumber = new ArrayList<>();
+        NetworkContext context = new NetworkContext();
+        context.iDiffCounter = 0;
+        context.sizeOfDiff = 0;
 
 
-        for (int iState=0;iState<2;iState++) {
-            boolean countDifferentials = iState == 0;
+        NeuralNetworkLayer layer = new NeuralNetworkLayer();
+        layer.neurons = new Neuron[2];
 
-            // TODO< graph linked structures >
+        {
+            // count all differentials
+            layer.build(context, true);
 
-            for (int iNeuron = 0; iNeuron < layers[0].neurons.length; iNeuron++) {
-                int numberOfWeightsOfThisNeuron = 3;
+            context.sizeOfDiff = context.iDiffCounter;
+            context.iDiffCounter = 0;
 
-                if(countDifferentials) {
-                    iDiffCounter+=numberOfWeightsOfThisNeuron;
-                    iDiffCounter++;
-                }
-                else {
-                    layers[0].neurons[iNeuron] = new Neuron();
-                    layers[0].neurons[iNeuron].weights = new DualNumber[numberOfWeightsOfThisNeuron];
-
-                    for (int iWeightIdx=0;iWeightIdx<numberOfWeightsOfThisNeuron;iWeightIdx++) {
-                        DualNumber weight = new DualNumber(rng.nextDouble() * 2 - 1);
-                        weight.diff = makeArrWithOnehot(sizeOfDiff, iDiffCounter);
-
-                        // keep track of mapping of differential to actual weight/value
-                        mapDiffToDualNumber.add(weight);
-
-                        layers[0].neurons[iNeuron].weights[iWeightIdx] = weight;
-
-                        iDiffCounter++;
-                    }
-
-                    // bias
-                    {
-                        DualNumber bias = new DualNumber(rng.nextDouble() * 2 - 1);
-                        bias.diff = makeArrWithOnehot(sizeOfDiff, iDiffCounter);
-
-                        // keep track of mapping of differential to actual weight/value
-                        mapDiffToDualNumber.add(bias);
-
-                        layers[0].neurons[iNeuron].bias = bias;
-                        iDiffCounter++;
-
-                    }
-                }
-            }
-
-            if(countDifferentials) {
-                sizeOfDiff = iDiffCounter;
-                iDiffCounter = 0;
-            }
+            // "real" building
+            layer.build(context, false);
         }
 
         for(int iteration=0;iteration<250;iteration++) {
             DualNumber[] inputActivation = new DualNumber[3];
             inputActivation[0] = new DualNumber(1.0);
-            inputActivation[0].diff = new double[sizeOfDiff];
             inputActivation[1] = new DualNumber(0.5);
-            inputActivation[1].diff = new double[sizeOfDiff];
             inputActivation[2] = new DualNumber(0.4);
-            inputActivation[2].diff = new double[sizeOfDiff];
+            inputActivation[1].diff = new double[context.sizeOfDiff];
+            inputActivation[0].diff = new double[context.sizeOfDiff];
+            inputActivation[2].diff = new double[context.sizeOfDiff];
 
 
             DualNumber[] differences = new DualNumber[2];
 
 
-            DualNumber x = layers[0].neurons[0].computeActivation(inputActivation);
-            DualNumber activation = x; // TODO< activation function >
+            DualNumber x = layer.neurons[0].computeActivation(inputActivation);
+            DualNumber activation = layer.activationFunction(context, x);
 
             DualNumber expectedResult = new DualNumber(0.7);
-            expectedResult.diff = new double[sizeOfDiff];
+            expectedResult.diff = new double[context.sizeOfDiff];
             differences[0] = DualNumber.additiveRing(activation, expectedResult, -1);
 
 
 
-            x = layers[0].neurons[1].computeActivation(inputActivation);
-            activation = x; // TODO< activation function >
+            x = layer.neurons[1].computeActivation(inputActivation);
+            activation = layer.activationFunction(context, x);
 
             expectedResult = new DualNumber(0.1);
-            expectedResult.diff = new double[sizeOfDiff];
+            expectedResult.diff = new double[context.sizeOfDiff];
             differences[1] = DualNumber.additiveRing(activation, expectedResult, -1);
 
 
@@ -187,16 +136,16 @@ public class DualNumberTest1 {
 
             // debug weights
             if (false) {
-                System.out.println("weigth[0].=" + Double.toString(layers[0].neurons[0].weights[0].real));
-                System.out.println("weigth[1].=" + Double.toString(layers[0].neurons[0].weights[1].real));
-                System.out.println("weigth[2].=" + Double.toString(layers[0].neurons[0].weights[2].real));
-                System.out.println("bias=" + Double.toString(layers[0].neurons[0].bias.real));
+                System.out.println("weigth[0].=" + Double.toString(layer.neurons[0].weights[0].real));
+                System.out.println("weigth[1].=" + Double.toString(layer.neurons[0].weights[1].real));
+                System.out.println("weigth[2].=" + Double.toString(layer.neurons[0].weights[2].real));
+                System.out.println("bias=" + Double.toString(layer.neurons[0].bias.real));
             }
             double learnRate = 0.03;
 
             // adapt
-            for(int valueIdx=0;valueIdx<sizeOfDiff;valueIdx++) {
-                mapDiffToDualNumber.get(valueIdx).real -= (sumOfDifferences.real * sumOfDifferences.diff[valueIdx] * learnRate);
+            for(int valueIdx=0;valueIdx<context.sizeOfDiff;valueIdx++) {
+                context.mapDiffToDualNumber.get(valueIdx).real -= (sumOfDifferences.real * sumOfDifferences.diff[valueIdx] * learnRate);
             }
 
             int debugMeHere = 5;
