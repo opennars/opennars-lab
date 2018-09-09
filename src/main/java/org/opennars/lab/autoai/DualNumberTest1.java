@@ -1,12 +1,10 @@
 package org.opennars.lab.autoai;
 
+import org.opennars.lab.autoai.structure.Backpropagation;
+import org.opennars.lab.autoai.structure.NetworkContext;
 import org.opennars.lab.autoai.structure.NeuralNetworkLayer;
 import org.opennars.lab.common.math.DualNumber;
 import org.opennars.lab.common.math.DualNumberHelper;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
 
 public class DualNumberTest1 {
     public static void main2(String[] args) {
@@ -84,6 +82,8 @@ public class DualNumberTest1 {
         context.iDiffCounter = 0;
         context.sizeOfDiff = 0;
 
+        context.learnRate = 0.03;
+
 
         NeuralNetworkLayer layer = new NeuralNetworkLayer();
         layer.neurons = new Neuron[2];
@@ -135,12 +135,9 @@ public class DualNumberTest1 {
                 System.out.println("weigth[2].=" + Double.toString(layer.neurons[0].weights[2].real));
                 System.out.println("bias=" + Double.toString(layer.neurons[0].bias.real));
             }
-            double learnRate = 0.03;
 
             // adapt
-            for(int valueIdx=0;valueIdx<context.sizeOfDiff;valueIdx++) {
-                context.mapDiffToDualNumber.get(valueIdx).real -= (sumOfDifferences.real * sumOfDifferences.diff[valueIdx] * learnRate);
-            }
+            Backpropagation.backpropagate(sumOfDifferences, context);
 
             int debugMeHere = 5;
         }

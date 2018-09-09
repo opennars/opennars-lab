@@ -1,7 +1,6 @@
 package org.opennars.lab.autoai.structure;
 
 import org.opennars.lab.autoai.DualNumberTest1;
-import org.opennars.lab.autoai.NetworkContext;
 import org.opennars.lab.autoai.Utilities;
 import org.opennars.lab.common.math.DualNumber;
 
