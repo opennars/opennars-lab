@@ -85,18 +85,25 @@ public class DualNumberTest1 {
         context.learnRate = 0.03;
 
 
-        NeuralNetworkLayer layer = new NeuralNetworkLayer();
-        layer.neurons = new Neuron[2];
+        NeuralNetworkLayer layer0 = new NeuralNetworkLayer(3);
+        layer0.neurons = new Neuron[4];
+
+        NeuralNetworkLayer layer1 = new NeuralNetworkLayer(4);
+        layer1.neurons = new Neuron[2];
+
+
 
         {
             // count all differentials
-            layer.build(context, true);
+            layer0.build(context, true);
+            //layer1.build(context, true);
 
             context.sizeOfDiff = context.iDiffCounter;
             context.iDiffCounter = 0;
 
             // "real" building
-            layer.build(context, false);
+            layer0.build(context, false);
+            //layer1.build(context, false);
         }
 
         for(int iteration=0;iteration<250;iteration++) {
@@ -111,16 +118,18 @@ public class DualNumberTest1 {
 
             DualNumber[] differences = new DualNumber[2];
 
-            DualNumber[] activations = layer.activate(context, inputActivation);
-
+            DualNumber[] activationsOfPreviousLayer = inputActivation;
+            activationsOfPreviousLayer = layer0.activate(context, activationsOfPreviousLayer);
+            //activationsOfPreviousLayer = layer1.activate(context, activationsOfPreviousLayer);
+            DualNumber[] outputActivations = activationsOfPreviousLayer;
 
             DualNumber expectedResult = new DualNumber(0.7);
             expectedResult.diff = new double[context.sizeOfDiff];
-            differences[0] = DualNumber.additiveRing(activations[0], expectedResult, -1);
+            differences[0] = DualNumber.additiveRing(outputActivations[0], expectedResult, -1);
 
             expectedResult = new DualNumber(0.1);
             expectedResult.diff = new double[context.sizeOfDiff];
-            differences[1] = DualNumber.additiveRing(activations[1], expectedResult, -1);
+            differences[1] = DualNumber.additiveRing(outputActivations[1], expectedResult, -1);
 
 
             DualNumber sumOfDifferences = DualNumber.additiveRing(differences[0], differences[1], 1);
@@ -130,10 +139,10 @@ public class DualNumberTest1 {
 
             // debug weights
             if (false) {
-                System.out.println("weigth[0].=" + Double.toString(layer.neurons[0].weights[0].real));
-                System.out.println("weigth[1].=" + Double.toString(layer.neurons[0].weights[1].real));
-                System.out.println("weigth[2].=" + Double.toString(layer.neurons[0].weights[2].real));
-                System.out.println("bias=" + Double.toString(layer.neurons[0].bias.real));
+                System.out.println("weigth[0].=" + Double.toString(layer0.neurons[0].weights[0].real));
+                System.out.println("weigth[1].=" + Double.toString(layer0.neurons[0].weights[1].real));
+                System.out.println("weigth[2].=" + Double.toString(layer0.neurons[0].weights[2].real));
+                System.out.println("bias=" + Double.toString(layer0.neurons[0].bias.real));
             }
 
             // adapt

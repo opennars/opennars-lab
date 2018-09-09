@@ -13,6 +13,12 @@ public class NeuralNetworkLayer {
     /**  */
     public DualNumberTest1.Neuron[] neurons;
 
+    public final int inputWidth;
+
+    public NeuralNetworkLayer(final int inputWidth) {
+        this.inputWidth = inputWidth;
+    }
+
     /**
      * @param context
      * @param countDifferentials
@@ -20,7 +26,7 @@ public class NeuralNetworkLayer {
     // called at setup time
     public void build(NetworkContext context, final boolean countDifferentials) {
         for (int iNeuron = 0; iNeuron < neurons.length; iNeuron++) {
-            int numberOfWeightsOfThisNeuron = 3;
+            int numberOfWeightsOfThisNeuron = inputWidth;
 
             if(countDifferentials) {
                 context.iDiffCounter+=numberOfWeightsOfThisNeuron;
