@@ -115,18 +115,17 @@ public class DualNumberTest1 {
         }
 
         for(int iteration=0;iteration<500;iteration++) {
-            DualNumber[] inputActivation = new DualNumber[3];
-            inputActivation[0] = new DualNumber(1.0);
-            inputActivation[1] = new DualNumber(0.5);
-            inputActivation[2] = new DualNumber(0.4);
-            inputActivation[1].diff = new double[context.sizeOfDiff];
-            inputActivation[0].diff = new double[context.sizeOfDiff];
-            inputActivation[2].diff = new double[context.sizeOfDiff];
+            double[] inputActivation = new double[]{1.0, 0.5, 0.4};
 
+            DualNumber[] inputActivationAsDualNumber = new DualNumber[inputActivation.length];
+            for(int i=0;i<inputActivation.length;i++) {
+                inputActivationAsDualNumber[i] = new DualNumber(inputActivation[i]);
+                inputActivationAsDualNumber[i].diff = new double[context.sizeOfDiff];
+            }
 
 
             // forward propagate
-            DualNumber[] activationsOfPreviousLayer = inputActivation;
+            DualNumber[] activationsOfPreviousLayer = inputActivationAsDualNumber;
 
             int layerIdx=0;
             for(NeuralNetworkLayer iLayer:layers) {
