@@ -163,21 +163,21 @@ public class DualNumberTest1 {
             DualNumber[] differences = new DualNumber[2];
 
 
-            DualNumber activation = layers[0].neurons[0].computeActivation(inputActivation);
-            DualNumber result = activation;
+            DualNumber x = layers[0].neurons[0].computeActivation(inputActivation);
+            DualNumber activation = x; // TODO< activation function >
 
             DualNumber expectedResult = new DualNumber(0.7);
             expectedResult.diff = new double[sizeOfDiff];
-            differences[0] = DualNumber.additiveRing(result, expectedResult, -1);
+            differences[0] = DualNumber.additiveRing(activation, expectedResult, -1);
 
 
 
-            activation = layers[0].neurons[1].computeActivation(inputActivation);
-            result = activation;
+            x = layers[0].neurons[1].computeActivation(inputActivation);
+            activation = x; // TODO< activation function >
 
             expectedResult = new DualNumber(0.1);
             expectedResult.diff = new double[sizeOfDiff];
-            differences[1] = DualNumber.additiveRing(result, expectedResult, -1);
+            differences[1] = DualNumber.additiveRing(activation, expectedResult, -1);
 
 
             DualNumber sumOfDifferences = DualNumber.additiveRing(differences[0], differences[1], 1);
