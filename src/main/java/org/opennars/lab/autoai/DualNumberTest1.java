@@ -96,14 +96,14 @@ public class DualNumberTest1 {
         {
             // count all differentials
             layer0.build(context, true);
-            //layer1.build(context, true);
+            layer1.build(context, true);
 
             context.sizeOfDiff = context.iDiffCounter;
             context.iDiffCounter = 0;
 
             // "real" building
             layer0.build(context, false);
-            //layer1.build(context, false);
+            layer1.build(context, false);
         }
 
         for(int iteration=0;iteration<250;iteration++) {
@@ -116,12 +116,34 @@ public class DualNumberTest1 {
             inputActivation[2].diff = new double[context.sizeOfDiff];
 
 
-            DualNumber[] differences = new DualNumber[2];
 
+            // forward propagate
             DualNumber[] activationsOfPreviousLayer = inputActivation;
             activationsOfPreviousLayer = layer0.activate(context, activationsOfPreviousLayer);
-            //activationsOfPreviousLayer = layer1.activate(context, activationsOfPreviousLayer);
+
+            System.out.println("activation of layer[0]:");
+
+            for(int i=0;i<activationsOfPreviousLayer.length;i++) {
+                System.out.print(Double.toString(activationsOfPreviousLayer[i].real) + " ");
+            }
+
+            System.out.println();
+
+            activationsOfPreviousLayer = layer1.activate(context, activationsOfPreviousLayer);
+
+            System.out.println("activation of layer[1]:");
+
+            for(int i=0;i<activationsOfPreviousLayer.length;i++) {
+                System.out.print(Double.toString(activationsOfPreviousLayer[i].real) + " ");
+            }
+
+            System.out.println();
+
+
             DualNumber[] outputActivations = activationsOfPreviousLayer;
+
+
+            DualNumber[] differences = new DualNumber[2];
 
             DualNumber expectedResult = new DualNumber(0.7);
             expectedResult.diff = new double[context.sizeOfDiff];
