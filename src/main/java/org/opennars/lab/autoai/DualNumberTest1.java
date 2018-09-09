@@ -209,8 +209,4 @@ public class DualNumberTest1 {
             return result;
         }
     }
-
-    public static class Layer {
-        public Neuron[] neurons;
-    }
 }
