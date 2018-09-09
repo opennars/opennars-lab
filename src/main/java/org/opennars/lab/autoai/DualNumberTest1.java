@@ -85,25 +85,33 @@ public class DualNumberTest1 {
         context.learnRate = 0.03;
 
 
-        NeuralNetworkLayer layer0 = new NeuralNetworkLayer(3);
-        layer0.neurons = new Neuron[4];
+        NeuralNetworkLayer[] layers = new NeuralNetworkLayer[3];
 
-        NeuralNetworkLayer layer1 = new NeuralNetworkLayer(4);
-        layer1.neurons = new Neuron[2];
+
+        layers[0] = new NeuralNetworkLayer(3);
+        layers[0].neurons = new Neuron[15];
+
+        layers[1] = new NeuralNetworkLayer(4);
+        layers[1].neurons = new Neuron[10];
+
+        layers[2] = new NeuralNetworkLayer(4);
+        layers[2].neurons = new Neuron[2];
 
 
 
         {
             // count all differentials
-            layer0.build(context, true);
-            layer1.build(context, true);
+            for(NeuralNetworkLayer iLayer:layers) {
+                iLayer.build(context, true);
+            }
 
             context.sizeOfDiff = context.iDiffCounter;
             context.iDiffCounter = 0;
 
             // "real" building
-            layer0.build(context, false);
-            layer1.build(context, false);
+            for(NeuralNetworkLayer iLayer:layers) {
+                iLayer.build(context, false);
+            }
         }
 
         for(int iteration=0;iteration<500;iteration++) {
@@ -119,26 +127,21 @@ public class DualNumberTest1 {
 
             // forward propagate
             DualNumber[] activationsOfPreviousLayer = inputActivation;
-            activationsOfPreviousLayer = layer0.activate(context, activationsOfPreviousLayer);
 
-            System.out.println("activation of layer[0]:");
+            int layerIdx=0;
+            for(NeuralNetworkLayer iLayer:layers) {
+                activationsOfPreviousLayer = iLayer.activate(context, activationsOfPreviousLayer);
 
-            for(int i=0;i<activationsOfPreviousLayer.length;i++) {
-                System.out.print(Double.toString(activationsOfPreviousLayer[i].real) + " ");
+                System.out.println("activation of layer[" + Integer.toString(layerIdx) + "]:");
+
+                for(int i=0;i<activationsOfPreviousLayer.length;i++) {
+                    System.out.print(Double.toString(activationsOfPreviousLayer[i].real) + " ");
+                }
+
+                System.out.println();
+
+                layerIdx++;
             }
-
-            System.out.println();
-
-            activationsOfPreviousLayer = layer1.activate(context, activationsOfPreviousLayer);
-
-            System.out.println("activation of layer[1]:");
-
-            for(int i=0;i<activationsOfPreviousLayer.length;i++) {
-                System.out.print(Double.toString(activationsOfPreviousLayer[i].real) + " ");
-            }
-
-            System.out.println();
-
 
             DualNumber[] outputActivations = activationsOfPreviousLayer;
 
@@ -173,13 +176,6 @@ public class DualNumberTest1 {
 
             System.out.println("error=" + Double.toString(error.real));
 
-            // debug weights
-            if (false) {
-                System.out.println("weigth[0].=" + Double.toString(layer0.neurons[0].weights[0].real));
-                System.out.println("weigth[1].=" + Double.toString(layer0.neurons[0].weights[1].real));
-                System.out.println("weigth[2].=" + Double.toString(layer0.neurons[0].weights[2].real));
-                System.out.println("bias=" + Double.toString(layer0.neurons[0].bias.real));
-            }
 
             // adapt
             Backpropagation.backpropagate(error, context);
