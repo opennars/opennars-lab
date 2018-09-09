@@ -106,7 +106,7 @@ public class DualNumberTest1 {
             layer1.build(context, false);
         }
 
-        for(int iteration=0;iteration<250;iteration++) {
+        for(int iteration=0;iteration<500;iteration++) {
             DualNumber[] inputActivation = new DualNumber[3];
             inputActivation[0] = new DualNumber(1.0);
             inputActivation[1] = new DualNumber(0.5);
@@ -154,10 +154,24 @@ public class DualNumberTest1 {
             differences[1] = DualNumber.additiveRing(outputActivations[1], expectedResult, -1);
 
 
-            DualNumber sumOfDifferences = DualNumber.additiveRing(differences[0], differences[1], 1);
+            // calculate error
+            DualNumber error = new DualNumber(0.0);
+            error.diff = new double[context.sizeOfDiff];
+
+            for(final DualNumber iDiff : differences) {
+                DualNumber _0p5 = new DualNumber(0.5);
+                _0p5.diff = new double[context.sizeOfDiff];
+
+                final DualNumber squaredError = DualNumber.mul(iDiff, iDiff);
+                final DualNumber halfSquaredError = DualNumber.mul(squaredError, _0p5);
+
+                error = DualNumber.additiveRing(error, halfSquaredError, 1);
+            }
+
+            //DualNumber sumOfDifferences = DualNumber.additiveRing(differences[0], differences[1], 1);
 
 
-            System.out.println("diff=" + Double.toString(sumOfDifferences.real));
+            System.out.println("error=" + Double.toString(error.real));
 
             // debug weights
             if (false) {
@@ -168,7 +182,7 @@ public class DualNumberTest1 {
             }
 
             // adapt
-            Backpropagation.backpropagate(sumOfDifferences, context);
+            Backpropagation.backpropagate(error, context);
 
             int debugMeHere = 5;
         }
