@@ -59,7 +59,8 @@ public class NeuralNetworkLayer {
     }
 
     public DualNumber activationFunction(final NetworkContext context, final DualNumber x) {
-        // TODO< max with zero >
-        return x;
+        DualNumber zero = new DualNumber(0);
+        zero.diff = new double[context.sizeOfDiff];
+        return DualNumber.max(x, zero);
     }
 }
