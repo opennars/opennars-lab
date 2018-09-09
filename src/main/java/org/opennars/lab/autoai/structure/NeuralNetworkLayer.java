@@ -58,6 +58,17 @@ public class NeuralNetworkLayer {
         }
     }
 
+    public DualNumber[] activate(final NetworkContext context, final DualNumber[] input) {
+        DualNumber[] activations = new DualNumber[neurons.length];
+
+        for (int iNeuronIdx=0;iNeuronIdx<neurons.length;iNeuronIdx++) {
+            DualNumber x = neurons[iNeuronIdx].computeActivation(input);
+            activations[iNeuronIdx] = activationFunction(context, x);
+        }
+
+        return activations;
+    }
+
     public DualNumber activationFunction(final NetworkContext context, final DualNumber x) {
         DualNumber zero = new DualNumber(0);
         zero.diff = new double[context.sizeOfDiff];

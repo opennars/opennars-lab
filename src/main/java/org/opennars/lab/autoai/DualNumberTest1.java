@@ -111,22 +111,16 @@ public class DualNumberTest1 {
 
             DualNumber[] differences = new DualNumber[2];
 
+            DualNumber[] activations = layer.activate(context, inputActivation);
 
-            DualNumber x = layer.neurons[0].computeActivation(inputActivation);
-            DualNumber activation = layer.activationFunction(context, x);
 
             DualNumber expectedResult = new DualNumber(0.7);
             expectedResult.diff = new double[context.sizeOfDiff];
-            differences[0] = DualNumber.additiveRing(activation, expectedResult, -1);
-
-
-
-            x = layer.neurons[1].computeActivation(inputActivation);
-            activation = layer.activationFunction(context, x);
+            differences[0] = DualNumber.additiveRing(activations[0], expectedResult, -1);
 
             expectedResult = new DualNumber(0.1);
             expectedResult.diff = new double[context.sizeOfDiff];
-            differences[1] = DualNumber.additiveRing(activation, expectedResult, -1);
+            differences[1] = DualNumber.additiveRing(activations[1], expectedResult, -1);
 
 
             DualNumber sumOfDifferences = DualNumber.additiveRing(differences[0], differences[1], 1);
