@@ -89,7 +89,7 @@ public class DualNumberTest1 {
 
         Layer[] layers = new Layer[1];
         layers[0] = new Layer();
-        layers[0].neurons = new Neuron[1];
+        layers[0].neurons = new Neuron[2];
 
         int iDiffCounter = 0;
 
@@ -159,14 +159,31 @@ public class DualNumberTest1 {
             inputActivation[2] = new DualNumber(0.4);
             inputActivation[2].diff = new double[sizeOfDiff];
 
+
+            DualNumber[] differences = new DualNumber[2];
+
+
             DualNumber activation = layers[0].neurons[0].computeActivation(inputActivation);
             DualNumber result = activation;
 
             DualNumber expectedResult = new DualNumber(0.7);
             expectedResult.diff = new double[sizeOfDiff];
-            DualNumber difference = DualNumber.additiveRing(result, expectedResult, -1);
+            differences[0] = DualNumber.additiveRing(result, expectedResult, -1);
 
-            System.out.println("diff=" + Double.toString(difference.real));
+
+
+            activation = layers[0].neurons[1].computeActivation(inputActivation);
+            result = activation;
+
+            expectedResult = new DualNumber(0.1);
+            expectedResult.diff = new double[sizeOfDiff];
+            differences[1] = DualNumber.additiveRing(result, expectedResult, -1);
+
+
+            DualNumber sumOfDifferences = DualNumber.additiveRing(differences[0], differences[1], 1);
+
+
+            System.out.println("diff=" + Double.toString(sumOfDifferences.real));
 
             // debug weights
             if (false) {
@@ -179,7 +196,7 @@ public class DualNumberTest1 {
 
             // adapt
             for(int valueIdx=0;valueIdx<sizeOfDiff;valueIdx++) {
-                mapDiffToDualNumber.get(valueIdx).real -= (difference.real * difference.diff[valueIdx] * learnRate);
+                mapDiffToDualNumber.get(valueIdx).real -= (sumOfDifferences.real * sumOfDifferences.diff[valueIdx] * learnRate);
             }
 
             int debugMeHere = 5;
