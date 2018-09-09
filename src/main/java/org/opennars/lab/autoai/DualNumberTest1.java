@@ -82,7 +82,7 @@ public class DualNumberTest1 {
         context.iDiffCounter = 0;
         context.sizeOfDiff = 0;
 
-        context.learnRate = 0.03;
+        context.learnRate = 0.003;
 
 
         NeuralNetworkLayer[] layers = new NeuralNetworkLayer[3];
@@ -145,39 +145,70 @@ public class DualNumberTest1 {
             DualNumber[] outputActivations = activationsOfPreviousLayer;
 
 
-            DualNumber[] differences = new DualNumber[2];
-
-            DualNumber expectedResult = new DualNumber(0.7);
-            expectedResult.diff = new double[context.sizeOfDiff];
-            differences[0] = DualNumber.additiveRing(outputActivations[0], expectedResult, -1);
-
-            expectedResult = new DualNumber(0.1);
-            expectedResult.diff = new double[context.sizeOfDiff];
-            differences[1] = DualNumber.additiveRing(outputActivations[1], expectedResult, -1);
 
 
-            // calculate error
-            DualNumber error = new DualNumber(0.0);
-            error.diff = new double[context.sizeOfDiff];
 
-            for(final DualNumber iDiff : differences) {
-                DualNumber _0p5 = new DualNumber(0.5);
-                _0p5.diff = new double[context.sizeOfDiff];
+            DualNumber cost = new DualNumber(0.0);
+            cost.diff = new double[context.sizeOfDiff];
 
-                final DualNumber squaredError = DualNumber.mul(iDiff, iDiff);
-                final DualNumber halfSquaredError = DualNumber.mul(squaredError, _0p5);
+            if(false) {
+                DualNumber[] differences = new DualNumber[2];
 
-                error = DualNumber.additiveRing(error, halfSquaredError, 1);
+                DualNumber expectedResult = new DualNumber(0.7);
+                expectedResult.diff = new double[context.sizeOfDiff];
+                differences[0] = DualNumber.additiveRing(outputActivations[0], expectedResult, -1);
+
+                expectedResult = new DualNumber(0.1);
+                expectedResult.diff = new double[context.sizeOfDiff];
+                differences[1] = DualNumber.additiveRing(outputActivations[1], expectedResult, -1);
+
+
+
+                // calculate linear regression cost function
+                for(final DualNumber iDiff : differences) {
+                    DualNumber _0p5 = new DualNumber(0.5);
+                    _0p5.diff = new double[context.sizeOfDiff];
+
+                    final DualNumber squaredError = DualNumber.mul(iDiff, iDiff);
+                    final DualNumber halfSquaredError = DualNumber.mul(squaredError, _0p5);
+
+                    cost = DualNumber.additiveRing(cost, halfSquaredError, 1);
+                }
+            }
+            else {
+                // calculate soft-max regression function
+
+                // index of expected class
+                int expectedClassification = 1;
+                int numberOfClasses = 2;
+
+
+                // see http://ufldl.stanford.edu/tutorial/supervised/SoftmaxRegression/
+                for (int i=0; i<outputActivations.length; i++) {
+                    for (int k=0; k<numberOfClasses; k++) {
+                        final boolean isCorrectClassification = i == k && k == expectedClassification;
+                        if (!isCorrectClassification) {
+                            continue;
+                        }
+
+                        DualNumber log = DualNumber.log(outputActivations[i]);
+                        cost = DualNumber.additiveRing(cost, log, 1);
+                    }
+                }
+
+                DualNumber _null = new DualNumber(0);
+                _null.diff = new double[context.sizeOfDiff];
+                cost = DualNumber.additiveRing(_null, cost, -1);
             }
 
-            //DualNumber sumOfDifferences = DualNumber.additiveRing(differences[0], differences[1], 1);
 
 
-            System.out.println("error=" + Double.toString(error.real));
+
+            System.out.println("cost=" + Double.toString(cost.real));
 
 
             // adapt
-            Backpropagation.backpropagate(error, context);
+            Backpropagation.backpropagate(cost, context);
 
             int debugMeHere = 5;
         }

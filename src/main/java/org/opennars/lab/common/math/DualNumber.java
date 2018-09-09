@@ -41,7 +41,7 @@ public class DualNumber {
         DualNumber res = new DualNumber();
         res.real = left.real + right.real * mul;
         res.diff = new double[left.diff.length];
-        for(int i=0;i<left.diff.length;i++)   res.diff[i] = left.diff[i] + right.diff[i] * mul;
+        for (int i=0;i<left.diff.length;i++)   res.diff[i] = left.diff[i] + right.diff[i] * mul;
         return res;
     }
 
@@ -51,17 +51,22 @@ public class DualNumber {
         DualNumber res = new DualNumber();
         res.real = left.real * right.real;
         res.diff = new double[left.diff.length];
-        for(int i=0;i<left.diff.length;i++)   res.diff[i] = left.diff[i]*right.real + left.real*right.diff[i];
+        for (int i=0;i<left.diff.length;i++)   res.diff[i] = left.diff[i]*right.real + left.real*right.diff[i];
         return res;
     }
 
     public static DualNumber div(final DualNumber left, final DualNumber right) {
         assert left.diff.length == right.diff.length;
 
+        if (right.real == 0.0) {
+            int here = 5;
+            // TODO< throw numeric error >
+        }
+
         DualNumber res = new DualNumber();
         res.real = left.real / right.real;
         res.diff = new double[left.diff.length];
-        for(int i=0;i<left.diff.length;i++) {
+        for (int i=0;i<left.diff.length;i++) {
             final double part = left.diff[i]*right.real - left.real*right.diff[i];
             res.diff[i] = part / (right.real*right.real);
         }
@@ -72,7 +77,23 @@ public class DualNumber {
         DualNumber res = new DualNumber();
         res.real = Math.exp(val.real);
         res.diff = new double[val.diff.length];
-        for(int i=0;i<val.diff.length;i++)   res.diff[i] = val.diff[i] * Math.exp(val.real);
+        for (int i=0;i<val.diff.length;i++)   res.diff[i] = val.diff[i] * Math.exp(val.real);
+        return res;
+    }
+
+    public static DualNumber log(final DualNumber val) {
+        DualNumber res = new DualNumber();
+
+        if (val.real < 0) {
+            int here = 5;
+            // TODO< throw numeric error >
+        }
+
+        res.real = Math.log(val.real);
+        res.diff = new double[val.diff.length];
+        for (int i=0;i<val.diff.length;i++) {
+            res.diff[i] = val.diff[i]/val.real;
+        }
         return res;
     }
 
