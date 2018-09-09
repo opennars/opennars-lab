@@ -88,13 +88,13 @@ public class DualNumberTest1 {
         NeuralNetworkLayer[] layers = new NeuralNetworkLayer[3];
 
 
-        layers[0] = new NeuralNetworkLayer(3);
+        layers[0] = new NeuralNetworkLayer(3, NeuralNetworkLayer.EnumActivationFunction.RELU);
         layers[0].neurons = new Neuron[15];
 
-        layers[1] = new NeuralNetworkLayer(4);
+        layers[1] = new NeuralNetworkLayer(15, NeuralNetworkLayer.EnumActivationFunction.RELU);
         layers[1].neurons = new Neuron[10];
 
-        layers[2] = new NeuralNetworkLayer(4);
+        layers[2] = new NeuralNetworkLayer(10, NeuralNetworkLayer.EnumActivationFunction.RELU);
         layers[2].neurons = new Neuron[2];
 
 

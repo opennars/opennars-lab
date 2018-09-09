@@ -10,13 +10,16 @@ import org.opennars.lab.common.math.DualNumber;
  * @author Robert Wünsche
  */
 public class NeuralNetworkLayer {
-    /**  */
+    /** all neuron of this layer (element) */
     public DualNumberTest1.Neuron[] neurons;
 
     public final int inputWidth;
 
-    public NeuralNetworkLayer(final int inputWidth) {
+    public final EnumActivationFunction activationFunction;
+
+    public NeuralNetworkLayer(final int inputWidth, EnumActivationFunction activationFunction) {
         this.inputWidth = inputWidth;
+        this.activationFunction = activationFunction;
     }
 
     /**
@@ -68,15 +71,69 @@ public class NeuralNetworkLayer {
 
         for (int iNeuronIdx=0;iNeuronIdx<neurons.length;iNeuronIdx++) {
             DualNumber x = neurons[iNeuronIdx].computeActivation(input);
-            activations[iNeuronIdx] = activationFunction(context, x);
+            activations[iNeuronIdx] = activationFunction(context, input, x);
         }
 
         return activations;
     }
 
-    public DualNumber activationFunction(final NetworkContext context, final DualNumber x) {
+    /**
+     * compute the activation function
+     *
+     * @param context neural network context
+     * @param activation input into all neurons
+     * @param x the input of this neuron
+     * @return activation function value
+     */
+    protected DualNumber activationFunction(final NetworkContext context, final DualNumber[] activation, final DualNumber x) {
+        switch (activationFunction) {
+            case RELU:
+            return activationFunctionReLu(context, x);
+        }
+
+        assert activationFunction == EnumActivationFunction.SOFTMAX;
+        return activationFunctionSoftmax(context, activation, x);
+    }
+
+    /**
+     * compute the ReLu activation function
+     *
+     * @param context neural network context
+     * @param x the input of this neuron
+     * @return activation function value
+     */
+    private static DualNumber activationFunctionReLu(final NetworkContext context, final DualNumber x) {
         DualNumber zero = new DualNumber(0);
         zero.diff = new double[context.sizeOfDiff];
         return DualNumber.max(x, zero);
+    }
+
+    /**
+     * compute the SoftMax activation function
+     *
+     * @param context neural network context
+     * @param activation input into all neurons
+     * @param x the input of this neuron
+     * @return activation function value
+     */
+    // https://youtu.be/-7scQpJT7uo?t=7m25s
+    private static DualNumber activationFunctionSoftmax(final NetworkContext context, final DualNumber[] activation, final DualNumber x) {
+        DualNumber sumOfAllOther = new DualNumber(0);
+        sumOfAllOther.diff = new double[context.sizeOfDiff];
+
+        for (DualNumber iOther : activation) {
+            final DualNumber thisExp = DualNumber.exp(iOther);
+            sumOfAllOther = DualNumber.additiveRing(sumOfAllOther, thisExp, 1);
+        }
+
+
+        DualNumber thisExp = DualNumber.exp(x);
+
+        return DualNumber.div(thisExp, sumOfAllOther);
+    }
+
+    public enum EnumActivationFunction {
+        RELU,
+        SOFTMAX,
     }
 }

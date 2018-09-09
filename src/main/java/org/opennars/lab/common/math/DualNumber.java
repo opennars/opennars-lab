@@ -15,6 +15,11 @@
 
 package org.opennars.lab.common.math;
 
+/**
+ * Dual Numbers for automatic differentiation
+ *
+ * @author Robert Wünsche
+ */
 // see https://en.wikipedia.org/wiki/Automatic_differentiation#Automatic_differentiation_using_dual_numbers
 public class DualNumber {
     public double real = 0;
@@ -46,7 +51,20 @@ public class DualNumber {
         DualNumber res = new DualNumber();
         res.real = left.real * right.real;
         res.diff = new double[left.diff.length];
-        for(int i=0;i<left.diff.length;i++)   res.diff[i] = left.real*right.diff[i] + left.diff[i]*right.real;
+        for(int i=0;i<left.diff.length;i++)   res.diff[i] = left.diff[i]*right.real + left.real*right.diff[i];
+        return res;
+    }
+
+    public static DualNumber div(final DualNumber left, final DualNumber right) {
+        assert left.diff.length == right.diff.length;
+
+        DualNumber res = new DualNumber();
+        res.real = left.real / right.real;
+        res.diff = new double[left.diff.length];
+        for(int i=0;i<left.diff.length;i++) {
+            final double part = left.diff[i]*right.real - left.real*right.diff[i];
+            res.diff[i] = part / (right.real*right.real);
+        }
         return res;
     }
 
