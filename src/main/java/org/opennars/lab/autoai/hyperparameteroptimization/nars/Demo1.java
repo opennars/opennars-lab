@@ -1,4 +1,4 @@
-package org.opennars.lab.autoai.nars;
+package org.opennars.lab.autoai.hyperparameteroptimization.nars;
 
 import org.opennars.entity.Sentence;
 import org.opennars.entity.TruthValue;
@@ -6,7 +6,7 @@ import org.opennars.gui.NARSwing;
 import org.opennars.interfaces.pub.Reasoner;
 import org.opennars.io.Parser;
 import org.opennars.io.events.AnswerHandler;
-import org.opennars.lab.autoai.ArtifactEvaluator;
+import org.opennars.lab.autoai.hyperparameteroptimization.ArtifactEvaluator;
 import org.opennars.main.Nar;
 import org.xml.sax.SAXException;
 

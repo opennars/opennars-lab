@@ -1,4 +1,4 @@
-package org.opennars.lab.autoai;
+package org.opennars.lab.autoai.hyperparameteroptimization;
 
 import org.opennars.lab.autoai.structure.Backpropagation;
 import org.opennars.lab.autoai.structure.NetworkContext;

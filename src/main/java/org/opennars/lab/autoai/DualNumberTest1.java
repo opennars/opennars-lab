@@ -1,9 +1,6 @@
 package org.opennars.lab.autoai;
 
-import org.opennars.lab.autoai.structure.Backpropagation;
-import org.opennars.lab.autoai.structure.NetworkContext;
-import org.opennars.lab.autoai.structure.NeuralNetworkLayer;
-import org.opennars.lab.autoai.structure.Neuron;
+import org.opennars.lab.autoai.hyperparameteroptimization.ArtifactEvaluator;
 import org.opennars.lab.common.math.DualNumber;
 import org.opennars.lab.common.math.DualNumberHelper;
 
