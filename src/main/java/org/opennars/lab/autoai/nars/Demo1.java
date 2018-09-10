@@ -23,9 +23,17 @@ import java.util.Map;
  */
 public class Demo1 {
     // we store the direct truth value of each configuration
-    Map<Configuration, TruthValue> truthByConfiguration  = new HashMap<>();
+    // here we store it by layer
+    Map<ConfigurationByLayer, TruthValue>[] truthByConfigurationAndLayer = new HashMap[2];
+
+    // commented because we address it by layer
+    //Map<Configuration, TruthValue> truthByConfiguration  = new HashMap<>();
 
     private Reasoner reasoner;
+
+    // last best metric with configuration
+    // null implies that there were no trails done ever
+    private MetricWithConfiguration bestMetricWithConfiguration = null;
 
     public void entry() throws IOException, InstantiationException, InvocationTargetException, NoSuchMethodException, ParserConfigurationException, IllegalAccessException, SAXException, ClassNotFoundException, ParseException, Parser.InvalidInputException {
         reasoner = new Nar();
@@ -56,6 +64,8 @@ public class Demo1 {
 
             int[] hyperparameterNumberOfNeurons = new int[3];
 
+            /// TODO< pick parameters for artifact which is getting optimized >
+
             /// we pick it statically for testing
             hyperparameterNumberOfNeurons[0] = 20;
             hyperparameterNumberOfNeurons[1] = 10;
@@ -84,11 +94,14 @@ public class Demo1 {
      * @param evaluationScore score which the configuration of the artifcat archived - lower is better
      */
     private void updateNarsKnowledgebaseForEvaluation(final int[] hyperparameterNumberOfNeurons, final double evaluationScore) {
-        // TODO< compute frequency >
+        // compute frequency by a metric like function
+        double frequency = 0.5;
+        // TODO< compute frequency by a metric like function >
+
 
         for (int layerIdx=0;layerIdx<hyperparameterNumberOfNeurons.length;layerIdx++) {
             final int numberOfNeurons = hyperparameterNumberOfNeurons[layerIdx];
-            reasoner.addInput("<{layer" + Integer.toString(layerIdx) + "_" + Integer.toString(numberOfNeurons) + "n}-->hyperparameterdb>. %0.5;0.05%");
+            reasoner.addInput("<{layer" + Integer.toString(layerIdx) + "_" + Integer.toString(numberOfNeurons) + "n}-->hyperparameterdb>. %" + Double.toString(frequency) + ";0.05%");
         }
     }
 
@@ -128,7 +141,7 @@ public class Demo1 {
             final TruthValue truth = belief.truth.clone();
 
             // update truth by configuration
-            truthByConfiguration.put(new Configuration(layer, numberOfNeurons), truth);
+            truthByConfigurationAndLayer[layer].put(new ConfigurationByLayer(numberOfNeurons), truth);
         }
     }
 
@@ -136,18 +149,28 @@ public class Demo1 {
      * configuration of the artifact which is tuned - in this case a contemporary neural-network
      */
     private static class Configuration {
-        private final int layer;
+        public Map<ConfigurationByLayer, TruthValue>[] truthByConfigurationAndLayer = new HashMap[2];
+
+        public Configuration() {
+
+        }
+    }
+
+    /**
+     * configuration of the artifact which is tuned - in this case a contemporary neural-network
+     * by a single layer
+     */
+    private static class ConfigurationByLayer {
         private final int numberOfNeuronsOfLayer;
 
-        public Configuration(final int layer, final int numberOfNeuronsOfLayer) {
-            this.layer = layer;
+        public ConfigurationByLayer(final int numberOfNeuronsOfLayer) {
             this.numberOfNeuronsOfLayer = numberOfNeuronsOfLayer;
         }
 
 
         @Override
         public int hashCode() {
-            int hashcode = layer;
+            int hashcode = 0;
 
             hashcode ^= numberOfNeuronsOfLayer;
 
@@ -157,6 +180,16 @@ public class Demo1 {
             //}
 
             return hashcode;
+        }
+    }
+
+    private static class MetricWithConfiguration {
+        public final double metric;
+        public final Configuration configuration;
+
+        public MetricWithConfiguration(final double metric, final Configuration configuration) {
+            this.metric = metric;
+            this.configuration = configuration;
         }
     }
 }
