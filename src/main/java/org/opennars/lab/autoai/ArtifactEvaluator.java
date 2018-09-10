@@ -90,8 +90,8 @@ public class ArtifactEvaluator {
                 DualNumber[] outputActivations = activationsOfPreviousLayer;
 
 
-
-
+                /// cost as score - lower is better - is always positive
+                double costAsScore = 0;
 
                 DualNumber cost = new DualNumber(0.0);
                 cost.diff = new double[context.sizeOfDiff];
@@ -119,16 +119,18 @@ public class ArtifactEvaluator {
 
                         cost = DualNumber.additiveRing(cost, halfSquaredError, 1);
                     }
+
+                    costAsScore = cost.real;
                 }
                 else {
                     // calculate soft-max regression function
 
-                    // index of expected class
+                    /// index of expected class
                     int expectedClassification = 1;
                     int numberOfClasses = 2;
 
 
-                    // see http://ufldl.stanford.edu/tutorial/supervised/SoftmaxRegression/
+                    /// see http://ufldl.stanford.edu/tutorial/supervised/SoftmaxRegression/
                     for (int i=0; i<outputActivations.length; i++) {
                         for (int k=0; k<numberOfClasses; k++) {
                             final boolean isCorrectClassification = i == k && k == expectedClassification;
@@ -144,6 +146,9 @@ public class ArtifactEvaluator {
                     DualNumber _null = new DualNumber(0);
                     _null.diff = new double[context.sizeOfDiff];
                     cost = DualNumber.additiveRing(_null, cost, -1);
+
+                    /// negative because logarithm is negative
+                    costAsScore = -cost.real;
                 }
 
 
@@ -156,7 +161,7 @@ public class ArtifactEvaluator {
                 Backpropagation.backpropagate(cost, context);
 
                 // update minimal cost
-                minimalCost = Math.min(minimalCost, cost.real);
+                minimalCost = Math.min(minimalCost, costAsScore);
 
 
                 int debugMeHere = 5;
