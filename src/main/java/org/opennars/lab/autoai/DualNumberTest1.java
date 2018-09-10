@@ -3,6 +3,7 @@ package org.opennars.lab.autoai;
 import org.opennars.lab.autoai.structure.Backpropagation;
 import org.opennars.lab.autoai.structure.NetworkContext;
 import org.opennars.lab.autoai.structure.NeuralNetworkLayer;
+import org.opennars.lab.autoai.structure.Neuron;
 import org.opennars.lab.common.math.DualNumber;
 import org.opennars.lab.common.math.DualNumberHelper;
 
@@ -217,22 +218,4 @@ public class DualNumberTest1 {
         int here = 5;
     }
 
-    public static class Neuron {
-        public DualNumber[] weights;
-        public DualNumber bias;
-
-        public DualNumber computeActivation(final DualNumber[] inputFromPreviousLayer) {
-            DualNumber result = new DualNumber(0.0);
-            result.diff = new double[inputFromPreviousLayer[0].diff.length];
-
-            for (int i=0;i<weights.length; i++) {
-                DualNumber mul = DualNumber.mul(weights[i], inputFromPreviousLayer[i]);
-                result = DualNumber.additiveRing(result, mul, 1);
-            }
-
-            result = DualNumber.additiveRing(result, bias, 1);
-
-            return result;
-        }
-    }
 }

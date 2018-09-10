@@ -1,6 +1,5 @@
 package org.opennars.lab.autoai.structure;
 
-import org.opennars.lab.autoai.DualNumberTest1;
 import org.opennars.lab.autoai.Utilities;
 import org.opennars.lab.common.math.DualNumber;
 
@@ -11,7 +10,7 @@ import org.opennars.lab.common.math.DualNumber;
  */
 public class NeuralNetworkLayer {
     /** all neuron of this layer (element) */
-    public DualNumberTest1.Neuron[] neurons;
+    public Neuron[] neurons;
 
     public final int inputWidth;
 
@@ -36,7 +35,7 @@ public class NeuralNetworkLayer {
                 context.iDiffCounter++;
             }
             else {
-                neurons[iNeuron] = new DualNumberTest1.Neuron();
+                neurons[iNeuron] = new Neuron();
                 neurons[iNeuron].weights = new DualNumber[numberOfWeightsOfThisNeuron];
 
                 for (int iWeightIdx=0;iWeightIdx<numberOfWeightsOfThisNeuron;iWeightIdx++) {
