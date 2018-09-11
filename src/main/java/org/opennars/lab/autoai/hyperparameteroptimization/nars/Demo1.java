@@ -7,6 +7,7 @@ import org.opennars.interfaces.pub.Reasoner;
 import org.opennars.io.Parser;
 import org.opennars.io.events.AnswerHandler;
 import org.opennars.lab.autoai.hyperparameteroptimization.ArtifactEvaluator;
+import org.opennars.lab.autoai.structure.NeuralNetworkLayer;
 import org.opennars.main.Nar;
 import org.xml.sax.SAXException;
 
@@ -16,6 +17,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 /**
  * just a small test where we use NARS (with NARS GUI) to keep track of the knowledge base of the hyperparameter-optimization
@@ -35,6 +37,19 @@ public class Demo1 {
     // null implies that there were no trails done ever
     private MetricWithConfiguration bestMetricWithConfiguration = null;
 
+
+    // we need to store all possible parameters
+    public PossibleParametersOfArtifact possibleParametersOfArtifact = new PossibleParametersOfArtifact();
+
+    public Random rng = new Random();
+
+    public void initialize(final int numberOfLayers) {
+        truthByConfigurationAndLayer = new HashMap[numberOfLayers];
+        for (int i=0;i<numberOfLayers;i++) {
+            truthByConfigurationAndLayer[i] = new HashMap<>();
+        }
+    }
+
     public void entry() throws IOException, InstantiationException, InvocationTargetException, NoSuchMethodException, ParserConfigurationException, IllegalAccessException, SAXException, ClassNotFoundException, ParseException, Parser.InvalidInputException {
         reasoner = new Nar();
 
@@ -42,17 +57,12 @@ public class Demo1 {
 
 
         /// ask questions so we can intercept the changes with a handler
-        reasoner.ask("<{layer0_20n}-->hyperparameterdb>", new HyperparameterAnswerHandler(0, 20));
-        reasoner.ask("<{layer0_40n}-->hyperparameterdb>", new HyperparameterAnswerHandler(0, 40));
-        reasoner.ask("<{layer0_60n}-->hyperparameterdb>", new HyperparameterAnswerHandler(0, 60));
 
-        reasoner.ask("<{layer1_20n}-->hyperparameterdb>", new HyperparameterAnswerHandler(1, 20));
-        reasoner.ask("<{layer1_15n}-->hyperparameterdb>", new HyperparameterAnswerHandler(1, 15));
-        reasoner.ask("<{layer1_10n}-->hyperparameterdb>", new HyperparameterAnswerHandler(1, 10));
-
-
-        // testing of answer handler
-        reasoner.addInput("<{layer0_20n}-->hyperparameterdb>. %0.5;0.01%");
+        for (int layerIdx=0; layerIdx<possibleParametersOfArtifact.possibleNumberOfNeuronsByLayer.length; layerIdx++) {
+            for (int iPossibleNumberOfNeuronsByLayer : possibleParametersOfArtifact.possibleNumberOfNeuronsByLayer[layerIdx].possibleNumberOfNeurons) {
+                reasoner.ask("<{layer" + Integer.toString(layerIdx) + "_" + Integer.toString(iPossibleNumberOfNeuronsByLayer) + "n}-->hyperparameterdb>", new HyperparameterAnswerHandler(layerIdx, iPossibleNumberOfNeuronsByLayer));
+            }
+        }
 
         // optimization / reasoning loop
         for(;;) {
@@ -61,15 +71,17 @@ public class Demo1 {
             /* we do it by random but we can bias with some kind of metric which takes the truth values
              * and the configuration valus as a distribution and samples it in a randomish fashion
              */
+            /// TODO< bias by truth distribution of the already learned trails >
 
-            int[] hyperparameterNumberOfNeurons = new int[3];
+            int[] hyperparameterNumberOfNeurons = new int[possibleParametersOfArtifact.possibleNumberOfNeuronsByLayer.length];
 
-            /// TODO< pick parameters for artifact which is getting optimized >
+            for(int iLayer=0;iLayer<possibleParametersOfArtifact.possibleNumberOfNeuronsByLayer.length;iLayer++) {
+                final PossibleParametersOfArtifact.PossibleNumberOfNeurons possibleNumberOfNeuronsOfLayer = possibleParametersOfArtifact.possibleNumberOfNeuronsByLayer[iLayer];
 
-            /// we pick it statically for testing
-            hyperparameterNumberOfNeurons[0] = 20;
-            hyperparameterNumberOfNeurons[1] = 10;
-            hyperparameterNumberOfNeurons[2] = 2; // we always need a fixed output
+                final int randomIdxInPossibleArray = rng.nextInt(possibleNumberOfNeuronsOfLayer.possibleNumberOfNeurons.length);
+
+                hyperparameterNumberOfNeurons[iLayer] = possibleNumberOfNeuronsOfLayer.possibleNumberOfNeurons[randomIdxInPossibleArray];
+            }
 
 
             // evaluate artifact with the hyperparameters
@@ -95,13 +107,25 @@ public class Demo1 {
      */
     private void updateNarsKnowledgebaseForEvaluation(final int[] hyperparameterNumberOfNeurons, final double evaluationScore) {
         // compute frequency by a metric like function
-        double frequency = 0.5;
-        // TODO< compute frequency by a metric like function >
+
+        /// relative performance is between 0.0 (terrible) and 1.0 (the best)
+        /// 0.1 is a arbitrary scaling and is subject to tuning
+        double relativePerformance = 1.0 - evaluationScore * 0.1;
+        relativePerformance = Math.max(relativePerformance, 0);
+
+
+        /// we are using 0.05 for scaling to make it close to 0.5 without loosing the statistical nature of the frequency
+        double frequency = 0.5 + (relativePerformance * 2.0 - 1.0) * 0.5 * 0.05;
 
 
         for (int layerIdx=0;layerIdx<hyperparameterNumberOfNeurons.length;layerIdx++) {
             final int numberOfNeurons = hyperparameterNumberOfNeurons[layerIdx];
-            reasoner.addInput("<{layer" + Integer.toString(layerIdx) + "_" + Integer.toString(numberOfNeurons) + "n}-->hyperparameterdb>. %" + Double.toString(frequency) + ";0.05%");
+
+
+            final String narsese = "<{layer" + Integer.toString(layerIdx) + "_" + Integer.toString(numberOfNeurons) + "n}-->hyperparameterdb>. %" + Double.toString(frequency) + ";0.05%";
+            System.out.println(narsese);
+
+            reasoner.addInput(narsese);
         }
     }
 
@@ -112,14 +136,35 @@ public class Demo1 {
      * @return rated metric of network performance vs resources
      */
     protected double evaluateArtifact(final int[] hyperparameterNumberOfNeurons) {
-        // TODO< transfer arguments >
-
         ArtifactEvaluator evaluator = new ArtifactEvaluator();
+
+        // transfer arguments
+        evaluator.layerConfigurations = new ArtifactEvaluator.LayerConfiguration[hyperparameterNumberOfNeurons.length];
+        for (int layerIdx=0;layerIdx<hyperparameterNumberOfNeurons.length;layerIdx++) {
+            final boolean isLastLayer = layerIdx == hyperparameterNumberOfNeurons.length-1;
+            final NeuralNetworkLayer.EnumActivationFunction activationFunctionOflayer = isLastLayer ? NeuralNetworkLayer.EnumActivationFunction.SOFTMAX : NeuralNetworkLayer.EnumActivationFunction.RELU;
+
+            evaluator.layerConfigurations[layerIdx] = new ArtifactEvaluator.LayerConfiguration(activationFunctionOflayer, hyperparameterNumberOfNeurons[layerIdx]);
+        }
+
         return evaluator.evaluate();
     }
 
     public static void main(String[] args) throws IOException, InstantiationException, InvocationTargetException, NoSuchMethodException, ParserConfigurationException, IllegalAccessException, SAXException, ClassNotFoundException, ParseException, Parser.InvalidInputException {
         Demo1 app = new Demo1();
+
+        app.possibleParametersOfArtifact.possibleNumberOfNeuronsByLayer = new PossibleParametersOfArtifact.PossibleNumberOfNeurons[3];
+        app.possibleParametersOfArtifact.possibleNumberOfNeuronsByLayer[0] = new PossibleParametersOfArtifact.PossibleNumberOfNeurons();
+        app.possibleParametersOfArtifact.possibleNumberOfNeuronsByLayer[0].possibleNumberOfNeurons = new int[]{20, 40, 60};
+        app.possibleParametersOfArtifact.possibleNumberOfNeuronsByLayer[1] = new PossibleParametersOfArtifact.PossibleNumberOfNeurons();
+        app.possibleParametersOfArtifact.possibleNumberOfNeuronsByLayer[1].possibleNumberOfNeurons = new int[]{20, 15, 10};
+
+        // output layer has two neurons for the test
+        app.possibleParametersOfArtifact.possibleNumberOfNeuronsByLayer[2] = new PossibleParametersOfArtifact.PossibleNumberOfNeurons();
+        app.possibleParametersOfArtifact.possibleNumberOfNeuronsByLayer[2].possibleNumberOfNeurons = new int[]{2};
+
+        app.initialize(app.possibleParametersOfArtifact.possibleNumberOfNeuronsByLayer.length);
+
         app.entry();
     }
 
@@ -190,6 +235,15 @@ public class Demo1 {
         public MetricWithConfiguration(final double metric, final Configuration configuration) {
             this.metric = metric;
             this.configuration = configuration;
+        }
+    }
+
+    // TODO< refactor to interface to make it artifact type independent, for now we are only handling simple neural-networks
+    public static class PossibleParametersOfArtifact {
+        public PossibleNumberOfNeurons[] possibleNumberOfNeuronsByLayer;
+
+        public static class PossibleNumberOfNeurons {
+            public int[] possibleNumberOfNeurons;
         }
     }
 }

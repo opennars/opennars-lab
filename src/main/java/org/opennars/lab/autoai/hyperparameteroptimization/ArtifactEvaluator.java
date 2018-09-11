@@ -11,6 +11,11 @@ import org.opennars.lab.common.math.DualNumber;
  */
 // TODO< make this a interface and make classes for it >
 public class ArtifactEvaluator {
+    /** configurations of each layer */
+    // ASSUMPTION< "linear" feed forward network >
+    // TODO< refactor into graph representation >
+    public LayerConfiguration[] layerConfigurations;
+
     /**
      *
      * @return metric of performance of artifact in question - lower is better
@@ -23,9 +28,21 @@ public class ArtifactEvaluator {
         context.learnRate = 0.003;
 
 
-        NeuralNetworkLayer[] layers = new NeuralNetworkLayer[3];
+        NeuralNetworkLayer[] layers = new NeuralNetworkLayer[layerConfigurations.length];
 
+        // TODO< read this from the configuration of the input width of the NN >
+        int inputWidthOfPreviousLayer = 3;
 
+        for (int layerIdx=0; layerIdx<layerConfigurations.length; layerIdx++) {
+            final int widthOfThisLayer = layerConfigurations[layerIdx].numberOfNeurons;
+
+            layers[layerIdx] = new NeuralNetworkLayer(inputWidthOfPreviousLayer, layerConfigurations[layerIdx].activationFunction);
+            layers[layerIdx].neurons = new Neuron[widthOfThisLayer];
+
+            inputWidthOfPreviousLayer = widthOfThisLayer;
+        }
+
+        /* commented because it is old hardcoded code
         layers[0] = new NeuralNetworkLayer(3, NeuralNetworkLayer.EnumActivationFunction.RELU);
         layers[0].neurons = new Neuron[15];
 
@@ -34,7 +51,7 @@ public class ArtifactEvaluator {
 
         layers[2] = new NeuralNetworkLayer(10, NeuralNetworkLayer.EnumActivationFunction.RELU);
         layers[2].neurons = new Neuron[2];
-
+        */
 
 
         {
@@ -171,5 +188,15 @@ public class ArtifactEvaluator {
 
 
         return minimalCost;
+    }
+
+    public static class LayerConfiguration {
+        public final NeuralNetworkLayer.EnumActivationFunction activationFunction;
+        public final int numberOfNeurons;
+
+        public LayerConfiguration(final NeuralNetworkLayer.EnumActivationFunction activationFunction, final int numberOfNeurons) {
+            this.activationFunction = activationFunction;
+            this.numberOfNeurons = numberOfNeurons;
+        }
     }
 }
