@@ -14,7 +14,9 @@ public class QueryComponent {
 
     private Reasoner reasoner;
 
-    public List<String> relationships = new ArrayList<>();
+    public QueryComponent(Reasoner reasoner) {
+        this.reasoner = reasoner;
+    }
 
     public void applyLearnedRulesToNaturalSentence(final List<NaturalLanguageRelationshipTuple> naturalLanguageRelationshipTuples, final String appliedNauralSentence) {
          /* ex:
