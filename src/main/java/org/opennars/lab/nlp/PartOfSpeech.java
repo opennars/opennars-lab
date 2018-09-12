@@ -28,7 +28,7 @@ public class PartOfSpeech {
         public void onSolution(Sentence belief) {
             final Conjunction beliefAsConjuction = (Conjunction)belief.term;
 
-            if( beliefAsConjuction.term[1].toString().equals("make") ) {
+            if( beliefAsConjuction.term[1].toString().equals("make_WORD") ) {
                 final String commandArgument = beliefAsConjuction.term[2].toString();
 
                 // set command
@@ -52,10 +52,10 @@ public class PartOfSpeech {
         // ask questions
         {
             // question for command to make something, for example build a NN
-            reasoner.ask("(#, BEGIN, make, ?cmd, END)", new AnswerHandler());
+            reasoner.ask("(#, BEGIN, make_WORD, ?cmd, END)", new AnswerHandler());
 
-            //reasoner.ask("(#, BEGIN, increment, ?cmd, END)?", new AnswerHandler());
-            //reasoner.ask("(#, BEGIN, decrement, ?cmd, END)?", new AnswerHandler());
+            //reasoner.ask("(#, BEGIN, increment_WORD, ?cmd, END)?", new AnswerHandler());
+            //reasoner.ask("(#, BEGIN, decrement_WORD, ?cmd, END)?", new AnswerHandler());
 
             // TODO< others >
         }
