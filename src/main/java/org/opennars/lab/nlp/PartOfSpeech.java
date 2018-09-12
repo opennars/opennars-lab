@@ -65,11 +65,23 @@ public class PartOfSpeech {
     }
 
     private static String convTokensToNarsese(final String[] tokens) {
-        // TODO< this is not safe - make it safe by escaping correctly >
+        StringBuilder strBuilder = new StringBuilder();
+        for (final String iToken : tokens) {
+            strBuilder.append(iToken.toLowerCase());
+
+            // TODO< this is not safe - make it safe by escaping correctly >
+            // append so it can't get assigned important internal term-names, for example the term-name "relation" and so on
+            strBuilder.append("_WORD");
+            strBuilder.append(",");
+        }
+
+        String payloadAsNarsese = strBuilder.toString();
+        /// remove last ","
+        payloadAsNarsese = payloadAsNarsese.substring(0, payloadAsNarsese.length()-1-1);
 
         // we add BEGIN and END to indicate the begin and end of a sentence
         // this is necessary for some nlp functionality
-        return "(#, BEGIN, " + String.join(",", tokens) + ", END).";
+        return "(#, BEGIN, " + payloadAsNarsese + ", END).";
     }
 
     // helper
