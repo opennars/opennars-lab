@@ -64,6 +64,12 @@ public class PartOfSpeech {
         reasoner.cycles(numberOfCycles);
     }
 
+    /**
+     * converts the tokens to a PART based narsese with BEGIN and END terms
+     * @param tokens tokens which have to be converted, don't have to be already escaped!
+     * @return narsese
+     */
+    // TODO< move to external nlp utility class >
     private static String convTokensToNarsese(final String[] tokens) {
         StringBuilder strBuilder = new StringBuilder();
         for (final String iToken : tokens) {
