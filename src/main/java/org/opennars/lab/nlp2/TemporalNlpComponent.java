@@ -35,7 +35,7 @@ public class TemporalNlpComponent implements EventEmitter.EventObserver {
      *
      * ex:
      * nlpRepresentation   (#, a, b, c)
-     * relationship        <{a, c}-->is>
+     * relationship        <{(*, a, c)}-->is>
      *
      * @param nlpRepresentation nlp representation of the to be learned relationship, might be most of the time PART
      * @param relationship some kind of relationship as narsese
