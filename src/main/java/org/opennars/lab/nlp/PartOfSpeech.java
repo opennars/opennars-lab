@@ -47,7 +47,7 @@ public class PartOfSpeech {
 
         // build narsese from tokens and put it into the reasoner
         final String narseseOfTokens = convTokensToNarsese(tokens);
-        reasoner.addInput(narseseOfTokens);
+        reasoner.addInput(narseseOfTokens + ".");
 
         // ask questions
         {
@@ -70,7 +70,7 @@ public class PartOfSpeech {
      * @return narsese
      */
     // TODO< move to external nlp utility class >
-    private static String convTokensToNarsese(final String[] tokens) {
+    public static String convTokensToNarsese(final String[] tokens) {
         StringBuilder strBuilder = new StringBuilder();
         for (final String iToken : tokens) {
             strBuilder.append(iToken.toLowerCase());
@@ -83,11 +83,11 @@ public class PartOfSpeech {
 
         String payloadAsNarsese = strBuilder.toString();
         /// remove last ","
-        payloadAsNarsese = payloadAsNarsese.substring(0, payloadAsNarsese.length()-1-1);
+        payloadAsNarsese = payloadAsNarsese.substring(0, payloadAsNarsese.length()-1);
 
         // we add BEGIN and END to indicate the begin and end of a sentence
         // this is necessary for some nlp functionality
-        return "(#, BEGIN, " + payloadAsNarsese + ", END).";
+        return "(#, BEGIN, " + payloadAsNarsese + ", END)";
     }
 
     // helper

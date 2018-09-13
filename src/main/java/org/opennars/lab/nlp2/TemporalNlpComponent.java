@@ -86,9 +86,13 @@ public class TemporalNlpComponent implements EventEmitter.EventObserver {
                 condition = rootTermAsImplication.term[0];
                 conclusion = rootTermAsImplication.term[1];
             }
-            else {
+            else if (rootTerm.getTemporalOrder() == -1) {
                 condition = rootTermAsImplication.term[1];
                 conclusion = rootTermAsImplication.term[0];
+            }
+            else {
+                // we just silently return because we can't handle narsese - implications
+                return;
             }
 
             // build temporal implication "in the right order"

@@ -1,17 +1,19 @@
 package org.opennars.lab.nlp2;
 
+import org.opennars.language.Term;
+
 /**
  * tuple of narsese for a natural sentence and a coresponding relationship in narsese
  * can contain variables
  */
 public class NaturalLanguageRelationshipTuple {
-    public final String relationshipNarsese;
-    public final String naturalLanguageNarsese;
+    public final Term relationshipSubject;
+    public final Term naturalLanguage;
     public final String relationshipPredicate;
 
-    public NaturalLanguageRelationshipTuple(final String naturalLanguageNarsese, final String relationshipNarsese, final String relationshipPredicate) {
-        this.naturalLanguageNarsese = naturalLanguageNarsese;
-        this.relationshipNarsese = relationshipNarsese;
+    public NaturalLanguageRelationshipTuple(final Term naturalLanguage, final Term relationshipSubject, final String relationshipPredicate) {
+        this.naturalLanguage = naturalLanguage;
+        this.relationshipSubject = relationshipSubject;
         this.relationshipPredicate = relationshipPredicate;
     }
 }
