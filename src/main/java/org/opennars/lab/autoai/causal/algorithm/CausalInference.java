@@ -11,7 +11,7 @@ import java.util.*;
 public class CausalInference extends AbstractCausalInference {
 
     private Map<Integer, List<Integer>> mustPrecede = new HashMap<>();
-    private int numberOfNodes = 0;
+    public int numberOfNodes = 0;
 
     private List<Integer> openSet = new ArrayList<>();
 
@@ -38,6 +38,8 @@ public class CausalInference extends AbstractCausalInference {
                 openSet.add(iKey);
             }
         }
+
+        int debugHere = 1;
     }
 
     private void buildMustPrecede() {
@@ -52,6 +54,8 @@ public class CausalInference extends AbstractCausalInference {
                 mustPrecede.get(iValue).add(iKey);
             }
         }
+
+        int debugHere = 1;
     }
 
     public void reset() {
@@ -95,10 +99,11 @@ public class CausalInference extends AbstractCausalInference {
 		// to indicate that we can't choose it again
         doneSet.add(currentElement);
 
-
-        for (int iFollowup : followupNodes) {
-            if (!doneSet.contains(iFollowup) && openSet.contains(iFollowup)) {
-                openSet.add(iFollowup);
+        if (followupNodes != null) {
+            for (int iFollowup : followupNodes) {
+                if (!doneSet.contains(iFollowup) && !openSet.contains(iFollowup)) {
+                    openSet.add(iFollowup);
+                }
             }
         }
 

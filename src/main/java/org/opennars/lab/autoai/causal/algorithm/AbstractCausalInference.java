@@ -16,7 +16,5 @@ public abstract class AbstractCausalInference {
     public Map<Integer, List<Integer>> followup = new HashMap<>();
 
     public List<Integer> currentLinearization = new ArrayList<>();
-
-    public abstract void build();
-    public abstract void reset();
 }
+

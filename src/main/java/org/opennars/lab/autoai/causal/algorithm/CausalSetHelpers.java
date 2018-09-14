@@ -24,9 +24,11 @@ public class CausalSetHelpers {
             final List<Integer> followupNodes = followup.get(i);
             //print("followup " + str(followupNodes))
 
-            for (int iFollowupNode : followupNodes) {
-                final int idxOfFollowupNode = retIndexOfElementAfterIdx(linearization, idx, iFollowupNode);
-                e += (idxOfFollowupNode - idx - 1);
+            if (followupNodes != null) {
+                for (int iFollowupNode : followupNodes) {
+                    final int idxOfFollowupNode = retIndexOfElementAfterIdx(linearization, idx, iFollowupNode);
+                    e += (idxOfFollowupNode - idx - 1);
+                }
             }
 
             idx++;
