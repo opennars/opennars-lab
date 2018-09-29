@@ -6,6 +6,9 @@ import org.opennars.lab.autoai.structure.NeuralNetworkLayer;
 import org.opennars.lab.autoai.structure.Neuron;
 import org.opennars.lab.common.math.DualNumber;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Used to evaluate the performance (loss for neural-networks) of a artifact under test, such as neural-networks
  */
@@ -16,22 +19,40 @@ public class ArtifactEvaluator {
     // TODO< refactor into graph representation >
     public LayerConfiguration[] layerConfigurations;
 
+    /** a (deep) neural network can have multiple outputs */
+    public LayerConfiguration[] outputsConfigurations;
+
+    public double learnRate = 0.002;
+
+    public int numberOfTrainingSteps = 500;
+
+    public List<TrainingSample> trainingSamples = new ArrayList<>();
+
+    public int numberOfInputs = 0;
+
+
+    // learned weights
+    private NeuralNetworkLayer[] layers;
+    private NeuralNetworkLayer[] outputLayer;
+
+    private NetworkContext context;
+
     /**
      *
      * @return metric of performance of artifact in question - lower is better
      */
     public double evaluate() {
-        NetworkContext context = new NetworkContext();
+        context = new NetworkContext();
         context.iDiffCounter = 0;
         context.sizeOfDiff = 0;
 
-        context.learnRate = 0.003;
+        context.learnRate = learnRate;
 
 
-        NeuralNetworkLayer[] layers = new NeuralNetworkLayer[layerConfigurations.length];
+        layers = new NeuralNetworkLayer[layerConfigurations.length];
+        outputLayer = new NeuralNetworkLayer[outputsConfigurations.length];
 
-        // TODO< read this from the configuration of the input width of the NN >
-        int inputWidthOfPreviousLayer = 3;
+        int inputWidthOfPreviousLayer = numberOfInputs;
 
         for (int layerIdx=0; layerIdx<layerConfigurations.length; layerIdx++) {
             final int widthOfThisLayer = layerConfigurations[layerIdx].numberOfNeurons;
@@ -42,16 +63,10 @@ public class ArtifactEvaluator {
             inputWidthOfPreviousLayer = widthOfThisLayer;
         }
 
-        /* commented because it is old hardcoded code
-        layers[0] = new NeuralNetworkLayer(3, NeuralNetworkLayer.EnumActivationFunction.RELU);
-        layers[0].neurons = new Neuron[15];
-
-        layers[1] = new NeuralNetworkLayer(15, NeuralNetworkLayer.EnumActivationFunction.RELU);
-        layers[1].neurons = new Neuron[10];
-
-        layers[2] = new NeuralNetworkLayer(10, NeuralNetworkLayer.EnumActivationFunction.RELU);
-        layers[2].neurons = new Neuron[2];
-        */
+        for (int layerIdx=0;layerIdx<outputsConfigurations.length; layerIdx++) {
+            outputLayer[layerIdx] = new NeuralNetworkLayer(inputWidthOfPreviousLayer, outputsConfigurations[layerIdx].activationFunction);
+            outputLayer[layerIdx].neurons = new Neuron[outputsConfigurations[layerIdx].numberOfNeurons];
+        }
 
 
         {
@@ -60,11 +75,19 @@ public class ArtifactEvaluator {
                 iLayer.build(context, true);
             }
 
+            for(NeuralNetworkLayer iLayer:outputLayer) {
+                iLayer.build(context, true);
+            }
+
             context.sizeOfDiff = context.iDiffCounter;
             context.iDiffCounter = 0;
 
             // "real" building
             for(NeuralNetworkLayer iLayer:layers) {
+                iLayer.build(context, false);
+            }
+
+            for(NeuralNetworkLayer iLayer:outputLayer) {
                 iLayer.build(context, false);
             }
         }
@@ -76,36 +99,7 @@ public class ArtifactEvaluator {
 
         // we run multiple times and search the run with the lowest
         for (int iTry=0;iTry<numberOfTries;iTry++) {
-            for(int iteration=0;iteration<500;iteration++) {
-                double[] inputActivation = new double[]{1.0, 0.5, 0.4};
-
-                DualNumber[] inputActivationAsDualNumber = new DualNumber[inputActivation.length];
-                for(int i=0;i<inputActivation.length;i++) {
-                    inputActivationAsDualNumber[i] = new DualNumber(inputActivation[i]);
-                    inputActivationAsDualNumber[i].diff = new double[context.sizeOfDiff];
-                }
-
-
-                // forward propagate
-                DualNumber[] activationsOfPreviousLayer = inputActivationAsDualNumber;
-
-                int layerIdx=0;
-                for(NeuralNetworkLayer iLayer:layers) {
-                    activationsOfPreviousLayer = iLayer.activate(context, activationsOfPreviousLayer);
-
-                    System.out.println("activation of layer[" + Integer.toString(layerIdx) + "]:");
-
-                    for(int i=0;i<activationsOfPreviousLayer.length;i++) {
-                        System.out.print(Double.toString(activationsOfPreviousLayer[i].real) + " ");
-                    }
-
-                    System.out.println();
-
-                    layerIdx++;
-                }
-
-                DualNumber[] outputActivations = activationsOfPreviousLayer;
-
+            for(int iteration=0;iteration<numberOfTrainingSteps;iteration++) {
 
                 /// cost as score - lower is better - is always positive
                 double costAsScore = 0;
@@ -113,65 +107,86 @@ public class ArtifactEvaluator {
                 DualNumber cost = new DualNumber(0.0);
                 cost.diff = new double[context.sizeOfDiff];
 
-                if(false) {
-                    DualNumber[] differences = new DualNumber[2];
-
-                    DualNumber expectedResult = new DualNumber(0.7);
-                    expectedResult.diff = new double[context.sizeOfDiff];
-                    differences[0] = DualNumber.additiveRing(outputActivations[0], expectedResult, -1);
-
-                    expectedResult = new DualNumber(0.1);
-                    expectedResult.diff = new double[context.sizeOfDiff];
-                    differences[1] = DualNumber.additiveRing(outputActivations[1], expectedResult, -1);
+                for(final TrainingSample iTrainingSample : trainingSamples) {
+                    final DualNumber[][] activationsOfOutputLayers = forwardPropagate(iTrainingSample.input);
 
 
+                    // iterate over all output layers
+                    for (int iOutputLayer = 0; iOutputLayer < outputsConfigurations.length; iOutputLayer++) {
 
-                    // calculate linear regression cost function
-                    for(final DualNumber iDiff : differences) {
-                        DualNumber _0p5 = new DualNumber(0.5);
-                        _0p5.diff = new double[context.sizeOfDiff];
-
-                        final DualNumber squaredError = DualNumber.mul(iDiff, iDiff);
-                        final DualNumber halfSquaredError = DualNumber.mul(squaredError, _0p5);
-
-                        cost = DualNumber.additiveRing(cost, halfSquaredError, 1);
-                    }
-
-                    costAsScore = cost.real;
-                }
-                else {
-                    // calculate soft-max regression function
-
-                    /// index of expected class
-                    int expectedClassification = 1;
-                    int numberOfClasses = 2;
+                        DualNumber[] outputActivations = activationsOfOutputLayers[iOutputLayer];
 
 
-                    /// see http://ufldl.stanford.edu/tutorial/supervised/SoftmaxRegression/
-                    for (int i=0; i<outputActivations.length; i++) {
-                        for (int k=0; k<numberOfClasses; k++) {
-                            final boolean isCorrectClassification = i == k && k == expectedClassification;
-                            if (!isCorrectClassification) {
-                                continue;
+                        if (outputsConfigurations[iOutputLayer].activationFunction != NeuralNetworkLayer.EnumActivationFunction.SOFTMAX) {
+                            TrainingSample.ExpectedResult expectedResultOfLayer = (TrainingSample.ExpectedResult)iTrainingSample.output[iOutputLayer];
+
+                            DualNumber[] differences = new DualNumber[expectedResultOfLayer.values.length];
+
+                            /// compare to expected output
+                            for (int outputNeuronIdx=0; outputNeuronIdx<differences.length; outputNeuronIdx++) {
+                                DualNumber expectedResult = new DualNumber(expectedResultOfLayer.values[outputNeuronIdx]);
+                                expectedResult.diff = new double[context.sizeOfDiff];
+                                differences[outputNeuronIdx] = DualNumber.additiveRing(outputActivations[outputNeuronIdx], expectedResult, -1);
                             }
 
-                            DualNumber log = DualNumber.log(outputActivations[i]);
-                            cost = DualNumber.additiveRing(cost, log, 1);
+
+                            DualNumber costAdditive = new DualNumber(0.0);
+                            costAdditive.diff = new double[context.sizeOfDiff];
+
+                            // calculate linear regression cost function
+                            for (final DualNumber iDiff : differences) {
+                                DualNumber _0p5 = new DualNumber(0.5);
+                                _0p5.diff = new double[context.sizeOfDiff];
+
+                                final DualNumber squaredError = DualNumber.mul(iDiff, iDiff);
+                                final DualNumber halfSquaredError = DualNumber.mul(squaredError, _0p5);
+
+                                costAdditive = DualNumber.additiveRing(costAdditive, halfSquaredError, 1);
+                            }
+
+                            cost = DualNumber.additiveRing(cost, costAdditive, 1);
+
+                            costAsScore += costAdditive.real;
+                        } else {
+                            // calculate soft-max regression function
+
+                            /// index of expected class
+                            /// TODO< fetch expected class and number of classes from training sample >
+                            int expectedClassification = ((TrainingSample.ExpectedSoftmaxOutput)iTrainingSample.output[iOutputLayer]).class_;
+                            int numberOfClasses = outputsConfigurations[iOutputLayer].numberOfNeurons;
+
+                            DualNumber costAdditive = new DualNumber(0.0);
+                            costAdditive.diff = new double[context.sizeOfDiff];
+
+
+                            /// see http://ufldl.stanford.edu/tutorial/supervised/SoftmaxRegression/
+                            for (int i = 0; i < outputActivations.length; i++) {
+                                for (int k = 0; k < numberOfClasses; k++) {
+                                    final boolean isCorrectClassification = i == k && k == expectedClassification;
+                                    if (!isCorrectClassification) {
+                                        continue;
+                                    }
+
+                                    DualNumber log = DualNumber.log(outputActivations[i]);
+                                    costAdditive = DualNumber.additiveRing(costAdditive, log, 1);
+                                }
+                            }
+
+                            DualNumber _null = new DualNumber(0);
+                            _null.diff = new double[context.sizeOfDiff];
+                            costAdditive = DualNumber.additiveRing(_null, costAdditive, -1);
+
+                            cost = DualNumber.additiveRing(cost, costAdditive, 1);
+
+                            /// negative because logarithm is negative
+                            costAsScore += -costAdditive.real;
                         }
                     }
-
-                    DualNumber _null = new DualNumber(0);
-                    _null.diff = new double[context.sizeOfDiff];
-                    cost = DualNumber.additiveRing(_null, cost, -1);
-
-                    /// negative because logarithm is negative
-                    costAsScore = -cost.real;
                 }
 
 
+                System.out.println("iteration=" + Integer.toString(iteration)  + " cost=" + Double.toString(cost.real));
 
-
-                System.out.println("cost=" + Double.toString(cost.real));
 
 
                 // adapt
@@ -180,6 +195,9 @@ public class ArtifactEvaluator {
                 // update minimal cost
                 minimalCost = Math.min(minimalCost, costAsScore);
 
+                if (Math.abs(cost.real) < 1.0e-8) {
+                    break;
+                }
 
                 int debugMeHere = 5;
             }
@@ -190,6 +208,54 @@ public class ArtifactEvaluator {
         return minimalCost;
     }
 
+    public DualNumber[][] forwardPropagate(final double[] inputActivation) {
+        DualNumber[] inputActivationAsDualNumber = new DualNumber[inputActivation.length];
+        for (int i = 0; i < inputActivation.length; i++) {
+            inputActivationAsDualNumber[i] = new DualNumber(inputActivation[i]);
+            inputActivationAsDualNumber[i].diff = new double[context.sizeOfDiff];
+        }
+
+
+        // forward propagate
+        DualNumber[] activationsOfPreviousLayer = inputActivationAsDualNumber;
+
+        int layerIdx = 0;
+        for (NeuralNetworkLayer iLayer : layers) {
+            activationsOfPreviousLayer = iLayer.activate(context, activationsOfPreviousLayer);
+
+            if (false) {
+
+                System.out.println("activation of layer[" + Integer.toString(layerIdx) + "]:");
+
+                for (int i = 0; i < activationsOfPreviousLayer.length; i++) {
+                    System.out.print(Double.toString(activationsOfPreviousLayer[i].real) + " ");
+                }
+
+                System.out.println();
+            }
+
+            layerIdx++;
+        }
+
+        DualNumber[][] activationsOfOutputLayers = new DualNumber[outputsConfigurations.length][];
+
+        // activate output layers
+        for (int iOutputLayer = 0; iOutputLayer < outputsConfigurations.length; iOutputLayer++) {
+            activationsOfOutputLayers[iOutputLayer] = outputLayer[iOutputLayer].activate(context, activationsOfPreviousLayer);
+
+            if (false) {
+                System.out.println("activation of outputlayer[" + Integer.toString(iOutputLayer) + "]:");
+
+                for (int i = 0; i < activationsOfOutputLayers[iOutputLayer].length; i++) {
+                    System.out.print(Double.toString(activationsOfOutputLayers[iOutputLayer][i].real) + " ");
+                }
+
+                System.out.println();
+            }
+        }
+        return activationsOfOutputLayers;
+    }
+
     public static class LayerConfiguration {
         public final NeuralNetworkLayer.EnumActivationFunction activationFunction;
         public final int numberOfNeurons;
@@ -197,6 +263,30 @@ public class ArtifactEvaluator {
         public LayerConfiguration(final NeuralNetworkLayer.EnumActivationFunction activationFunction, final int numberOfNeurons) {
             this.activationFunction = activationFunction;
             this.numberOfNeurons = numberOfNeurons;
+        }
+    }
+
+    public static class TrainingSample {
+        public double[] input;
+
+        public ExpectedOutput[] output;
+
+        public static abstract class ExpectedOutput {}
+
+        public static class ExpectedSoftmaxOutput extends ExpectedOutput {
+            public final int class_;
+
+            public ExpectedSoftmaxOutput(final int class_) {
+                this.class_ = class_;
+            }
+        }
+
+        public static class ExpectedResult extends ExpectedOutput {
+            public final double[] values;
+
+            public ExpectedResult(final double[] values) {
+                this.values = values;
+            }
         }
     }
 }

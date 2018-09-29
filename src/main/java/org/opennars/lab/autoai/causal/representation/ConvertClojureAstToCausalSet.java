@@ -37,7 +37,7 @@ public class ConvertClojureAstToCausalSet {
             return convertIntegerClojureAstNodeToCausalSet((IntegerClojureAstNode)astNode, conversationSettings);
         }
         else if (astNode instanceof StringClojureAstNode) {
-            return convertStringClojureAstNodeToCausalSet((StringClojureAstNode)astNode, conversationSettings);
+            return convertStringClojureAstNodeToCausalSet((StringClojureAstNode)astNode, conversationSettings.createSeperateNodesForStringValues);
         }
         else if (astNode instanceof NamedClojureAstNode) {
             return convertNamedClojureAstNodeToCausalSet((NamedClojureAstNode)astNode, conversationSettings);
@@ -84,12 +84,12 @@ public class ConvertClojureAstToCausalSet {
      * converts a Integer-AST-node to a causal-set node
      *
      * @param astNode AST-node which has to be converted
-     * @param conversationSettings settings for the conversation from the AST to the causal-set
+     * @param createSeperateNodesForStringValue create a new causal-set node independent on the name of the AST-node?
      */
-    private int convertStringClojureAstNodeToCausalSet(final StringClojureAstNode astNode, final ConversationSettings conversationSettings) {
+    private int convertStringClojureAstNodeToCausalSet(final StringClojureAstNode astNode, final boolean createSeperateNodesForStringValue) {
         int causalSetNodeId;
 
-        if (conversationSettings.createSeperateNodesForStringValues) {
+        if (createSeperateNodesForStringValue) {
             // we don't care about the value of the node if the causal-set-node has to be unique for any value
             causalSetNodeId = retNewCausalSetNodeId();
         }
@@ -110,7 +110,7 @@ public class ConvertClojureAstToCausalSet {
     private int convertNamedClojureAstNodeToCausalSet(final NamedClojureAstNode astNode, final ConversationSettings conversationSettings) {
         // create causal-nodes for all children
 
-        final int causalSetNodeOfName  = convertStringClojureAstNodeToCausalSet(astNode.name, conversationSettings);
+        final int causalSetNodeOfName  = convertStringClojureAstNodeToCausalSet(astNode.name, conversationSettings.createSeperateNodesForOperationTypes);
 
         /* TODO< solve how and if we represent the order of the arguments somehow in the
          *       causal-set - this is not necessary for early testing phase but might be crucial for
@@ -154,7 +154,10 @@ public class ConvertClojureAstToCausalSet {
         /** must a non-name have a unique node in the causal-set independent on it's value? ex: first 5 has node 0 and send 5 has node 1 -   if the value is false then both nodes are 0 */
         public boolean createSeperateNodesForIntegerValues = false;
 
-        /** must a string (name) have a unique node in the causal-set independent on it' value? */
+        /** must a string (name) have a unique node in the causal-set independent on it's value? */
         public boolean createSeperateNodesForStringValues = false;
+
+        /** must a string for a operation type have a unique node in the causal-set independent on it's name */
+        public boolean createSeperateNodesForOperationTypes = true;
     }
 }

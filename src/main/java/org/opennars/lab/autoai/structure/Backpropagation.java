@@ -14,7 +14,7 @@ public class Backpropagation {
      */
     public static void backpropagate(final DualNumber sumOfDifferences, NetworkContext context) {
         for(int valueIdx=0;valueIdx<context.sizeOfDiff;valueIdx++) {
-            context.mapDiffToDualNumber.get(valueIdx).real -= (sumOfDifferences.real * sumOfDifferences.diff[valueIdx] * context.learnRate);
+            context.mapDiffToDualNumber.get(valueIdx).real -= (sumOfDifferences.real * Math.signum(sumOfDifferences.diff[valueIdx]) * context.learnRate);
         }
     }
 }

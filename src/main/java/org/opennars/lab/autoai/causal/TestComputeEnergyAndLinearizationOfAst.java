@@ -30,6 +30,7 @@ public class TestComputeEnergyAndLinearizationOfAst {
         IntegerClojureAstNode int6 = new IntegerClojureAstNode(6);
 
         StringClojureAstNode string0 = new StringClojureAstNode("+");
+        StringClojureAstNode string1 = new StringClojureAstNode("+");
 
         List<AbstractClojureAstNode> named0Children = new ArrayList<>();
         named0Children.add(int5);
@@ -37,7 +38,15 @@ public class TestComputeEnergyAndLinearizationOfAst {
 
         NamedClojureAstNode named0 = new NamedClojureAstNode(string0, named0Children);
 
-        rootAstNode = named0;
+
+        List<AbstractClojureAstNode> named1Children = new ArrayList<>();
+        named1Children.add(int5);
+        named1Children.add(named0);
+        named1Children.add(int6);
+
+        NamedClojureAstNode named1 = new NamedClojureAstNode(string1, named1Children);
+
+        rootAstNode = named1;
 
 
         // convert AST to equivalent causal-set
