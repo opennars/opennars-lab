@@ -21,10 +21,7 @@ package org.opennars.lab.nalnet;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.text.ParseException;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 import javax.xml.parsers.ParserConfigurationException;
 import org.opennars.main.Nar;
 import org.opennars.main.MiscFlags;
@@ -112,7 +109,7 @@ public class NALNetwork
                     for(BaseEntry ent : evidence_bases) {
                         arr[k++] = ent;
                     }
-                    if (!Stamp.baseOverlap(arr, neighbour.evidentalBase)) {
+                    if (!baseOverlap(arr, neighbour.evidentalBase)) {
                         truth = TruthFunctions.intersection(truth, t, narParameters);
                         for(BaseEntry ent : neighbour.evidentalBase) {
                             evidence_bases.add(ent);
@@ -172,6 +169,24 @@ public class NALNetwork
                                                  BudgetFunctions.truthToQuality(this.truth), narParameters),
                                  Task.EnumType.INPUT);
             nar.addInput(task, nar);
+        }
+
+        /** Detects evidental base overlaps **/
+        private boolean baseOverlap(final BaseEntry[] base1, final BaseEntry[] base2) {
+            final Set<BaseEntry> task_base = new HashSet<>(base1.length + base2.length);
+            for (final BaseEntry aBase1 : base1) {
+                if (task_base.contains(aBase1)) { //can have an overlap in itself already
+                    return true;
+                }
+                task_base.add(aBase1);
+            }
+            for (final BaseEntry aBase2 : base2) {
+                if (task_base.contains(aBase2)) {
+                    return true;
+                }
+                task_base.add(aBase2); //also add to detect collision with itself
+            }
+            return false;
         }
     }
     
