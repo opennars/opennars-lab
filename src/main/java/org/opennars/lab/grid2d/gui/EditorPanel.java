@@ -300,7 +300,7 @@ public class EditorPanel extends JPanel {
                         }    
                     }
                     for(TaskLink T : toDelete) {
-                        c.taskLinks.take(T);
+                        c.taskLinks.pickOut(T);
                     }
                 }
             }
