@@ -286,7 +286,7 @@ public class LanguageGUI extends javax.swing.JFrame {
             ans.off();
         }
         languageNAR.reset();
-        Memory.randomNumber.setSeed(seed);
+        languageNAR.memory.randomNumber.setSeed(seed);
         seed++;
         
         try {

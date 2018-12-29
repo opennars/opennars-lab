@@ -22,7 +22,7 @@ package org.opennars.lab.plugin.app.farg;
 import org.opennars.main.Nar;
 import org.opennars.plugin.Plugin;
 import org.opennars.language.Term;
-import org.opennars.storage.LevelBag;
+import org.opennars.storage.Bag;
 
 /**
  *
@@ -32,7 +32,7 @@ public class FluidAnalogiesAgents implements Plugin {
     public int max_codelets=100;
     public int codelet_level=100;
     Workspace ws;
-    LevelBag<Codelet,Term> coderack;
+    Bag<Codelet,Term> coderack;
     
     @Override
     public boolean setEnabled(Nar n, boolean enabled) {
