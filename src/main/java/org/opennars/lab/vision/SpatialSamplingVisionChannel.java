@@ -67,13 +67,13 @@ public class SpatialSamplingVisionChannel extends SensoryChannel {
     @Override
     public void step_start(final Timable time)
     {
-        int ind = Memory.randomNumber.nextInt(sampling.size());
+        int ind = nar.memory.randomNumber.nextInt(sampling.size());
         Position samplePos = sampling.get(ind);
         Task sampled = spatialbag[samplePos.Y][samplePos.X].takeOut();
         //Todo improve API, channel should not need to know where in the array x and y size is
         
         //spatial biased random sampling: 
-        int ind2 = Memory.randomNumber.nextInt(sampling.size());
+        int ind2 = nar.memory.randomNumber.nextInt(sampling.size());
         int s2posY = sampling.get(ind2).Y;
         int s2posX = sampling.get(ind2).X;
         if(spatialbag[s2posY][s2posX] != null) {
