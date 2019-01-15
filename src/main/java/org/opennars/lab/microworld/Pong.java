@@ -43,6 +43,8 @@ import org.opennars.operator.Operator;
 public class Pong extends Frame {
     public boolean verbose = true;
 
+    public int t = 0;
+
     public Pong() {
         String[] args = {"Pong"};
         MyPapplet mp = new MyPapplet ();
@@ -240,6 +242,7 @@ public class Pong extends Frame {
                 }*/
                 
                 nar.cycles(10);
+                t++;
 
                 if(lastAction==0 && random(1.0f) < Alpha) { //if Nar hasn't decided chose a executable random action
                     lastAction = (int) random((float) nActions);
@@ -470,7 +473,7 @@ public class Pong extends Frame {
         }
         void hrend_DrawBegin()
         {
-            label1.text="opti index:"+((float)goods)/((float)bads)+ "FPS:"+frameRate;
+            label1.text="opti index="+((float)goods)/((float)bads)+ "  t="+t+ "  FPS="+frameRate;
             fill(138,138,128);
             pushMatrix();
             if(hamlib.Mode==hamlib.Hamlib3DMode)
