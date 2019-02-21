@@ -24,7 +24,7 @@ import org.opennars.entity.Task;
 import org.opennars.interfaces.Timable;
 import org.opennars.plugin.perception.SensoryChannel;
 import org.opennars.language.Term;
-import org.opennars.storage.LevelBag;
+import org.opennars.storage.Bag;
 import org.opennars.storage.Memory;
 
 public class SpatialSamplingVisionChannel extends SensoryChannel {
@@ -33,17 +33,17 @@ public class SpatialSamplingVisionChannel extends SensoryChannel {
         public int Y;
     }
     
-    LevelBag<Task<Term>,Sentence<Term>>[][] spatialbag;
+    Bag<Task<Term>,Sentence<Term>>[][] spatialbag;
     public SpatialSamplingVisionChannel(Nar nar, SensoryChannel reportResultsTo, int width, int height) {
         super(nar,reportResultsTo, width, height, -1, new Term("BRIGHT"));
-        spatialbag = new LevelBag[height][width];
+        spatialbag = new Bag[height][width];
     }
     
     public void AddToSpatialBag(Task t) {
         int x = t.getTerm().term_indices[2];
         int y = t.getTerm().term_indices[3];
         if(spatialbag[y][x] == null) {
-            spatialbag[y][x] = new LevelBag(100, 100, this.nar.narParameters);
+            spatialbag[y][x] = new Bag(100, 100, this.nar.narParameters);
         }
         t.incPriority((float) this.topDownPriority(t.getTerm()));
         spatialbag[y][x].putIn(t);
@@ -67,17 +67,17 @@ public class SpatialSamplingVisionChannel extends SensoryChannel {
     @Override
     public void step_start(final Timable time)
     {
-        int ind = Memory.randomNumber.nextInt(sampling.size());
+        int ind = nar.memory.randomNumber.nextInt(sampling.size());
         Position samplePos = sampling.get(ind);
-        Task sampled = spatialbag[samplePos.Y][samplePos.X].takeNext();
+        Task sampled = spatialbag[samplePos.Y][samplePos.X].takeOut();
         //Todo improve API, channel should not need to know where in the array x and y size is
         
         //spatial biased random sampling: 
-        int ind2 = Memory.randomNumber.nextInt(sampling.size());
+        int ind2 = nar.memory.randomNumber.nextInt(sampling.size());
         int s2posY = sampling.get(ind2).Y;
         int s2posX = sampling.get(ind2).X;
         if(spatialbag[s2posY][s2posX] != null) {
-            Task sampled2 = spatialbag[s2posY][s2posX].takeNext();
+            Task sampled2 = spatialbag[s2posY][s2posX].takeOut();
             if(sampled2 != null) {
                 //improve API, carrying out temporal inference should be easier..
                 List<Task> seq = proceedWithTemporalInduction(sampled.sentence, sampled2.sentence, sampled2, 

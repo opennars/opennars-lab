@@ -41,6 +41,7 @@ import org.opennars.operator.Operation;
 import org.opennars.operator.Operator;
 
 public class Pong extends Frame {
+    public boolean verbose = true;
 
     public Pong() {
         String[] args = {"Pong"};
@@ -165,25 +166,25 @@ public class Pong extends Frame {
                 if(k%4 == 0) {
                 Sentence hypo_left = ConceptMonitor.strongestPrecondition(nar, "<{SELF} --> [good]>",
                         "<(&/,<{left} --> [on]>,+1,(^Right,{SELF}),+1) =/> <{SELF} --> [good]>>");
-                if(hypo_left != null) {
+                if(hypo_left != null && verbose) {
                     System.out.println("HypLeftWrong: " + hypo_left.truth);
                 }
                 
                 Sentence hypo_right = ConceptMonitor.strongestPrecondition(nar, "<{SELF} --> [good]>",
                         "<(&/,<{right} --> [on]>,+12,(^Left,{SELF}),+13) =/> <{SELF} --> [good]>>");
-                if(hypo_right != null) {
+                if(hypo_right != null && verbose) {
                     System.out.println("HypRightWrong: " + hypo_right.truth);
                 }
                 
                 Sentence hypo_left_false = ConceptMonitor.strongestPrecondition(nar, "<{SELF} --> [good]>",
                         "<(&/,<{left} --> [on]>,+1,(^Left,{SELF}),+1) =/> <{SELF} --> [good]>>");
-                if(hypo_left_false != null) {
+                if(hypo_left_false != null && verbose) {
                     System.out.println("HypLeft: " + hypo_left_false.truth);
                 }
                 
                 Sentence hypo_right_false = ConceptMonitor.strongestPrecondition(nar,  "<{SELF} --> [good]>",
                         "<(&/,<{right} --> [on]>,+12,(^Right,{SELF}),+13) =/> <{SELF} --> [good]>>");
-                if(hypo_right_false != null) {
+                if(hypo_right_false != null && verbose) {
                     System.out.println("HypRight: " + hypo_right_false.truth);
                 }
                 }
@@ -198,9 +199,11 @@ public class Pong extends Frame {
                     if(Math.abs(agent.x - ball.x) < middle_distance && ball.y < 120) { //same here
                         String s = "<{SELF} --> [good]>. :|:";
                         if(!s.equals(this.LastInput)) {
-                            System.out.println("good mr_nars");
+                            if (verbose) {
+                                System.out.println("good mr_nars");
+                                System.out.println(s);
+                            }
                             nar.addInput(s);
-                            System.out.println(s);
                         }
                         this.LastInput = s;
                     } else {
@@ -215,14 +218,18 @@ public class Pong extends Frame {
                         String s = "<{right} --> [on]>. :|:";
                         if(!s.equals(this.LastInput)) {
                             nar.addInput(s);
-                            System.out.println(s);
+                            if (verbose) {
+                                System.out.println(s);
+                            }
                         }
                         this.LastInput = s;
                     } else {
                         String s = "<{left} --> [on]>. :|:";
                         if(!s.equals(this.LastInput)) {
                             nar.addInput(s);
-                            System.out.println(s);
+                            if (verbose) {
+                                System.out.println(s);
+                            }
                         }
                         this.LastInput = s;
                     }

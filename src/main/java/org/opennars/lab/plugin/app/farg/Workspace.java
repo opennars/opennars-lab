@@ -23,7 +23,7 @@ import org.opennars.io.events.EventEmitter.EventObserver;
 import org.opennars.io.events.Events.CycleEnd;
 import org.opennars.main.Nar;
 import org.opennars.entity.Concept;
-import org.opennars.storage.LevelBag;
+import org.opennars.storage.Bag;
 
 /**
  *
@@ -38,13 +38,13 @@ public class Workspace {
     public Workspace(FluidAnalogiesAgents farg, Nar nar) {
         this.nar=nar;
         Workspace ws=this;
-        farg.coderack=new LevelBag(farg.codelet_level,farg.max_codelets, nar.narParameters);
+        farg.coderack=new Bag(farg.codelet_level,farg.max_codelets, nar.narParameters);
         nar.on(CycleEnd.class, new EventObserver() { 
 
             @Override
             public void event(Class event, Object[] args) {
                 for(int i=0;i<10;i++) { //process 10 codelets in each step
-                    Codelet cod=farg.coderack.takeNext();
+                    Codelet cod=farg.coderack.takeOut();
                     if(cod!=null) {
                         if(cod.run(ws)) {
                             farg.coderack.putIn(cod);

@@ -14,6 +14,7 @@
  */
 package org.opennars.lab.grid2d.main;
 
+import java.util.Random;
 import org.opennars.main.Nar;
 import org.opennars.storage.Memory;
 import org.opennars.lab.grid2d.main.Cell.Logic;
@@ -50,6 +51,7 @@ public class Hauto {
     public boolean bridge(Logic c) {
         return c == Logic.UNCERTAINBRIDGE || c == Logic.BRIDGE;
     }
+    Random rnd = new Random(42);
     
     //put to beginning because we will need this one most often
     public void ExecutionFunction(int t,int i,int j,Cell w,Cell r,Cell left,Cell right,Cell up,
@@ -142,7 +144,7 @@ public class Hauto {
             w.value=(up.charge==1 ^ down.charge==1) ? 1.0f : 0.0f;  //eval state from input connections
 
         //ADD BIDIRECTIONAL LOGIC BRIDGE TO OVERCOME 2D TOPOLOGY
-        if(r.logic==BRIDGE || (r.logic==UNCERTAINBRIDGE && Memory.randomNumber.nextDouble()>0.5))
+        if(r.logic==BRIDGE || (r.logic==UNCERTAINBRIDGE && rnd.nextDouble()>0.5))
         {
             if(left.chargeFront && left.logic==WIRE)
                 w.value=left.charge;
