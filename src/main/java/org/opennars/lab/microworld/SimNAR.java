@@ -328,10 +328,12 @@ public class SimNAR extends Frame {
                    //System.out.println("food urge input");
                 }
                 if(reward > 0) {
+                    counterAteGood++;
                     System.out.println("good mr_nars");
                     nar.addInput("<{SELF} --> [replete]>. :|:");
                 }
                 if(reward < 0) {
+                    counterAteBad++;
                     System.out.println("bad mr_nars");
                     lasthealthy = k;
                     //nar.addInput("(--,<{SELF} --> [good]>). :|:");   
@@ -537,7 +539,8 @@ public class SimNAR extends Frame {
         }
         void hrend_DrawBegin()
         {
-            label1.text="opti index:"+((float)goods)/((float)bads)+ "FPS:"+frameRate;
+            label1.text="cntGood=" + counterAteGood + " cntBad="+counterAteBad + "    opti index:"+((float)goods)/((float)bads)+ "FPS:"+frameRate;
+fill(138,138,128);
             fill(138,138,128);
             pushMatrix();
             if(hamlib.Mode==hamlib.Hamlib3DMode)
@@ -1406,4 +1409,7 @@ public class SimNAR extends Frame {
         NARSwing.themeInvert();
         new SimNAR();
     }
+    
+    long counterAteGood = 0;
+    long counterAteBad = 0;
 }
