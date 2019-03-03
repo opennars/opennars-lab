@@ -30,11 +30,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.opennars.entity.Concept;
 
 import org.opennars.entity.Sentence;
 import org.opennars.entity.Task;
 import org.opennars.gui.NARSwing;
 import org.opennars.interfaces.Timable;
+import org.opennars.io.Narsese;
+import org.opennars.io.Parser;
 import org.opennars.util.test.ConceptMonitor;
 import org.opennars.language.Term;
 import org.opennars.operator.Operation;
@@ -249,16 +252,27 @@ public class Pong extends Frame {
                     if(obj.x == width) {
                         lastAction = 2;
                     }
+                    Concept left = null;
+                    Concept right = null;
+                    try {
+                        left = nar.memory.concept(new Narsese(nar).parseTerm("Left({SELF})")); //refine API in the future
+                        right = nar.memory.concept(new Narsese(nar).parseTerm("Right({SELF})")); //innate motivation plugin
+                    } catch (Parser.InvalidInputException ex) {              //with for instance battery level etc. and their state?
+                        Logger.getLogger(Pong.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                     if(lastAction == 1) {
-                        //System.out.println("random left");
-                        //nar.addInput("Left({SELF}). :|:");
-                        
+                        if(right != null && !right.allowBabbling) {
+                            lastAction = 0;
+                            return 0;
+                        }
                         nar.addInput("Right({SELF}). :|:");
                     }
                     if(lastAction == 2) {
+                        if(left != null && !left.allowBabbling) {
+                            lastAction = 0;
+                            return 0;
+                        }
                         nar.addInput("Left({SELF}). :|:");
-                        //System.out.println("random right");
-                        //nar.addInput("Right({SELF}). :|:");
                     }
                 }
 
