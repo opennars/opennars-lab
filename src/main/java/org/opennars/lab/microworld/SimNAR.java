@@ -14,6 +14,8 @@
  */
 package org.opennars.lab.microworld;
 
+import org.opennars.lab.metric.MetricReporter;
+import org.opennars.lab.metric.MetricSensor;
 import org.opennars.storage.Memory;
 import org.opennars.main.Nar;
 //import org.opennars.nal.nal8.Operation;
@@ -25,6 +27,7 @@ import processing.core.PImage;
 import processing.event.MouseEvent;
 
 import java.awt.*;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -41,7 +44,36 @@ import org.opennars.operator.Operator;
 
 public class SimNAR extends Frame {
 
-    public SimNAR() {
+    public MetricReporter metricReporter;
+
+    public SimNAR() throws UnknownHostException {
+        metricReporter = new MetricReporter();
+        metricReporter.connect("127.0.0.1", 1212);
+
+        metricReporter.sensors.add(new MetricSensor() {
+            @Override
+            public String getName() {
+                return "ateGood";
+            }
+
+            @Override
+            public String getValueAsString() {
+                return "" + counterAteGood;
+            }
+        });
+
+        metricReporter.sensors.add(new MetricSensor() {
+            @Override
+            public String getName() {
+                return "ateBad";
+            }
+
+            @Override
+            public String getValueAsString() {
+                return "" + counterAteBad;
+            }
+        });
+
         String[] args = {"Microworld"};
         MyPapplet mp = new MyPapplet ();
         mp.setSize(800,600);
@@ -1405,7 +1437,7 @@ fill(138,138,128);
 
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws UnknownHostException {
         NARSwing.themeInvert();
         new SimNAR();
     }

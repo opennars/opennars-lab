@@ -14,6 +14,8 @@
  */
 package org.opennars.lab.microworld;
 
+import org.opennars.lab.metric.MetricReporter;
+import org.opennars.lab.metric.MetricSensor;
 import org.opennars.storage.Memory;
 import org.opennars.main.Nar;
 //import org.opennars.nal.nal8.Operation;
@@ -26,6 +28,7 @@ import processing.event.MouseEvent;
 
 import java.awt.*;
 import java.io.File;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -46,7 +49,41 @@ import org.opennars.operator.Operator;
 public class Pong extends Frame {
     public boolean verbose = true;
 
-    public Pong() {
+    public int ballHits;
+    public int ballMisses;
+
+    public int t = 0;
+
+    public MetricReporter metricReporter;
+
+    public Pong() throws UnknownHostException {
+        metricReporter = new MetricReporter();
+        metricReporter.connect("127.0.0.1", 1212);
+
+        metricReporter.sensors.add(new MetricSensor() {
+            @Override
+            public String getName() {
+                return "ballHits";
+            }
+
+            @Override
+            public String getValueAsString() {
+                return "" + ballHits;
+            }
+        });
+
+        metricReporter.sensors.add(new MetricSensor() {
+            @Override
+            public String getName() {
+                return "ballMisses";
+            }
+
+            @Override
+            public String getValueAsString() {
+                return "" + ballMisses;
+            }
+        });
+
         String[] args = {"Pong"};
         MyPapplet mp = new MyPapplet ();
         mp.setSize(800,600);
@@ -200,6 +237,8 @@ public class Pong extends Frame {
                 if(Math.abs(agent.x - ball.x) < middle_distance) {
                     //touching the ball?
                     if(Math.abs(agent.x - ball.x) < middle_distance && ball.y < 120) { //same here
+                        ballHits++;
+
                         String s = "<{SELF} --> [good]>. :|:";
                         if(!s.equals(this.LastInput)) {
                             if (verbose) {
@@ -217,6 +256,8 @@ public class Pong extends Frame {
                         this.LastInput = s;
                     }
                 } else {
+                    ballMisses++;
+
                     if(agent.x < ball.x) {
                         String s = "<{right} --> [on]>. :|:";
                         if(!s.equals(this.LastInput)) {
@@ -241,8 +282,13 @@ public class Pong extends Frame {
                     System.out.println("bad mr_nars");
                     nar.addInput("(--,<{SELF} --> [good]>). :|:");
                 }*/
-                
+
+                t++;
                 nar.cycles(10);
+
+                if (t%100==0) {
+                    metricReporter.sendFromAllSensors();
+                }
 
                 if(lastAction==0 && random(1.0f) < Alpha) { //if Nar hasn't decided chose a executable random action
                     lastAction = (int) random((float) nActions);
@@ -1352,7 +1398,7 @@ public class Pong extends Frame {
 
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws UnknownHostException {
         NARSwing.themeInvert();
         new Pong();
     }
