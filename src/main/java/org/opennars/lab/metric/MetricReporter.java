@@ -34,7 +34,7 @@ public class MetricReporter {
 
         String metricPath = narsVersion + "_name=" + metricPathName + "_runId=" + runId;
 
-        String payload = metricPath +" "+ dataAsString +" "+ timestampAsString + "\n";
+        String payload = metricPath +":"+ dataAsString + "|c" + "\n";
 
         final byte[] serializedPayload = payload.getBytes();
 
