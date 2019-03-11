@@ -65,7 +65,7 @@ public class Pong extends Frame {
 
             @Override
             public String getName() {
-                return "ballHits";
+                return "ballHitsDelta";
             }
 
             @Override
@@ -88,7 +88,7 @@ public class Pong extends Frame {
 
             @Override
             public String getName() {
-                return "ballMisses";
+                return "ballMissesDelta";
             }
 
             @Override
@@ -105,6 +105,54 @@ public class Pong extends Frame {
                 oldBallMisses = ballMisses;
             }
         });
+
+
+        metricReporter.sensors.add(new MetricSensor() {
+            private int oldBallHits = 0;
+
+            @Override
+            public String getName() {
+                return "ballHits";
+            }
+
+            @Override
+            public String getValueAsString() {
+                if (oldBallHits == ballHits) {
+                    return null; // don't send anything
+                }
+
+                return "" + (ballHits);
+            }
+
+            @Override
+            public void resetAfterSending() {
+                oldBallHits = ballHits;
+            }
+        });
+
+        metricReporter.sensors.add(new MetricSensor() {
+            private int oldBallMisses = 0;
+
+            @Override
+            public String getName() {
+                return "ballMisses";
+            }
+
+            @Override
+            public String getValueAsString() {
+                if (oldBallMisses == ballMisses) {
+                    return null; // don't send anything
+                }
+
+                return "" + (ballMisses);
+            }
+
+            @Override
+            public void resetAfterSending() {
+                oldBallMisses = ballMisses;
+            }
+        });
+
 
         String[] args = {"Pong"};
         MyPapplet mp = new MyPapplet ();
