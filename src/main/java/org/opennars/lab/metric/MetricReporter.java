@@ -21,7 +21,11 @@ public class MetricReporter {
 
     public void sendFromAllSensors() {
         for(final MetricSensor iSensor : sensors) {
-            send(iSensor.getValueAsString(), iSensor.getName());
+            String valueAsString = iSensor.getValueAsString();
+
+            if (valueAsString != null) {
+                send(valueAsString, iSensor.getName());
+            }
         }
 
         for(final MetricSensor iSensor : sensors) {

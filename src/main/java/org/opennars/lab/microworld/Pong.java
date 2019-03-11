@@ -70,6 +70,10 @@ public class Pong extends Frame {
 
             @Override
             public String getValueAsString() {
+                if (oldBallHits == ballHits) {
+                    return null; // don't send anything
+                }
+
                 return "" + (ballHits-oldBallHits);
             }
 
@@ -89,6 +93,10 @@ public class Pong extends Frame {
 
             @Override
             public String getValueAsString() {
+                if (oldBallMisses == ballMisses) {
+                    return null; // don't send anything
+                }
+
                 return "" + (ballMisses-oldBallMisses);
             }
 
@@ -299,10 +307,8 @@ public class Pong extends Frame {
 
                 t++;
                 nar.cycles(10);
+                metricReporter.sendFromAllSensors();
 
-                if (t%100==0) {
-                    metricReporter.sendFromAllSensors();
-                }
 
                 if(lastAction==0 && random(1.0f) < Alpha) { //if Nar hasn't decided chose a executable random action
                     lastAction = (int) random((float) nActions);
