@@ -259,8 +259,6 @@ public class Pong extends Frame {
                 if(Math.abs(agent.x - ball.x) < middle_distance) {
                     //touching the ball?
                     if(Math.abs(agent.x - ball.x) < middle_distance && ball.y < 120) { //same here
-                        ballHits++;
-
                         String s = "<{SELF} --> [good]>. :|:";
                         if(!s.equals(this.LastInput)) {
                             if (verbose) {
@@ -278,8 +276,6 @@ public class Pong extends Frame {
                         this.LastInput = s;
                     }
                 } else {
-                    ballMisses++;
-
                     if(agent.x < ball.x) {
                         String s = "<{right} --> [on]>. :|:";
                         if(!s.equals(this.LastInput)) {
@@ -522,6 +518,18 @@ public class Pong extends Frame {
                 {
                     oi.y = 0;
                     oi.VY = -oi.VY;
+
+                    // ball changed direction on top of the bat - figure out if scored or not
+                    float middle_distance = 40.0f; //approximately the drawing size of paddle plus ball radius
+
+                    float diffAbs = Math.abs(agent.x - ball.x);
+
+                    if(diffAbs < middle_distance) {
+                        ballHits++;
+                    }
+                    else {
+                        ballMisses++;
+                    }
                 } 
                 oi.x += oi.VX;
                 oi.y += oi.VY;
@@ -550,7 +558,7 @@ public class Pong extends Frame {
         }
         void hrend_DrawBegin()
         {
-            label1.text="opti index:"+((float)goods)/((float)bads)+ "FPS:"+frameRate;
+            label1.text="hits=" + ballHits + " misses=" + ballMisses + "   opti index="+((float)ballHits)/((float)ballMisses)+ "   FPS="+frameRate;
             fill(138,138,128);
             pushMatrix();
             if(hamlib.Mode==hamlib.Hamlib3DMode)
