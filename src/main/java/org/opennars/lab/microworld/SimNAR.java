@@ -48,7 +48,7 @@ public class SimNAR extends Frame {
 
     public SimNAR() throws UnknownHostException {
         metricReporter = new MetricReporter();
-        metricReporter.connect("127.0.0.1", 1212);
+        metricReporter.connect("127.0.0.1", 8125);
 
         metricReporter.sensors.add(new MetricSensor() {
             @Override

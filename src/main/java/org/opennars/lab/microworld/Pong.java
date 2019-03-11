@@ -58,7 +58,7 @@ public class Pong extends Frame {
 
     public Pong() throws UnknownHostException {
         metricReporter = new MetricReporter();
-        metricReporter.connect("127.0.0.1", 1212);
+        metricReporter.connect("127.0.0.1", 8125);
 
         metricReporter.sensors.add(new MetricSensor() {
             private int oldBallHits = 0;
