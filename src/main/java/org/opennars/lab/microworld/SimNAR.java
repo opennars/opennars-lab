@@ -60,6 +60,10 @@ public class SimNAR extends Frame {
             public String getValueAsString() {
                 return "" + counterAteGood;
             }
+
+            @Override
+            public void resetAfterSending() {
+            }
         });
 
         metricReporter.sensors.add(new MetricSensor() {
@@ -71,6 +75,10 @@ public class SimNAR extends Frame {
             @Override
             public String getValueAsString() {
                 return "" + counterAteBad;
+            }
+
+            @Override
+            public void resetAfterSending() {
             }
         });
 

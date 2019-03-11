@@ -61,6 +61,8 @@ public class Pong extends Frame {
         metricReporter.connect("127.0.0.1", 1212);
 
         metricReporter.sensors.add(new MetricSensor() {
+            private int oldBallHits = 0;
+
             @Override
             public String getName() {
                 return "ballHits";
@@ -68,11 +70,18 @@ public class Pong extends Frame {
 
             @Override
             public String getValueAsString() {
-                return "" + ballHits;
+                return "" + (ballHits-oldBallHits);
+            }
+
+            @Override
+            public void resetAfterSending() {
+                oldBallHits = ballHits;
             }
         });
 
         metricReporter.sensors.add(new MetricSensor() {
+            private int oldBallMisses = 0;
+
             @Override
             public String getName() {
                 return "ballMisses";
@@ -80,7 +89,12 @@ public class Pong extends Frame {
 
             @Override
             public String getValueAsString() {
-                return "" + ballMisses;
+                return "" + (ballMisses-oldBallMisses);
+            }
+
+            @Override
+            public void resetAfterSending() {
+                oldBallMisses = ballMisses;
             }
         });
 

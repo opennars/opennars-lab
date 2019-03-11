@@ -23,6 +23,10 @@ public class MetricReporter {
         for(final MetricSensor iSensor : sensors) {
             send(iSensor.getValueAsString(), iSensor.getName());
         }
+
+        for(final MetricSensor iSensor : sensors) {
+            iSensor.resetAfterSending();
+        }
     }
 
     private void send(final String dataAsString, final String metricPathName) {
