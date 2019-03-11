@@ -36,7 +36,7 @@ public class MetricReporter {
     private void send(final String dataAsString, final String metricPathName) {
         final String timestampAsString = "-1"; // -1 leads to automatic timestamping on arrival of the message
 
-        String metricPath = narsVersion + "_name=" + metricPathName + "_runId=" + runId;
+        String metricPath = narsVersion + "___name_" + metricPathName + "___runId_" + runId;
 
         String payload = metricPath +":"+ dataAsString + "|c" + "\n";
 
