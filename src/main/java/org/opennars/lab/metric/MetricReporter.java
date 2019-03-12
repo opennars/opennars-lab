@@ -33,6 +33,21 @@ public class MetricReporter {
         }
     }
 
+    // forces sensors to send their data - preferably called every second
+    public void sendFromAllSensorsPerSecondTick() {
+        for(final MetricSensor iSensor : sensors) {
+            String valueAsString = iSensor.getValueAsString();
+
+            if (valueAsString != null) {
+                send(valueAsString, iSensor.getName());
+            }
+        }
+
+        for(final MetricSensor iSensor : sensors) {
+            iSensor.resetAfterSending();
+        }
+    }
+
     private void send(final String dataAsString, final String metricPathName) {
         final String timestampAsString = "-1"; // -1 leads to automatic timestamping on arrival of the message
 
@@ -56,4 +71,5 @@ public class MetricReporter {
 
     private InetAddress receiverTarget;
     private int receiverTargetPort;
+
 }

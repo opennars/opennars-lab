@@ -56,6 +56,8 @@ public class Pong extends Frame {
 
     public MetricReporter metricReporter;
 
+    public long lastSecondTickTime = 0;
+
     public Pong() throws UnknownHostException {
         metricReporter = new MetricReporter();
         metricReporter.connect("127.0.0.1", 8125);
@@ -352,6 +354,14 @@ public class Pong extends Frame {
                 t++;
                 nar.cycles(10);
                 metricReporter.sendFromAllSensors();
+
+                {
+                    if( System.currentTimeMillis() - lastSecondTickTime >= 1000 ) {
+                        lastSecondTickTime = System.currentTimeMillis();
+
+                        metricReporter.sendFromAllSensorsPerSecondTick();
+                    }
+                }
 
 
                 if(lastAction==0 && random(1.0f) < Alpha) { //if Nar hasn't decided chose a executable random action
