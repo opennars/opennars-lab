@@ -57,7 +57,7 @@ public class SimNAR extends Frame {
             }
 
             @Override
-            public String getValueAsString() {
+            public String getValueAsString(boolean force) {
                 return "" + counterAteGood;
             }
 
@@ -73,7 +73,7 @@ public class SimNAR extends Frame {
             }
 
             @Override
-            public String getValueAsString() {
+            public String getValueAsString(boolean force) {
                 return "" + counterAteBad;
             }
 

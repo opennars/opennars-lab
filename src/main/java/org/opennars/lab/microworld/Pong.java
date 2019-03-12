@@ -71,7 +71,7 @@ public class Pong extends Frame {
             }
 
             @Override
-            public String getValueAsString() {
+            public String getValueAsString(boolean force) {
                 if (oldBallHits == ballHits) {
                     return null; // don't send anything
                 }
@@ -94,7 +94,7 @@ public class Pong extends Frame {
             }
 
             @Override
-            public String getValueAsString() {
+            public String getValueAsString(boolean force) {
                 if (oldBallMisses == ballMisses) {
                     return null; // don't send anything
                 }
@@ -118,8 +118,8 @@ public class Pong extends Frame {
             }
 
             @Override
-            public String getValueAsString() {
-                if (oldBallHits == ballHits) {
+            public String getValueAsString(boolean force) {
+                if (!force && oldBallHits == ballHits) {
                     return null; // don't send anything
                 }
 
@@ -141,8 +141,8 @@ public class Pong extends Frame {
             }
 
             @Override
-            public String getValueAsString() {
-                if (oldBallMisses == ballMisses) {
+            public String getValueAsString(boolean force) {
+                if (!force && oldBallMisses == ballMisses) {
                     return null; // don't send anything
                 }
 

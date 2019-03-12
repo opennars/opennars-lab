@@ -21,7 +21,7 @@ public class MetricReporter {
 
     public void sendFromAllSensors() {
         for(final MetricSensor iSensor : sensors) {
-            String valueAsString = iSensor.getValueAsString();
+            String valueAsString = iSensor.getValueAsString(false);
 
             if (valueAsString != null) {
                 send(valueAsString, iSensor.getName());
@@ -36,7 +36,7 @@ public class MetricReporter {
     // forces sensors to send their data - preferably called every second
     public void sendFromAllSensorsPerSecondTick() {
         for(final MetricSensor iSensor : sensors) {
-            String valueAsString = iSensor.getValueAsString();
+            String valueAsString = iSensor.getValueAsString(true);
 
             if (valueAsString != null) {
                 send(valueAsString, iSensor.getName());
