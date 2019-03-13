@@ -26,7 +26,8 @@ public class MetricReporter {
     public void notifyInt(String name, int value) {
         integerMap.put(name, value);
 
-        pushReport();
+        //pushReport();
+        send(Integer.toString(value), name);
     }
 
     private void pushReport() {
