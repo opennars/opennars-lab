@@ -14,8 +14,7 @@
  */
 package org.opennars.lab.microworld;
 
-import org.opennars.lab.metric.MetricReporter;
-import org.opennars.lab.metric.MetricSensor;
+import org.opennars.lab.metric.*;
 import org.opennars.storage.Memory;
 import org.opennars.main.Nar;
 //import org.opennars.nal.nal8.Operation;
@@ -55,106 +54,18 @@ public class Pong extends Frame {
     public int t = 0;
 
     public MetricReporter metricReporter;
+    public MetricListener metricListener;
+    public MetricObserver metricObserver;
 
     public long lastSecondTickTime = 0;
 
     public Pong() throws UnknownHostException {
+        metricListener = new MetricListener();
+
         metricReporter = new MetricReporter();
         metricReporter.connect("127.0.0.1", 8125);
 
-        metricReporter.sensors.add(new MetricSensor() {
-            private int oldBallHits = 0;
-
-            @Override
-            public String getName() {
-                return "ballHitsDelta";
-            }
-
-            @Override
-            public String getValueAsString(boolean force) {
-                if (oldBallHits == ballHits) {
-                    return null; // don't send anything
-                }
-
-                return "" + (ballHits-oldBallHits);
-            }
-
-            @Override
-            public void resetAfterSending() {
-                oldBallHits = ballHits;
-            }
-        });
-
-        metricReporter.sensors.add(new MetricSensor() {
-            private int oldBallMisses = 0;
-
-            @Override
-            public String getName() {
-                return "ballMissesDelta";
-            }
-
-            @Override
-            public String getValueAsString(boolean force) {
-                if (oldBallMisses == ballMisses) {
-                    return null; // don't send anything
-                }
-
-                return "" + (ballMisses-oldBallMisses);
-            }
-
-            @Override
-            public void resetAfterSending() {
-                oldBallMisses = ballMisses;
-            }
-        });
-
-
-        metricReporter.sensors.add(new MetricSensor() {
-            private int oldBallHits = 0;
-
-            @Override
-            public String getName() {
-                return "ballHits";
-            }
-
-            @Override
-            public String getValueAsString(boolean force) {
-                if (!force && oldBallHits == ballHits) {
-                    return null; // don't send anything
-                }
-
-                return "" + (ballHits);
-            }
-
-            @Override
-            public void resetAfterSending() {
-                oldBallHits = ballHits;
-            }
-        });
-
-        metricReporter.sensors.add(new MetricSensor() {
-            private int oldBallMisses = 0;
-
-            @Override
-            public String getName() {
-                return "ballMisses";
-            }
-
-            @Override
-            public String getValueAsString(boolean force) {
-                if (!force && oldBallMisses == ballMisses) {
-                    return null; // don't send anything
-                }
-
-                return "" + (ballMisses);
-            }
-
-            @Override
-            public void resetAfterSending() {
-                oldBallMisses = ballMisses;
-            }
-        });
-
+        metricObserver = new MetricReporterObserver(metricListener, metricReporter);
 
         String[] args = {"Pong"};
         MyPapplet mp = new MyPapplet ();
@@ -353,16 +264,6 @@ public class Pong extends Frame {
 
                 t++;
                 nar.cycles(10);
-                metricReporter.sendFromAllSensors();
-
-                {
-                    if( System.currentTimeMillis() - lastSecondTickTime >= 1000 ) {
-                        lastSecondTickTime = System.currentTimeMillis();
-
-                        metricReporter.sendFromAllSensorsPerSecondTick();
-                    }
-                }
-
 
                 if(lastAction==0 && random(1.0f) < Alpha) { //if Nar hasn't decided chose a executable random action
                     lastAction = (int) random((float) nActions);
@@ -584,9 +485,11 @@ public class Pong extends Frame {
 
                     if(diffAbs < middle_distance) {
                         ballHits++;
+                        metricObserver.notifyInt("hit", 1);
                     }
                     else {
                         ballMisses++;
+                        metricObserver.notifyInt("miss", 1);
                     }
                 } 
                 oi.x += oi.VX;
