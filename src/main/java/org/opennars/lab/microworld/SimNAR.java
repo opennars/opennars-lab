@@ -50,38 +50,6 @@ public class SimNAR extends Frame {
         metricReporter = new MetricReporter();
         metricReporter.connect("127.0.0.1", 8125);
 
-        metricReporter.sensors.add(new MetricSensor() {
-            @Override
-            public String getName() {
-                return "ateGood";
-            }
-
-            @Override
-            public String getValueAsString(boolean force) {
-                return "" + counterAteGood;
-            }
-
-            @Override
-            public void resetAfterSending() {
-            }
-        });
-
-        metricReporter.sensors.add(new MetricSensor() {
-            @Override
-            public String getName() {
-                return "ateBad";
-            }
-
-            @Override
-            public String getValueAsString(boolean force) {
-                return "" + counterAteBad;
-            }
-
-            @Override
-            public void resetAfterSending() {
-            }
-        });
-
         String[] args = {"Microworld"};
         MyPapplet mp = new MyPapplet ();
         mp.setSize(800,600);
