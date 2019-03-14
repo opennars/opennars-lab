@@ -490,6 +490,8 @@ public class Pong extends Frame {
                     else {
                         ballMisses++;
                         metricObserver.notifyInt("miss", 1);
+
+                        metricObserver.notifyInt("missDistance", (int)diffAbs); // distance of miss
                     }
                 } 
                 oi.x += oi.VX;
