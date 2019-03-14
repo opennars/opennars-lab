@@ -11,7 +11,7 @@ import java.util.*;
  */
 public class MetricReporter {
     public String narsVersion = Nar.VERSION;
-    public long runId = new Random().nextInt();
+    public int runId = (int)Calendar.getInstance().getTimeInMillis();
 
     public List<MetricObserver> observers = new ArrayList<>();
 
@@ -40,7 +40,7 @@ public class MetricReporter {
     private void send(final String dataAsString, final String metricPathName) {
         final String timestampAsString = "-1"; // -1 leads to automatic timestamping on arrival of the message
 
-        String narsVersionSerialized = narsVersion.replace('.', '_').replaceFirst("\\_", "."); // required for graphite
+        String narsVersionSerialized = narsVersion.replace('.', '_').replaceFirst("\\ ", "."); // required for graphite
         String metricPath = narsVersionSerialized + "." +runId+ "." + metricPathName;
 
         String payload = metricPath +":"+ dataAsString + "|c" + "\n";
