@@ -11,7 +11,7 @@ import java.util.*;
  */
 public class MetricReporter {
     public String narsVersion = Nar.VERSION;
-    public long runId = new Random().nextInt();
+    public long runId =  Calendar.getInstance().getTimeInMillis();
 
     public List<MetricObserver> observers = new ArrayList<>();
 
