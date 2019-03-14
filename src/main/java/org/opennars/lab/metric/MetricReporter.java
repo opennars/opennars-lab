@@ -40,7 +40,7 @@ public class MetricReporter {
     private void send(final String dataAsString, final String metricPathName) {
         final String timestampAsString = "-1"; // -1 leads to automatic timestamping on arrival of the message
 
-        String narsVersionSerialized = narsVersion.replace('.', '_').replaceFirst("\\_", "."); // required for graphite
+        String narsVersionSerialized = narsVersion.replace('.', '_').replaceFirst("\\ ", "."); // required for graphite
         String metricPath = narsVersionSerialized + "." + metricPathName;
 
         String payload = metricPath +":"+ dataAsString + "|c" + "\n";
