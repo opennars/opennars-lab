@@ -14,6 +14,7 @@
  */
 package org.opennars.lab.microworld;
 
+import org.opennars.lab.metric.*;
 import org.opennars.storage.Memory;
 import org.opennars.main.Nar;
 //import org.opennars.nal.nal8.Operation;
@@ -26,6 +27,7 @@ import processing.event.MouseEvent;
 
 import java.awt.*;
 import java.io.File;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -46,7 +48,25 @@ import org.opennars.operator.Operator;
 public class Pong extends Frame {
     public boolean verbose = true;
 
-    public Pong() {
+    public int ballHits;
+    public int ballMisses;
+
+    public int t = 0;
+
+    public MetricReporter metricReporter;
+    public MetricListener metricListener;
+    public MetricObserver metricObserver;
+
+    public long lastSecondTickTime = 0;
+
+    public Pong() throws UnknownHostException {
+        metricListener = new MetricListener();
+
+        metricReporter = new MetricReporter();
+        metricReporter.connect("127.0.0.1", 8125);
+
+        metricObserver = new MetricReporterObserver(metricListener, metricReporter);
+
         String[] args = {"Pong"};
         MyPapplet mp = new MyPapplet ();
         mp.setSize(800,600);
@@ -241,7 +261,8 @@ public class Pong extends Frame {
                     System.out.println("bad mr_nars");
                     nar.addInput("(--,<{SELF} --> [good]>). :|:");
                 }*/
-                
+
+                t++;
                 nar.cycles(10);
 
                 if(lastAction==0 && random(1.0f) < Alpha) { //if Nar hasn't decided chose a executable random action
@@ -456,6 +477,22 @@ public class Pong extends Frame {
                 {
                     oi.y = 0;
                     oi.VY = -oi.VY;
+
+                    // ball changed direction on top of the bat - figure out if scored or not
+                    float middle_distance = 40.0f; //approximately the drawing size of paddle plus ball radius
+
+                    float diffAbs = Math.abs(agent.x - ball.x);
+
+                    if(diffAbs < middle_distance) {
+                        ballHits++;
+                        metricObserver.notifyInt("hit", 1);
+                    }
+                    else {
+                        ballMisses++;
+                        metricObserver.notifyInt("miss", 1);
+
+                        metricObserver.notifyInt("missDistance", (int)diffAbs); // distance of miss
+                    }
                 } 
                 oi.x += oi.VX;
                 oi.y += oi.VY;
@@ -484,7 +521,7 @@ public class Pong extends Frame {
         }
         void hrend_DrawBegin()
         {
-            label1.text="opti index:"+((float)goods)/((float)bads)+ "FPS:"+frameRate;
+            label1.text="hits=" + ballHits + " misses=" + ballMisses + "   opti index="+((float)ballHits)/((float)ballMisses)+ "   FPS="+frameRate;
             fill(138,138,128);
             pushMatrix();
             if(hamlib.Mode==hamlib.Hamlib3DMode)
@@ -1352,7 +1389,7 @@ public class Pong extends Frame {
 
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws UnknownHostException {
         NARSwing.themeInvert();
         new Pong();
     }

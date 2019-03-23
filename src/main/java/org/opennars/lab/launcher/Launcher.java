@@ -21,10 +21,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.net.URLConnection;
+import java.net.*;
 import java.text.ParseException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -438,8 +435,12 @@ public class Launcher extends javax.swing.JFrame {
      *
      * @param evt
      */
-    private void jLabel9MouseClicked(java.awt.event.MouseEvent evt) {                                     
-        org.opennars.lab.microworld.Pong.main(null);
+    private void jLabel9MouseClicked(java.awt.event.MouseEvent evt) {
+        try {
+            org.opennars.lab.microworld.Pong.main(null);
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
         this.dispose();
     }                                    
 
@@ -466,8 +467,12 @@ public class Launcher extends javax.swing.JFrame {
      *
      * @param evt
      */
-    private void jLabel11MouseClicked(java.awt.event.MouseEvent evt) {                                      
-        org.opennars.lab.microworld.SimNAR.main(null);
+    private void jLabel11MouseClicked(java.awt.event.MouseEvent evt) {
+        try {
+            org.opennars.lab.microworld.SimNAR.main(null);
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
         this.dispose();
     }                                     
 
