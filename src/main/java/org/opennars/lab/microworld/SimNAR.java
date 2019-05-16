@@ -271,7 +271,6 @@ public class SimNAR extends Frame {
             {
                 this.nActions = nactions; //for actions since we allow the same randomization phase as in QL
                 nar = new Nar();
-                nar.narParameters.NEG_OUTCOME_AVOIDANCE_EXPECTATION_THRESHOLD = 1337.2; //unreachable
                 System.out.println("AVOID THRESH: "+nar.narParameters.NEG_OUTCOME_AVOIDANCE_EXPECTATION_THRESHOLD);
                 nar.memory.addOperator(new Right("^Right"));
                 nar.memory.addOperator(new Left("^Left"));
