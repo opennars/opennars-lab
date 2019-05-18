@@ -15,7 +15,6 @@
 package org.opennars.lab.microworld;
 
 import org.opennars.lab.metric.MetricReporter;
-import org.opennars.lab.metric.MetricSensor;
 import org.opennars.storage.Memory;
 import org.opennars.main.Nar;
 //import org.opennars.nal.nal8.Operation;
@@ -329,6 +328,7 @@ public class SimNAR extends Frame {
             int k=0;
             float Alpha=0.1f;
             String lastInput = "";
+            int lasthealthy = 0;
             int UpdateSOM(float[] viewField,float reward) //input and reward
             {
                 for(int i=0;i<viewField.length;i++) {
@@ -344,123 +344,76 @@ public class SimNAR extends Frame {
                 }
                 lastAction = 0;
                 k++;
-               if(k%2==0) {
-                   //if(k%4 == 0) { //les priority than eating ^^
-                   nar.addInput("<{SELF} --> [hurt]>! :|: %0%");
-                   //}
-                   nar.addInput("<{SELF} --> [replete]>! :|:");
+               if(k%2==0) { //TODO add motivation module that handles current goals of "animals"
+                   if(k%10 == 0) { //les priority than eating ^^
+                        nar.addInput("<{SELF} --> [healthy]>! :|:");
+                   } else {
+                        nar.addInput("<{SELF} --> [satisfied]>! :|:");
+                   }
                    //System.out.println("food urge input");
                 }
                
-               //nar.addInput("<(&/,<{0} --> [on]>,+1,(^Right,{SELF}),+1) =/> <{SELF} --> [replete]>>.");
-               //nar.addInput("<(&/,<{2} --> [on]>,+1,(^Left,{SELF}),+1) =/> <{SELF} --> [replete]>>.");
-               //nar.addInput("<(&/,<{3} --> [on]>,+1,(^Right,{SELF}),+1) =/> <{SELF} --> [hurt]>>.");
-               //nar.addInput("<(&/,<{5} --> [on]>,+1,(^Left,{SELF}),+1) =/> <{SELF} --> [hurt]>>.");
+               //nar.addInput("<(&/,<{0} --> [on]>,+1,(^Right,{SELF}),+1) =/> <{SELF} --> [satisfied]>>.");
+               //nar.addInput("<(&/,<{2} --> [on]>,+1,(^Left,{SELF}),+1) =/> <{SELF} --> [satisfied]>>.");
                
                boolean verbose = true;
                 if(k%4 == 0) {
                     //right
                     {
                         System.out.println("CORRECT:");
-                        Sentence hypo_left_rep = ConceptMonitor.strongestPrecondition(nar, "<{SELF} --> [replete]>",
-                                "<(&/,<{0} --> [on]>,+1,(^Right,{SELF}),+1) =/> <{SELF} --> [replete]>>");
+                        Sentence hypo_left_rep = ConceptMonitor.strongestPrecondition(nar, "<{SELF} --> [satisfied]>",
+                                "<(&/,<{0} --> [on]>,+1,(^Right,{SELF}),+1) =/> <{SELF} --> [satisfied]>>");
                         if(hypo_left_rep != null && verbose) {
                             System.out.println("HypLeftRep: " + hypo_left_rep.truth);
                         }
 
-                        Sentence hypo_right_rep = ConceptMonitor.strongestPrecondition(nar, "<{SELF} --> [replete]>",
-                                "<(&/,<{2} --> [on]>,+12,(^Left,{SELF}),+13) =/> <{SELF} --> [replete]>>");
+                        Sentence hypo_right_rep = ConceptMonitor.strongestPrecondition(nar, "<{SELF} --> [satisfied]>",
+                                "<(&/,<{2} --> [on]>,+12,(^Left,{SELF}),+13) =/> <{SELF} --> [satisfied]>>");
                         if(hypo_right_rep != null && verbose) {
                             System.out.println("HypRightRep: " + hypo_right_rep.truth);
-                        }
-
-                        Sentence hypo_left_heal = ConceptMonitor.strongestPrecondition(nar, "<{SELF} --> [hurt]>",
-                                "<(&/,<{3} --> [on]>,+1,(^Right,{SELF}),+1) =/> <{SELF} --> [hurt]>>");
-                        if(hypo_left_heal != null && verbose) {
-                            System.out.println("HypLeftHeal: " + hypo_left_heal.truth);
-                        }
-
-                        Sentence hypo_right_heal = ConceptMonitor.strongestPrecondition(nar, "<{SELF} --> [hurt]>",
-                                "<(&/,<{5} --> [on]>,+12,(^Left,{SELF}),+13) =/> <{SELF} --> [hurt]>>");
-                        if(hypo_right_heal != null && verbose) {
-                            System.out.println("HypRightHeal: " + hypo_right_heal.truth);
                         }
                     }
                     System.out.println("WRONG:");
                     //wrong action
                     {
-                        Sentence hypo_left_rep = ConceptMonitor.strongestPrecondition(nar, "<{SELF} --> [replete]>",
-                                "<(&/,<{0} --> [on]>,+1,(^Left,{SELF}),+1) =/> <{SELF} --> [replete]>>");
+                        Sentence hypo_left_rep = ConceptMonitor.strongestPrecondition(nar, "<{SELF} --> [satisfied]>",
+                                "<(&/,<{0} --> [on]>,+1,(^Left,{SELF}),+1) =/> <{SELF} --> [satisfied]>>");
                         if(hypo_left_rep != null && verbose) {
                             System.out.println("HypLeftRepWrongA: " + hypo_left_rep.truth);
                         }
 
-                        Sentence hypo_right_rep = ConceptMonitor.strongestPrecondition(nar, "<{SELF} --> [replete]>",
-                                "<(&/,<{2} --> [on]>,+12,(^Right,{SELF}),+13) =/> <{SELF} --> [replete]>>");
+                        Sentence hypo_right_rep = ConceptMonitor.strongestPrecondition(nar, "<{SELF} --> [satisfied]>",
+                                "<(&/,<{2} --> [on]>,+12,(^Right,{SELF}),+13) =/> <{SELF} --> [satisfied]>>");
                         if(hypo_right_rep != null && verbose) {
                             System.out.println("HypRightRepWrongA: " + hypo_right_rep.truth);
-                        }
-
-                        Sentence hypo_left_heal = ConceptMonitor.strongestPrecondition(nar, "<{SELF} --> [hurt]>",
-                                "<(&/,<{3} --> [on]>,+1,(^Left,{SELF}),+1) =/> <{SELF} --> [hurt]>>");
-                        if(hypo_left_heal != null && verbose) {
-                            System.out.println("HypLeftHealWrongA: " + hypo_left_heal.truth);
-                        }
-
-                        Sentence hypo_right_heal = ConceptMonitor.strongestPrecondition(nar, "<{SELF} --> [hurt]>",
-                                "<(&/,<{5} --> [on]>,+12,(^Right,{SELF}),+13) =/> <{SELF} --> [hurt]>>");
-                        if(hypo_right_heal != null && verbose) {
-                            System.out.println("HypRightHealWrongA: " + hypo_right_heal.truth);
                         }
                     }
                     //Wrong goal
                     {
-                        Sentence hypo_left_rep = ConceptMonitor.strongestPrecondition(nar, "<{SELF} --> [hurt]>",
-                                "<(&/,<{0} --> [on]>,+1,(^Right,{SELF}),+1) =/> <{SELF} --> [hurt]>>");
-                        if(hypo_left_rep != null && verbose) {
-                            System.out.println("HypLeftRepWrongG: " + hypo_left_rep.truth);
-                        }
 
-                        Sentence hypo_right_rep = ConceptMonitor.strongestPrecondition(nar, "<{SELF} --> [hurt]>",
-                                "<(&/,<{2} --> [on]>,+12,(^Left,{SELF}),+13) =/> <{SELF} --> [hurt]>>");
-                        if(hypo_right_rep != null && verbose) {
-                            System.out.println("HypRightRepWrongG: " + hypo_right_rep.truth);
-                        }
-
-                        Sentence hypo_left_heal = ConceptMonitor.strongestPrecondition(nar, "<{SELF} --> [replete]>",
-                                "<(&/,<{3} --> [on]>,+1,(^Right,{SELF}),+1) =/> <{SELF} --> [replete]>>");
+                        Sentence hypo_left_heal = ConceptMonitor.strongestPrecondition(nar, "<{SELF} --> [satisfied]>",
+                                "<(&/,<{3} --> [on]>,+1,(^Right,{SELF}),+1) =/> <{SELF} --> [satisfied]>>");
                         if(hypo_left_heal != null && verbose) {
                             System.out.println("HypLeftHealWrongG: " + hypo_left_heal.truth);
                         }
 
-                        Sentence hypo_right_heal = ConceptMonitor.strongestPrecondition(nar, "<{SELF} --> [replete]>",
-                                "<(&/,<{5} --> [on]>,+12,(^Left,{SELF}),+13) =/> <{SELF} --> [replete]>>");
+                        Sentence hypo_right_heal = ConceptMonitor.strongestPrecondition(nar, "<{SELF} --> [satisfied]>",
+                                "<(&/,<{5} --> [on]>,+12,(^Left,{SELF}),+13) =/> <{SELF} --> [satisfied]>>");
                         if(hypo_right_heal != null && verbose) {
                             System.out.println("HypRightHealWrongG: " + hypo_right_heal.truth);
                         }
                     }
                     //Wrong goal wrong action
                     {
-                        Sentence hypo_left_rep = ConceptMonitor.strongestPrecondition(nar, "<{SELF} --> [hurt]>",
-                                "<(&/,<{0} --> [on]>,+1,(^Left,{SELF}),+1) =/> <{SELF} --> [hurt]>>");
-                        if(hypo_left_rep != null && verbose) {
-                            System.out.println("HypLeftRepWrongWrong: " + hypo_left_rep.truth);
-                        }
 
-                        Sentence hypo_right_rep = ConceptMonitor.strongestPrecondition(nar, "<{SELF} --> [hurt]>",
-                                "<(&/,<{2} --> [on]>,+12,(^Right,{SELF}),+13) =/> <{SELF} --> [hurt]>>");
-                        if(hypo_right_rep != null && verbose) {
-                            System.out.println("HypRightRepWrongWrong: " + hypo_right_rep.truth);
-                        }
-
-                        Sentence hypo_left_heal = ConceptMonitor.strongestPrecondition(nar, "<{SELF} --> [replete]>",
-                                "<(&/,<{3} --> [on]>,+1,(^Left,{SELF}),+1) =/> <{SELF} --> [replete]>>");
+                        Sentence hypo_left_heal = ConceptMonitor.strongestPrecondition(nar, "<{SELF} --> [satisfied]>",
+                                "<(&/,<{3} --> [on]>,+1,(^Left,{SELF}),+1) =/> <{SELF} --> [satisfied]>>");
                         if(hypo_left_heal != null && verbose) {
                             System.out.println("HypLeftHealWrongWrong: " + hypo_left_heal.truth);
                         }
 
-                        Sentence hypo_right_heal = ConceptMonitor.strongestPrecondition(nar, "<{SELF} --> [replete]>",
-                                "<(&/,<{5} --> [on]>,+12,(^Right,{SELF}),+13) =/> <{SELF} --> [replete]>>");
+                        Sentence hypo_right_heal = ConceptMonitor.strongestPrecondition(nar, "<{SELF} --> [satisfied]>",
+                                "<(&/,<{5} --> [on]>,+12,(^Right,{SELF}),+13) =/> <{SELF} --> [satisfied]>>");
                         if(hypo_right_heal != null && verbose) {
                             System.out.println("HypRightHealWrongWrong: " + hypo_right_heal.truth);
                         }
@@ -470,13 +423,20 @@ public class SimNAR extends Frame {
                 if(reward > 0) {
                     counterAteGood++;
                     System.out.println("good mr_nars");
-                    nar.addInput("<{SELF} --> [replete]>. :|:");
+                    nar.addInput("<{SELF} --> [satisfied]>. :|:");
                 }
                 if(reward < 0) {
                     counterAteBad++;
+                    lasthealthy = k;
                     System.out.println("bad mr_nars");
-                    nar.addInput("<{SELF} --> [hurt]>. :|:");
-                    //nar.addInput("(--,<{SELF} --> [good]>). :|:");   
+                    nar.addInput("<{SELF} --> [satisfied]>. :|: %0%");
+                    nar.addInput("<{SELF} --> [healthy]>. :|: %0%");
+                    //nar.addInput("(--,<{SELF} --> [satisfied]>). :|:");   
+                }
+                
+                if(k - lasthealthy > 200 && k%20 == 0) {
+                    nar.addInput("<{SELF} --> [healthy]>. :|:");
+                    System.err.println("I'm healthy "+String.valueOf(k));
                 }
                 
                 nar.cycles(10);
@@ -621,7 +581,7 @@ public class SimNAR extends Frame {
                 oi.v *= 0.9f;
                 if(action==3)
                 {
-                    oi.v+=10.0f; //++
+                    oi.v=Math.min(15.0f, oi.v+10.0f); //++
                     //oi.v=5.0f;
                     //mem.ProcessingInteract(oi.x,oi.y,1.0,10.0);
                 }
