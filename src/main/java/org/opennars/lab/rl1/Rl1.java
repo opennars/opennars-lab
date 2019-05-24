@@ -121,7 +121,7 @@ public class Rl1 extends PApplet {
                 stepsSinceLastBorder = 0;
 
                 // reward positive because it is close to the border
-                reasoner.addInput("<be-->good>.:|:");
+                reasoner.addInput("<be-->goal1>.:|:");
                 System.out.println("REWARD: good");
             }
             else {
@@ -143,7 +143,8 @@ public class Rl1 extends PApplet {
         //}
 
         if ((iterationCounter %2) == 0) {
-            reasoner.addInput("<be-->good>!"); // remind of goal
+            reasoner.addInput("<be-->goal1>!"); // remind of goal
+            reasoner.addInput("<dontReset-->goal2>!"); // remind of goal
         }
 
         { // motor babble
@@ -175,7 +176,15 @@ public class Rl1 extends PApplet {
         reasoner.cycles(50);
 
         if (/*iterationCounter > 200 ||*/ stepsSinceLastBorder > 200 || (distanceFromCenter != Double.POSITIVE_INFINITY && distanceFromCenter > 60.0)) {
-            System.out.println("force reset");
+            System.out.println("force reset !!!");
+            System.out.println("");
+            System.out.println("");
+            System.out.println("");
+
+
+            //reasoner.addInput("(--,<dontReset-->goal2>).:|:"); // case with two goals, doesn't work
+            reasoner.addInput("(--,<be-->goal1>).:|:");
+            System.out.println("REWARD: bad");
 
             //cursorDirX = rng.nextDouble() * 2.0 - 1.0;
             //cursorDirY = rng.nextDouble() * 2.0 - 1.0;
