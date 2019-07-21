@@ -394,7 +394,7 @@ public class SymRecognizerWithVisionChannel extends javax.swing.JFrame {
                         public void onSolution(Sentence belief) {
                             //System.out.println("solution: " + belief);
                             System.out.println(belief);
-                            float howconf = belief.truth.getConfidence();
+                            double howconf = belief.truth.getConfidence();
                             if(howconf >= 0.001f  && belief.getTerm().toString().contains("example")) { //only mark if above 0.1 confidence
                                 //also mark image:
                                 int maxu = Integer.valueOf(belief.getTerm().toString().split("example")[1].split("\\)")[0]);
