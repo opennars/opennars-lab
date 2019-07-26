@@ -40,8 +40,6 @@ import org.opennars.io.events.AnswerHandler;
 import org.opennars.io.Narsese;
 import org.xml.sax.SAXException;
 
-
-
 public class SymRecognizer extends javax.swing.JFrame {
     private Image fitimage(Image img , int w , int h)
     {
