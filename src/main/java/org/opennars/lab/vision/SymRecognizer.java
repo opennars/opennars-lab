@@ -43,7 +43,6 @@ import org.xml.sax.SAXException;
 
 
 public class SymRecognizer extends javax.swing.JFrame {
-
     private Image fitimage(Image img , int w , int h)
     {
         BufferedImage resizedimage = new BufferedImage(w,h,BufferedImage.TYPE_INT_RGB);
