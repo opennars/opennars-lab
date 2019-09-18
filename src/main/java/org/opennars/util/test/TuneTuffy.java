@@ -70,7 +70,7 @@ public class TuneTuffy {
             if (mostConfident == null)
                 mostConfident = s;
             else {
-                float existingConf = mostConfident.truth.getConfidence();
+                double existingConf = mostConfident.truth.getConfidence();
                 if (existingConf < s.truth.getConfidence())
                     mostConfident = s;
             }

@@ -41,9 +41,7 @@ import org.opennars.io.Narsese;
 import org.xml.sax.SAXException;
 
 
-
 public class SymRecognizer extends javax.swing.JFrame {
-
     private Image fitimage(Image img , int w , int h)
     {
         BufferedImage resizedimage = new BufferedImage(w,h,BufferedImage.TYPE_INT_RGB);
@@ -386,7 +384,7 @@ public class SymRecognizer extends javax.swing.JFrame {
                         public void onSolution(Sentence belief) {
                             //System.out.println("solution: " + belief);
                             System.out.println(belief);
-                            float howconf = belief.truth.getConfidence();
+                            double howconf = belief.truth.getConfidence();
                             if(howconf > 0.1f) { //only mark if above 0.1 confidence
                                 //also mark image:
                                 int maxu = Integer.valueOf(belief.getTerm().toString().split("example")[1].split("}")[0]);
