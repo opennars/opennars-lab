@@ -66,7 +66,6 @@ import org.opennars.language.Term;
 import org.opennars.operator.Operation;
 import org.opennars.operator.Operator;
 import org.opennars.io.events.Events.CyclesEnd;
-import org.opennars.main.MiscFlags;
 
 /**
  *

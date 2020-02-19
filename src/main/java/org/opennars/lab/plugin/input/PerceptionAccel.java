@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import org.opennars.io.events.EventEmitter;
 import org.opennars.io.events.Events;
 import org.opennars.main.Nar;
-import org.opennars.main.MiscFlags;
 import org.opennars.plugin.Plugin;
 import org.opennars.control.DerivationContext;
 import org.opennars.entity.BudgetValue;
