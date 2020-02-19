@@ -1,0 +1,24 @@
+{
+  "NARS input files": [
+    "nars_files/toothbrush.nal",
+    "nars_files/detective.nal"
+  ],
+
+  "NARS parameters": [
+    ["DERIVATION_PRIORITY_LEAK", 0.1, 0.6],
+    ["VARIABLE_INTRODUCTION_COMBINATIONS_MAX", 5, 10],
+    ["SEQUENCE_BAG_ATTEMPTS", 5, 15],
+    ["TERM_LINK_MAX_MATCHED", 10, 50]
+  ],
+
+  "optimization objective": "num_cycles",
+  "failure penalty": 1000000,
+  "Hyperopt iterations": 100,
+  "NARS runs per iteration": 16,
+  "cpu threads": 4,
+  "NARS timeout": 10,
+  "require exact truth value": "False",
+
+  "batch timeout": 20,
+  "debug": "False"
+}
