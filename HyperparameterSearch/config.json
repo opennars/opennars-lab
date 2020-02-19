@@ -1,7 +1,7 @@
 {
   "NARS input files": [
-    "nars_files/toothbrush.nal",
-    "nars_files/detective.nal"
+    "../SampleBenchmarkFiles/toothbrush.nal",
+    "../SampleBenchmarkFiles/detective.nal"
   ],
 
   "NARS parameters": [
