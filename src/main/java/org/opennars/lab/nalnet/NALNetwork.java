@@ -24,7 +24,6 @@ import java.text.ParseException;
 import java.util.*;
 import javax.xml.parsers.ParserConfigurationException;
 import org.opennars.main.Nar;
-import org.opennars.main.MiscFlags;
 import org.opennars.entity.BudgetValue;
 import org.opennars.entity.Sentence;
 import org.opennars.entity.Stamp;

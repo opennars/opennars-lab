@@ -34,7 +34,6 @@ import java.util.logging.Logger;
 import javax.swing.*;
 import javax.xml.parsers.ParserConfigurationException;
 import org.opennars.main.Nar;
-import org.opennars.main.MiscFlags;
 import org.opennars.entity.Sentence;
 import org.opennars.io.events.AnswerHandler;
 import org.opennars.io.Narsese;
