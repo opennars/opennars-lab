@@ -18,11 +18,11 @@ import java.util.ArrayList;
 import java.util.List;
 import org.opennars.main.Nar;
 import org.opennars.control.DerivationContext;
-import static org.opennars.control.TemporalInferenceControl.proceedWithTemporalInduction;
 import org.opennars.entity.Task;
 import org.opennars.interfaces.Timable;
 import org.opennars.language.Term;
 import org.opennars.plugin.perception.SensoryChannel;
+import org.opennars.storage.Buffer;
 
 public class ConcatVisionChannel extends SensoryChannel {
     public class Position {
@@ -64,8 +64,8 @@ public class ConcatVisionChannel extends SensoryChannel {
         for(int i=1;i<sampling.size();i++) {
             Position samplePos2 = sampling.get(i);
             Task prem2 = inputs[samplePos2.Y][samplePos2.X];
-            List<Task> seq = proceedWithTemporalInduction(current.sentence, prem2.sentence, prem2, 
-                                                              new DerivationContext(nar.memory, nar.narParameters, time), true, false, true);
+            List<Task> seq = Buffer.proceedWithTemporalInduction(current.sentence, prem2.sentence, prem2, 
+                                                              new DerivationContext(nar.memory, nar.narParameters, time), true, false, true, false);
             if(seq != null) {
                 for(Task t : seq) {
                     if(!t.sentence.isEternal()) { //TODO improve API, this check should not be necessary

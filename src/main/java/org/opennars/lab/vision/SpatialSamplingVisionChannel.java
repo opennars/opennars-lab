@@ -18,13 +18,13 @@ import java.util.ArrayList;
 import java.util.List;
 import org.opennars.main.Nar;
 import org.opennars.control.DerivationContext;
-import static org.opennars.control.TemporalInferenceControl.proceedWithTemporalInduction;
 import org.opennars.entity.Sentence;
 import org.opennars.entity.Task;
 import org.opennars.interfaces.Timable;
 import org.opennars.plugin.perception.SensoryChannel;
 import org.opennars.language.Term;
 import org.opennars.storage.Bag;
+import org.opennars.storage.Buffer;
 import org.opennars.storage.Memory;
 
 public class SpatialSamplingVisionChannel extends SensoryChannel {
@@ -80,8 +80,8 @@ public class SpatialSamplingVisionChannel extends SensoryChannel {
             Task sampled2 = spatialbag[s2posY][s2posX].takeOut();
             if(sampled2 != null) {
                 //improve API, carrying out temporal inference should be easier..
-                List<Task> seq = proceedWithTemporalInduction(sampled.sentence, sampled2.sentence, sampled2, 
-                                                              new DerivationContext(nar.memory, nar.narParameters, time), true, false, true);
+                List<Task> seq = Buffer.proceedWithTemporalInduction(sampled.sentence, sampled2.sentence, sampled2, 
+                                                              new DerivationContext(nar.memory, nar.narParameters, time), true, false, true, false);
                 if(seq != null) {
                     for(Task t : seq) {
                         if(!t.sentence.isEternal()) { //TODO improve API, this check should not be necessary
