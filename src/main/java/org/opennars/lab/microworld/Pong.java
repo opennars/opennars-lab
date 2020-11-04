@@ -59,6 +59,8 @@ public class Pong extends Frame {
 
     public long lastSecondTickTime = 0;
 
+    public long startTimeNs;
+
     public Pong() throws UnknownHostException {
         metricListener = new MetricListener();
 
@@ -295,6 +297,20 @@ public class Pong extends Frame {
                         }
                         nar.addInput("Left({SELF}). :|:");
                     }
+                }
+
+                {
+                    long timeInNs = System.nanoTime() - startTimeNs;
+
+                    if (timeInNs / 1000000000 > 10*60) {
+                        System.out.println("t="+timeInNs / 1000000000+"s " + ballHits + " " + ballMisses);
+                        System.exit(0);
+                        int here = 5;
+                    }
+                    else if (timeInNs / 1000000000 > 3*60) {
+                        System.out.println("t="+timeInNs / 1000000000+"s " + ballHits + " " + ballMisses);
+                    }
+
                 }
 
                 return lastAction;
@@ -1341,6 +1357,8 @@ public class Pong extends Frame {
 
         public void setup()
         {
+            startTimeNs = System.nanoTime();
+
             this.size(800, 600);
             this.frameRate(50);
             //mem.simulate_consistency=0.05;
